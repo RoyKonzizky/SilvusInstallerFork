@@ -1,7 +1,7 @@
 export interface INavigatorButtonProps {
-    href?: string;
+    href: string;
     isSandwichCollapsed: boolean;
-    text?: string;
+    text: string;
     file: string;
     subsections?: JSX.Element;
     isSubsection: boolean;
