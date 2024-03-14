@@ -14,7 +14,7 @@ function Sidebar() {
             className="absolute top-0 right-0 p-4 bg-gray-500 text-black flex flex-col items-end min-w-[250px] h-screen"
         >
             <div className="mr-10 mb-2 flex justify-center items-center">
-                <button className="bg-gray-500 py-2 px-4 rounded" onClick={toggleCollapse}>
+                <button className="bg-gray-500 hover:bg-gray-200 py-2 px-4 rounded" onClick={toggleCollapse}>
                     <img className={`mt-5 mb-5 h-16 w-16`} src="../../public/expand_collapse.svg" alt=""/>
                 </button>
             </div>
