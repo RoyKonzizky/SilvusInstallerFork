@@ -6,7 +6,7 @@ import MyRoutes from "./components/MyRoutes.tsx";
 function App() {
 
     return (
-        <div className="text-center text-4xl bg-black text-white h-screen w-screen">
+        <div className="text-center text-4xl bg-black text-white h-screen w-screen relative">
             <Router>
                 <Sidebar/>
                 <MyRoutes/>
