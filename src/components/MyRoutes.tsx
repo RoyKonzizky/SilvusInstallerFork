@@ -1,5 +1,6 @@
 import {Route, Routes} from "react-router-dom";
 import {useEffect} from "react";
+import Settings from "./Settings/Settings.tsx";
 
 function MyRoutes() {
     useEffect(() => {
@@ -15,7 +16,7 @@ function MyRoutes() {
             <Routes>
                 {/* TODO: Change every element to its corresponding element */}
                 <Route path="/" element={<>MAIN PAGE</>}/>
-                <Route path="/settings" element={<>SETTINGS</>}/>
+                <Route path="/settings" element={<Settings/>}/>
                 <Route path="/topology" element={<>TOPOLOGY</>}/>
                 <Route path="/recordings" element={<>RECORDINGS</>}/>
                 <Route path="/camera" element={<>CAMERA</>}/>
