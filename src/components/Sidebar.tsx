@@ -1,32 +1,36 @@
 import '../App.css';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
 
 function Sidebar() {
     const [isSandwichCollapsed, setSandwichCollapsed] = useState<boolean>(true);
 
-    const toggleCollapse = () => {
-        setSandwichCollapsed(!isSandwichCollapsed);
-    };
+    useEffect(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (performance.getEntriesByType("navigation")[0].type === "reload") {
+            window.location.href = "/";
+        }
+    }, []);
 
     return (
         <div
-            className="absolute top-0 right-0 p-4 bg-gray-500 text-black flex flex-col items-end min-w-[250px] h-screen"
+            className="absolute top-0 right-0 p-4 bg-gray-500 text-black flex flex-col items-end min-w-[100px] h-screen"
         >
-            <div className="mr-10 mb-2 flex justify-center items-center">
-                <button className="bg-gray-500 hover:bg-gray-200 py-2 px-4 rounded" onClick={toggleCollapse}>
-                    <img className={`mt-5 mb-5 h-16 w-16`} src="../../public/expand_collapse.svg" alt=""/>
-                </button>
+            <div className="mb-2">
+                <NavigatorButton href="" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
+                                 text="" file="../../public/expand_collapse.svg"
+                                 onClick={() => setSandwichCollapsed(!isSandwichCollapsed)}/>
             </div>
             <div
-                className={`mr-10 mt-[10vh] overflow-x-hidden transition-max-width duration-500 max-w-${isSandwichCollapsed ? '0' : 'screen-sm'}`}
+                className={`mt-[10vh] overflow-x-hidden transition-max-width duration-500 max-w-${isSandwichCollapsed ? '0' : 'screen-sm'}`}
             >
                 <NavigatorButton href="/settings" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                                  text="הגדרות" file="../../public/settings.svg"/>
                 <NavigatorButton href="/topology" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                                  text="טופולוגיה" file="../../public/topology.svg"/>
                 <NavigatorButton
-                    href="/recordings" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
+                    href="" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                     text="הקלטות" file="../../public/recordings.svg"
                     subsections={
                         <>
