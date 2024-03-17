@@ -14,9 +14,11 @@ function NavigatorButton(props: INavigatorButtonProps) {
                  }
                  if (props.href !== "") window.location.href = props.href;
              }}
-             className={`mt-5 mb-5 rounded-xl ${props.isSubsection ? `bg-gray-200 hover:bg-gray-500 text-xl p-2` : `bg-gray-500 hover:bg-gray-200 text-3xl p-3`}`}
+             className={`mt-5 mb-5 rounded-xl ${props.isSubsection
+                 ? `bg-gray-300 hover:bg-[#7A7A7A] text-white text-xl p-2`
+                 : `bg-[#7A7A7A] hover:bg-gray-300 text-black text-3xl p-3`}`}
         >
-            <div className="flex justify-center items-center text-black">
+            <div className="flex justify-center items-center">
                 {!props.isSandwichCollapsed && props.text &&
                     <p className="w-[200px]">
                         {props.text}
