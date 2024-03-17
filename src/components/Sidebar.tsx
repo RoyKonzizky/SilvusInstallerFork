@@ -19,7 +19,7 @@ function Sidebar() {
                 </button>
             </div>
             <div
-                className={`mr-10 mt-32 overflow-x-hidden transition-max-width duration-500 max-w-${isSandwichCollapsed ? '0' : 'screen-sm'}`}
+                className={`mr-10 mt-[10vh] overflow-x-hidden transition-max-width duration-500 max-w-${isSandwichCollapsed ? '0' : 'screen-sm'}`}
             >
                 <NavigatorButton href="/settings" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                                  text="הגדרות" file="../../public/settings.svg"/>
