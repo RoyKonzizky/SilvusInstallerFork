@@ -3,14 +3,12 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import Settings from "./components/Settings/Settings.tsx";
-// import Sidebar from "./components/Sidebar.tsx";
-import App from "./App.tsx";
 import Sidebar from "./components/Sidebar.tsx";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App/>,
+        element: <></>,
     },
     {
         path: "/settings",

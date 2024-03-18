@@ -1,4 +1,3 @@
-import '../App.css';
 import {useEffect, useState} from 'react';
 import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
 import ExpandCollapseLogo from '../assets/expand_collapse.svg';
