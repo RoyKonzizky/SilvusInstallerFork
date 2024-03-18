@@ -12,9 +12,7 @@ function Sidebar() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (performance.getEntriesByType("navigation")[0].type === "reload") {
+        if ((performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming).type === "reload") {
             window.location.href = "/";
         }
     }, []);
