@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import App from "./App.tsx";
 import Settings from "./components/Settings/Settings.tsx";
 import Sidebar from "./components/Sidebar/Sidebar.tsx";
 import store from "./redux/store";
@@ -11,7 +10,7 @@ import {Provider} from "react-redux";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App/>,
+        element: <></>,
     },
     {
         path: "/settings",
