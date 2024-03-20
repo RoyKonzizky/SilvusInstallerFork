@@ -1,5 +1,5 @@
 import {darkTheme, GraphCanvas, GraphCanvasRef, InternalGraphEdge, InternalGraphNode} from 'reagraph';
-import {CSSProperties, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import "./Topology.css";
 
 const nodes = [
@@ -51,20 +51,6 @@ export function Topology() {
         setContextMenuData(null);
     };
 
-
-    const styleForContext: CSSProperties | undefined = {
-        position: "absolute",
-        background: 'white',
-        width: 350,
-        height: 350,
-        border: 'solid 1px blue',
-        borderRadius: 2,
-        padding: 5,
-        textAlign: 'center',
-        top: 0,
-        left: 0,
-    };
-
     const customTheme = {
         ...darkTheme,
         canvas: {
@@ -74,7 +60,7 @@ export function Topology() {
     };
 
     return (
-        <div className={'wrapper'}>
+        <div className="block absolute w-[93.6%] h-full border border-black bg-black overflow-hidden">
             <GraphCanvas
                 theme={customTheme}
                 ref={graphRef}
@@ -91,10 +77,16 @@ export function Topology() {
                 }}
             />
             {contextMenuData && (
-                <div style={styleForContext}>
-                    <h1 className={'dataHeader'}>{'node id: ' + contextMenuData.id}</h1>
-                    <h1 className={'dataHeader'}>{'node label: ' + contextMenuData.label}</h1>
-                    <button className={'menuCloseButton'} onClick={closeContextMenu}>Close Menu</button>
+                <div className="absolute bg-white w-96 h-96 border border-blue-500 rounded p-5 text-center">
+                    <h1 className={'text-black'}>{'node id: ' + contextMenuData.id}</h1>
+                    <h1 className={'text-black'}>{'node label: ' + contextMenuData.label}</h1>
+                    <button
+                        className={'bg-black border-2 border-gray-700 rounded-lg text-white font-semibold ' +
+                            'py-4 px-6 inline-block cursor-pointer transition duration-300 ease-in-out transform ' +
+                            'hover:shadow-md hover:-translate-y-2 absolute bottom-0 left-10% mb-5'}
+                        onClick={closeContextMenu}>
+                        Close Menu
+                    </button>
                 </div>
             )}
         </div>
