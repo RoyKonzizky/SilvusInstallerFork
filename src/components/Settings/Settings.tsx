@@ -1,6 +1,6 @@
 import SettingLine from "./SettingLine/SettingLine.tsx";
 
-function Settings() {
+export function Settings() {
     return (
         <div className="text-3xl">
             <div className="flex justify-center items-center h-screen">
@@ -13,5 +13,3 @@ function Settings() {
         </div>
     );
 }
-
-export default Settings;

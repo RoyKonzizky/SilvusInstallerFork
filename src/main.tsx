@@ -2,10 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import Settings from "./components/Settings/Settings.tsx";
-// import Sidebar from "./components/Sidebar.tsx";
 import App from "./App.tsx";
 import Sidebar from "./components/Sidebar.tsx";
+import {Topology} from "./components/Pages/Topology/Topology.tsx";
+import {Settings} from "./components/Settings/Settings.tsx";
 
 const router = createBrowserRouter([
     {
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/topology",
-        element: <>TOPOLOGY</>,
+        element: <><Topology/></>,
     },
     {
         path: "/camera",
