@@ -1,6 +1,5 @@
 import {darkTheme, GraphCanvas, GraphCanvasRef, InternalGraphEdge, InternalGraphNode} from 'reagraph';
 import {useRef, useState} from "react";
-import "./Topology.css";
 
 const nodes = [
     {
@@ -60,7 +59,7 @@ export function Topology() {
     };
 
     return (
-        <div className="block absolute w-[93.6%] h-full border border-black bg-black overflow-hidden">
+        <div className="block absolute w-full h-full border border-black bg-black overflow-hidden">
             <GraphCanvas
                 theme={customTheme}
                 ref={graphRef}

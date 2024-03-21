@@ -22,7 +22,7 @@ function Sidebar() {
 
     return (
         <div
-            className="absolute top-0 right-0 p-4 bg-[#7A7A7A] flex flex-col items-end min-w-[100px] h-screen"
+            className="absolute top-0 right-0 p-4 bg-[#7A7A7A] flex flex-col items-end min-w-[100px] h-screen z-50"
         >
             <div className="mb-2">
                 <NavigatorButton href="" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
@@ -30,7 +30,7 @@ function Sidebar() {
                                  onClick={() => setSandwichCollapsed(!isSandwichCollapsed)}/>
             </div>
             <div
-                className={`mt-[10vh] overflow-x-hidden transition-max-width duration-500 max-w-${isSandwichCollapsed ? '0' : 'screen-sm'}`}
+                className={`mt-[10vh] overflow-x-hidden transition-max-width duration-500 z-50 max-w-${isSandwichCollapsed ? '0' : 'screen-sm'}`}
             >
                 <NavigatorButton href="/settings" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                                  text="הגדרות" file={SettingsLogo}/>
