@@ -5,7 +5,7 @@ import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import App from "./App.tsx";
 import Sidebar from "./components/Sidebar.tsx";
 import {Topology} from "./components/Pages/Topology/Topology.tsx";
-import {Settings} from "./components/Settings/Settings.tsx";
+import {Settings} from "./components/Pages/Settings/Settings.tsx";
 
 const router = createBrowserRouter([
     {
