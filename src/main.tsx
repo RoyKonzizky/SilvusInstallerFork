@@ -14,11 +14,11 @@ const router = createBrowserRouter([
     },
     {
         path: "/settings",
-        element: <><Settings/></>,
+        element: <Settings/>,
     },
     {
         path: "/topology",
-        element: <><Topology/></>,
+        element: <Topology/>,
     },
     {
         path: "/camera",
