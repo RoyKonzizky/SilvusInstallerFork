@@ -80,9 +80,9 @@ export function Topology() {
                     <h1 className={'text-black'}>{'node id: ' + contextMenuData.id}</h1>
                     <h1 className={'text-black'}>{'node label: ' + contextMenuData.label}</h1>
                     <button
-                        className={'bg-black border-2 border-gray-700 rounded-lg text-white font-semibold ' +
-                            'py-4 px-6 inline-block cursor-pointer transition duration-300 ease-in-out transform ' +
-                            'hover:shadow-md hover:-translate-y-2 absolute bottom-0 left-10% mb-5'}
+                        className={'bg-black absolute bottom-0 mb-5 left-[20%] w-56 text-2xl border-2 border-gray-700 ' +
+                            'py-4 px-6 rounded-lg text-white font-semibold inline-block cursor-pointer ' +
+                            'transition duration-300 ease-in-out transform hover:shadow-md hover:-translate-y-2'}
                         onClick={closeContextMenu}>
                         Close Menu
                     </button>
