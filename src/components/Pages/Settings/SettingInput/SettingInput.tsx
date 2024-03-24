@@ -12,9 +12,10 @@ function SettingInput(props: ISettingInputProps) {
                         if (props.setValue) props.setValue(event.target.value);
                    }}
                    onKeyDown={(event) => {
-                       if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(event.key) === -1) {
+                       if (props.type === "number" && ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(event.key) === -1)
                            event.preventDefault();
-                       }
+                       if (props.type === "text" && [' ', '/', '\\'].indexOf(event.key) !== -1)
+                           event.preventDefault();
                    }}
                    className={`text-center bg-gray-600 p-2 rounded-xl ${props.type === "text" || props.type === "number"
                        ? "w-[250px] text-start"

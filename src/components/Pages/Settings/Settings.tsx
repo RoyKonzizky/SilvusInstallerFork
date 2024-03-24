@@ -10,7 +10,7 @@ export function Settings() {
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
     const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth).toString());
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
-    const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower));
+    const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower).toString());
     const states = ['High', 'Medium', 'Low'];
     const [prestate, setPrestate] = useState(states[0]);
     const dispatch = useDispatch();
@@ -21,20 +21,20 @@ export function Settings() {
             {type: "number", label: "Bandwidth", value: bandwidth, setValue: setBandwidth}
         ], [
             {type: "text", label: "Network ID", value: networkId, setValue: setNetworkId},
-            {type: "text", label: "Total Transit Power", value: totalTransitPower, setValue: setTotalTransitPower}
+            {type: "number", label: "Total Transit Power", value: totalTransitPower, setValue: setTotalTransitPower}
         ], [
             {
                 type: "button", label: "Save",
                 onClick: () => dispatch(SettingsSlice.updateTheSettingsState({
                     frequency: frequency === "" ? 0 : parseInt(frequency), bandwidth: bandwidth === "" ? 0 : parseInt(bandwidth),
-                    networkId: networkId, totalTransitPower: totalTransitPower
+                    networkId: networkId, totalTransitPower: totalTransitPower === "" ? 0 : totalTransitPower
                 }))
             },
             {
                 type: "button", label: "Save Network",
                 onClick: () => dispatch(SettingsSlice.updateTheSettingsState({
                     frequency: frequency === "" ? 0 : parseInt(frequency), bandwidth: bandwidth === "" ? 0 : parseInt(bandwidth),
-                    networkId: networkId, totalTransitPower: totalTransitPower
+                    networkId: networkId, totalTransitPower: totalTransitPower === "" ? 0 : totalTransitPower
                 }))
             }
         ]

@@ -4,5 +4,5 @@ export const initialSettingsState: ISettingsReducerState = {
     frequency: 0,
     bandwidth: 0,
     networkId: "",
-    totalTransitPower: ""
+    totalTransitPower: 0
 };
