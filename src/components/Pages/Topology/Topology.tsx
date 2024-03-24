@@ -1,93 +1,112 @@
-import {darkTheme, GraphCanvas, GraphCanvasRef, InternalGraphEdge, InternalGraphNode} from 'reagraph';
-import {useRef, useState} from "react";
-
-const nodes = [
-    {
-        id: '1',
-        label: '1',
-    },
-    {
-        id: '2',
-        label: '2',
-    },
-    {
-        id: '3',
-        label: '3',
-    },
-];
-
-const edges = [
-    {
-        source: '1',
-        target: '2',
-        id: '1-2',
-        label: '1-2',
-    },
-    {
-        source: '3',
-        target: '1',
-        id: '3-1',
-        label: '3-1',
-    },
-    {
-        source: '3',
-        target: '2',
-        id: '3-2',
-        label: '3-2',
-    },
-];
+// @ts-ignore
+import Graph from "react-vis-network-graph";
+import "./styles/network.css";
 
 export function Topology() {
-    const graphRef = useRef<GraphCanvasRef | null>(null);
-    const [contextMenuData, setContextMenuData] =
-        useState<InternalGraphNode | null | InternalGraphEdge>(null);
-
-    const openContextMenu = (data: InternalGraphNode | InternalGraphEdge) => {
-        setContextMenuData(data);
+    const graph = {
+        nodes: [
+            {id: 1, title: "1", isConnected: true, color: 'green'},
+            {id: 2, title: "2", isConnected: false, color: 'green'},
+            {id: 3, title: "3", isConnected: true, color: 'green'},
+            {id: 4, title: "4", isConnected: false, color: 'green'},
+            {id: 5, title: "5", isConnected: true, color: 'green'},
+            {id: 6, title: "6", isConnected: false, color: 'green'}
+        ],
+        edges: [
+            {from: 1, to: 2, label: "5", title: "Edge weight: 5", color: ""},
+            {from: 1, to: 3, label: "5", title: "Edge weight: 5", color: ""},
+            {from: 2, to: 4, label: "10", title: "Edge weight: 10", color: ""},
+            {from: 2, to: 5, label: "10", title: "Edge weight: 10", color: ""},
+            {from: 2, to: 6, label: "25", title: "Edge weight: 25", color: ""},
+            {from: 6, to: 1, label: "25", title: "Edge weight: 25", color: ""},
+            {from: 5, to: 6, label: "25", title: "Edge weight: 25", color: ""}
+        ]
     };
 
-    const closeContextMenu = () => {
-        setContextMenuData(null);
-    };
-
-    const customTheme = {
-        ...darkTheme,
-        canvas: {
-            background: 0x000000,
-            fog: 0x000000,
+    const options = {
+        physics: false,
+        layout: {
+            hierarchical: false
+        },
+        edges: {
+            width: 3,
+            arrows: {
+                to: {enabled: false}
+            },
         },
     };
 
+    const events = {
+        select: function (event: { nodes: any; edges: any; }) {
+            const {nodes, edges} = event;
+            console.log(edges);
+            console.log(nodes);
+        }
+    };
+
+    // Custom edge rendering function to include tooltips
+    // const customEdgeRenderer = (props: { edge: { from: any; to: any; title: any; }; }) => {
+    //     const {from, to, title} = props.edge;
+    //     return (
+    //         <div title={title}>
+    //             <div>Edge from {from} to {to}</div>
+    //         </div>
+    //     );
+    // };
+
+    const edgeConnectionAsColor = (label: string) => {
+        const value = parseInt(label);
+        if (value < 10) {
+            return "red";
+        } else if (value < 20) {
+            return "yellow";
+        } else {
+            return "green";
+        }
+    };
+
+    // Assign colors to edges based on label value
+    graph.edges.forEach(edge => {
+        edge.color = edgeConnectionAsColor(edge.label);
+        edge.title = (edge.from + ', ' + edge.to + ', ' + edge.label).toString();
+    });
+
+    // Custom node rendering function to include tooltips
+    // const customNodeRenderer = (props) => {
+    //     const {id, label} = props.node;
+    //     return (
+    //         <div title={`Node ${id}`}>
+    //             <div>Node: {label}</div>
+    //         </div>
+    //     );
+    // };
+
+    const nodeConnectionAsColor = (isConnected: Boolean) => {
+        if (isConnected)
+            return "green";
+        else {
+            return "red";
+        }
+    };
+
+    // Assign colors to edges based on label value
+    graph.nodes.forEach(node => {
+        node.color = nodeConnectionAsColor(node.isConnected);
+        node.title = (node.id + ', ' + node.isConnected).toString();
+    });
+
     return (
-        <div className="block absolute w-full h-full border border-black bg-black overflow-hidden">
-            <GraphCanvas
-                theme={customTheme}
-                ref={graphRef}
-                nodes={nodes}
-                edges={edges}
-                draggable
-                labelType={'all'}
-                edgeArrowPosition={'none'}
-                onNodeClick={node => {
-                    openContextMenu(node);
-                }}
-                onEdgeClick={edge => {
-                    openContextMenu(edge);
-                }}
+        <div className={'h-full w-full'}>
+            <Graph
+                graph={graph}
+                options={options}
+                events={events}
+                // getNetwork={(network) => {
+                //     //  if you want access to vis.js network api you can set the state in a parent component using this property
+                // }}
+                // edgeRenderer={customEdgeRenderer}
+                // nodeRenderer={customNodeRenderer}
             />
-            {contextMenuData && (
-                <div className="absolute bg-white w-96 h-96 border border-blue-500 rounded p-5 text-center">
-                    <h1 className={'text-black'}>{'node id: ' + contextMenuData.id}</h1>
-                    <h1 className={'text-black'}>{'node label: ' + contextMenuData.label}</h1>
-                    <button
-                        className={'bg-black absolute bottom-0 mb-5 left-[20%] w-56 text-2xl border-2 border-gray-700 ' +
-                            'py-4 px-6 rounded-lg text-white font-semibold inline-block cursor-pointer ' +
-                            'transition duration-300 ease-in-out transform hover:shadow-md hover:-translate-y-2'}
-                        onClick={closeContextMenu}>
-                        Close Menu
-                    </button>
-                </div>
-            )}
         </div>
     );
 }
