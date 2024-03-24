@@ -12,7 +12,7 @@ export function Settings() {
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
     const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower).toString());
     const states = ['High', 'Medium', 'Low'];
-    const [prestate, setPrestate] = useState(states[0]);
+    const [presets, setPresets] = useState(states[0]);
     const dispatch = useDispatch();
 
     const settingInputs: Input[][] = [
@@ -55,9 +55,9 @@ export function Settings() {
                 </div>
             ))}
             <div className="absolute bottom-2 left-0 cursor-pointer"
-                 onClick={() => setPrestate(states[(states.indexOf(prestate) + 1) % states.length])}>
-                <BottomCircle radius={30} text={prestate.charAt(0)}
-                              bgColor={prestate === 'High' ? 'red' : prestate === 'Medium' ? 'yellow' : prestate === 'Low' ? 'green' : ''}/>
+                 onClick={() => setPresets(states[(states.indexOf(presets) + 1) % states.length])}>
+                <BottomCircle radius={30} text={presets.charAt(0)}
+                              bgColor={presets === 'High' ? 'red' : presets === 'Medium' ? 'yellow' : presets === 'Low' ? 'green' : ''}/>
             </div>
         </div>
     );
