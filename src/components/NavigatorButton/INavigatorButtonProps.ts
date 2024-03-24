@@ -4,6 +4,7 @@ export interface INavigatorButtonProps {
     text: string;
     file: string;
     subsections?: JSX.Element;
+    possibleHrefSubsections?: string[];
     isSubsection: boolean;
     onClick?: () => void;
 }
