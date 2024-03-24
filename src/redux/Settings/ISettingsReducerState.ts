@@ -1,6 +1,6 @@
 export interface ISettingsReducerState {
-    frequency: string;
-    bandwidth: string;
+    frequency: number;
+    bandwidth: number;
     networkId: string;
     totalTransitPower: string;
 }
