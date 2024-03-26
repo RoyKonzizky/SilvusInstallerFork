@@ -4,7 +4,7 @@ function SettingInput(props: ISettingInputProps) {
     return (
         <div className={`flex ${(props.type === "text" || props.type === "number") && "bg-[#303030]/70"} p-3 rounded-xl`}>
             {(props.type === "text" || props.type === "number") && <label className="w-[300px] flex items-center text-start">{props.label}</label>}
-            <input type={props.type} value={props.type === "button" ? props.label : props.value}
+            <input type={(props.type === "number") ? "text" : props.type} value={props.type === "button" ? props.label : props.value}
                    onClick={() => {
                        if (props.onClick) props.onClick();
                    }}
