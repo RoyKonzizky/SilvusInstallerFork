@@ -17,19 +17,19 @@ function PresetsButtonModal(props: IPresetsButtonModalProps) {
 
     return (
         <Modal isOpen={props.modalIsOpen} shouldCloseOnOverlayClick={false}
-               className={`text-black text-3xl text-center font-bold flex justify-center items-center h-screen`}
+               className={`text-white text-3xl text-center flex justify-center items-center h-screen`}
         >
-            <div className="bg-white p-5">
+            <div className="bg-black p-5">
                 <div className="mb-2">Choose your Preset</div>
                 {presets.map((preset, index) => (
                     <div key={index} className="flex texl-3xl w-[400px]">
-                        <div className={`flex w-16 h-16 m-3 rounded-xl cursor-pointer ${selectedPreset === preset ? 'bg-gray-400' : 'bg-black'}`}
+                        <div className={`flex w-16 h-16 m-3 rounded-xl cursor-pointer ${selectedPreset === preset ? 'bg-[#303030]/70' : 'bg-white'}`}
                              onClick={() => setSelectedPreset(preset)}/>
                         <div className="flex items-center">{preset}</div>
                     </div>
                 ))}
-                <input type="button" className="text-center mt-2 p-2 rounded-xl cursor-pointer w-[200px] bg-gray-400"
-                       onClick={handleCloseModal} value="Close"/>
+                <input type="button" className="text-center mt-2 px-4 py-3 rounded-xl cursor-pointer bg-gray-800"
+                       onClick={handleCloseModal} value="Save"/>
             </div>
         </Modal>
     );
