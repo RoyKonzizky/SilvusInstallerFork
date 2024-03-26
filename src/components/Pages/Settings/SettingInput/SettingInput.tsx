@@ -17,8 +17,8 @@ function SettingInput(props: ISettingInputProps) {
                        if (props.type === "text" && [' ', '/', '\\'].indexOf(event.key) !== -1)
                            event.preventDefault();
                    }}
-                   className={`text-center bg-gray-600 p-2 rounded-xl ${props.type === "text" || props.type === "number"
-                       ? "w-[250px] text-start"
+                   className={`text-center p-2 rounded-xl ${props.type === "text" || props.type === "number"
+                       ? "w-[250px] text-start bg-gray-600"
                        : (props.type === "button" && "px-4 py-3 bg-gray-900 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900")}`}
             />
         </div>

@@ -4,15 +4,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as SettingsSlice from "../../../redux/Settings/settlingsSlice.ts";
 import {Input, isInputWithOnClick, isInputWithValue} from "./InputTypes/Input.ts";
 import {RootState} from "../../../redux/store.ts";
-import BottomCircle from "./BottomCircle/BottomCircle.tsx";
+import PresetsButton from "./PresetsButton/PresetsButton.tsx";
 
 export function Settings() {
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
     const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth).toString());
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
     const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower).toString());
-    const states = ['High', 'Medium', 'Low'];
-    const [presets, setPresets] = useState(states[0]);
     const dispatch = useDispatch();
 
     const settingInputs: Input[][] = [
@@ -54,11 +52,7 @@ export function Settings() {
                     ))}
                 </div>
             ))}
-            <div className="absolute bottom-2 left-0 cursor-pointer"
-                 onClick={() => setPresets(states[(states.indexOf(presets) + 1) % states.length])}>
-                <BottomCircle radius={30} text={presets.charAt(0)}
-                              bgColor={presets === 'High' ? 'red' : presets === 'Medium' ? 'yellow' : presets === 'Low' ? 'green' : ''}/>
-            </div>
+            <PresetsButton/>
         </div>
     );
 }

@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {initialSettingsState} from "./initialSettingsState.ts";
 
-const resultsSlice = createSlice({
-    name: 'results',
+const settingsSlice = createSlice({
+    name: 'settings',
     initialState: initialSettingsState,
     reducers: {
         updateTheSettingsState: (state, action) => {
@@ -14,5 +14,5 @@ const resultsSlice = createSlice({
     },
 });
 
-export const { updateTheSettingsState } = resultsSlice.actions;
-export default resultsSlice.reducer;
+export const { updateTheSettingsState } = settingsSlice.actions;
+export default settingsSlice.reducer;

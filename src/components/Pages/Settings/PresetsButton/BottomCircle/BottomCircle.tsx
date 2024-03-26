@@ -4,9 +4,7 @@ function BottomCircle(props: IBottomCircleProps) {
     return (
         <svg width={props.radius * 2} height={props.radius * 2}>
             <circle cx={props.radius} cy={props.radius} r={props.radius} fill={props.bgColor}/>
-            <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill='black'>
-                {props.text}
-            </text>
+            <image xlinkHref={props.image} x="15%" y="15%" width={props.radius * 1.5} height={props.radius * 1.5} />
         </svg>
     );
 }

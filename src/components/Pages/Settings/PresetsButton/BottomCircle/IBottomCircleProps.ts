@@ -1,5 +1,5 @@
 export interface IBottomCircleProps {
     radius: number;
-    text: string;
+    image: string;
     bgColor: string;
 }
