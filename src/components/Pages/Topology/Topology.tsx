@@ -1,112 +1,126 @@
-// @ts-ignore
-import Graph from "react-vis-network-graph";
-import "./styles/network.css";
+import Graphin, {Components, Layout, Utils} from '@antv/graphin';
+import {useEffect, useState} from "react";
+import {HullCfg} from "@antv/graphin/lib/components/Hull";
+
+const { Hull, Tooltip } = Components;
 
 export function Topology() {
-    const graph = {
-        nodes: [
-            {id: 1, title: "1", isConnected: true, color: 'green'},
-            {id: 2, title: "2", isConnected: false, color: 'green'},
-            {id: 3, title: "3", isConnected: true, color: 'green'},
-            {id: 4, title: "4", isConnected: false, color: 'green'},
-            {id: 5, title: "5", isConnected: true, color: 'green'},
-            {id: 6, title: "6", isConnected: false, color: 'green'}
-        ],
-        edges: [
-            {from: 1, to: 2, label: "5", title: "Edge weight: 5", color: ""},
-            {from: 1, to: 3, label: "5", title: "Edge weight: 5", color: ""},
-            {from: 2, to: 4, label: "10", title: "Edge weight: 10", color: ""},
-            {from: 2, to: 5, label: "10", title: "Edge weight: 10", color: ""},
-            {from: 2, to: 6, label: "25", title: "Edge weight: 25", color: ""},
-            {from: 6, to: 1, label: "25", title: "Edge weight: 25", color: ""},
-            {from: 5, to: 6, label: "25", title: "Edge weight: 25", color: ""}
-        ]
+
+    const [hullOptions, setOptions] =  useState<(HullCfg)[]>([]);
+
+    const generateRandomInt = (min: number, max: number) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    const options = {
-        physics: false,
-        layout: {
-            hierarchical: false
-        },
-        edges: {
-            width: 3,
-            arrows: {
-                to: {enabled: false}
+    const data = Utils.mock(1).circle().graphin();
+    const layout: Layout = {
+        type: 'force2',
+        // center: [200, 200],
+        linkDistance: 20,
+        nodeStrength: 1000,
+        edgeStrength: 200,
+        nodeSize: 40,
+    };
+
+    for (let i = 1; i < 26; i++) {
+        data.nodes.push({
+            id: `node-${i}`,
+            style: {
+                label: {
+                    value: `Node ${i}`,
+                    fill: '#FFFFFF',
+                },
+                keyshape: {
+                    fill: '#87ff00',
+                    stroke: '#87ff00',
+                    fillOpacity: 1,
+                    size: 50,
+                },
             },
+        });
+    }
+
+    for (let i = 0; i < data.nodes.length; i++) {
+        const source = data.nodes[i].id;
+        const target = data.nodes[generateRandomInt(0, data.nodes.length - 1)].id;
+        const labelValue = generateRandomInt(0, 35);
+        let color;
+        if (labelValue < 10) {
+            color = 'red';
+        } else if (labelValue > 30) {
+            color = 'green';
+        } else {
+            color = 'yellow';
+        }
+
+        data.edges.push({
+            source,
+            target,
+            style: {
+                label: {
+                    value: `${labelValue}`,
+                    fill: color,
+                    fontSize: 30
+                },
+                keyshape: {
+                    endArrow: {
+                        path: '',
+                    },
+                    stroke: color,
+                    lineWidth: 6
+                },
+            },
+        });
+    }
+
+    const defaultNode = {
+        defaultNode: {
+            style: {
+                label: {
+                    fill: "#ffffff",
+                },
+            },
+        }
+    };
+
+    const graphinProps = {
+        zoom: {
+            min: 0.5,
+            max: 2,
         },
     };
 
-    const events = {
-        select: function (event: { nodes: any; edges: any; }) {
-            const {nodes, edges} = event;
-            console.log(edges);
-            console.log(nodes);
-        }
+    const modes = {
+        default: ['drag-node', 'drag-canvas', 'zoom-canvas'],
     };
 
-    // Custom edge rendering function to include tooltips
-    // const customEdgeRenderer = (props: { edge: { from: any; to: any; title: any; }; }) => {
-    //     const {from, to, title} = props.edge;
-    //     return (
-    //         <div title={title}>
-    //             <div>Edge from {from} to {to}</div>
-    //         </div>
-    //     );
-    // };
-
-    const edgeConnectionAsColor = (label: string) => {
-        const value = parseInt(label);
-        if (value < 10) {
-            return "red";
-        } else if (value < 20) {
-            return "yellow";
-        } else {
-            return "green";
-        }
-    };
-
-    // Assign colors to edges based on label value
-    graph.edges.forEach(edge => {
-        edge.color = edgeConnectionAsColor(edge.label);
-        edge.title = (edge.from + ', ' + edge.to + ', ' + edge.label).toString();
-    });
-
-    // Custom node rendering function to include tooltips
-    // const customNodeRenderer = (props) => {
-    //     const {id, label} = props.node;
-    //     return (
-    //         <div title={`Node ${id}`}>
-    //             <div>Node: {label}</div>
-    //         </div>
-    //     );
-    // };
-
-    const nodeConnectionAsColor = (isConnected: Boolean) => {
-        if (isConnected)
-            return "green";
-        else {
-            return "red";
-        }
-    };
-
-    // Assign colors to edges based on label value
-    graph.nodes.forEach(node => {
-        node.color = nodeConnectionAsColor(node.isConnected);
-        node.title = (node.id + ', ' + node.isConnected).toString();
-    });
+    useEffect(() => {
+        console.log(data);
+        setOptions([
+            {
+                members: ['node-6', 'node-1', 'node-3'],
+            },
+            {
+                members: ['node-5', 'node-4']
+            }
+        ]);
+    }, []);
 
     return (
-        <div className={'h-full w-full'}>
-            <Graph
-                graph={graph}
-                options={options}
-                events={events}
-                // getNetwork={(network) => {
-                //     //  if you want access to vis.js network api you can set the state in a parent component using this property
-                // }}
-                // edgeRenderer={customEdgeRenderer}
-                // nodeRenderer={customNodeRenderer}
-            />
+        <div className={'w-full h-full'}>
+            <Graphin style={{ background: 'black' }} data={data} layout={layout} defaultNode={defaultNode} modes={modes} {...graphinProps}>
+                <Hull options={hullOptions} />
+                <Tooltip bindType="node">
+                    {(node: any) => {
+                        return <div style={{ backgroundColor: 'rgba(255,255,255,0.8)', padding: '4px' }}>{node.id}</div>;
+                    }}
+                </Tooltip>
+                <Tooltip bindType="edge">
+                    {(edge: any) => {
+                        return <div style={{ backgroundColor: 'rgba(255,255,255,0.8)', padding: '4px' }}>Edge Label Value: {edge.model.tooltip}</div>;
+                    }}
+                </Tooltip>
+            </Graphin>
         </div>
     );
 }
