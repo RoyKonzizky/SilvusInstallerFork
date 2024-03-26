@@ -17,9 +17,9 @@ function PresetsButtonModal(props: IPresetsButtonModalProps) {
 
     return (
         <Modal isOpen={props.modalIsOpen} shouldCloseOnOverlayClick={false}
-               className={`text-white text-3xl text-center flex justify-center items-center h-screen bg-black`}
+               className={`text-white text-3xl text-center flex justify-center items-center h-screen bg-[#000000]/75`}
         >
-            <div>
+            <div className="bg-black p-4">
                 <div className="mb-2">Choose your Preset</div>
                 {presets.map((preset, index) => (
                     <div key={index} className="flex texl-3xl w-[400px]">
