@@ -8,8 +8,9 @@ import {Settings} from "./components/Pages/Settings/Settings.tsx";
 import {Paths} from "./components/Paths.ts";
 import {Provider} from "react-redux";
 import store from "./redux/store.ts";
+import {Dashboard} from "./components/Pages/Dashboard/Dashboard.tsx";
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
     {
         path: Paths.Main,
         element: <><Sidebar/><Settings/></>,
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
         path: Paths.Gallery,
         element: <><Sidebar/>GALLERY</>,
     },
+    {
+        path: Paths.Dashboard,
+        element: <><Sidebar/><Dashboard/></>,
+    }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

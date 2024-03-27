@@ -3,5 +3,6 @@ export enum Paths {
     Topology = "/topology",
     Photo = "/photo",
     Video = "/video",
-    Gallery = "/gallery"
+    Gallery = "/gallery",
+    Dashboard = "/dashboard"
 }

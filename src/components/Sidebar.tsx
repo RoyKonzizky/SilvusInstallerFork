@@ -7,6 +7,7 @@ import RecordingsLogo from '../assets/recordings.svg';
 import CameraLogo from '../assets/camera.svg';
 import FilmmakerLogo from '../assets/filmmaker.svg';
 import GalleryLogo from '../assets/gallery.svg';
+import DashboardLogo from '../assets/dashboard.svg';
 import {Paths} from "./Paths.ts";
 
 function Sidebar() {
@@ -23,7 +24,9 @@ function Sidebar() {
             <NavigatorButton href="" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                              text="" file={ExpandCollapseLogo}
                              onClick={() => setSandwichCollapsed(!isSandwichCollapsed)}/>
-            <div className='mt-[10vh]'>
+            <NavigatorButton href={Paths.Dashboard} isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
+                             text="לוח" file={DashboardLogo}/>
+            <div className='mt-[5vh]'>
                 <NavigatorButton href={Paths.Main} isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                                  text="הגדרות" file={SettingsLogo}/>
                 <NavigatorButton href={Paths.Topology} isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
