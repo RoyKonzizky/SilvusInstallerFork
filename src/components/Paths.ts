@@ -1,7 +1,7 @@
 export enum Paths {
     Main = "/",
     Topology = "/topology",
-    Photo = "/photo",
+    Camera = "/camera",
     Video = "/video",
     Gallery = "/gallery"
 }
