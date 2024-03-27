@@ -1,20 +1,23 @@
-import Graphin, {Components, Layout, Utils} from '@antv/graphin';
+import Graphin, {Components, Layout} from '@antv/graphin';
 import {useEffect, useState} from "react";
 import {HullCfg} from "@antv/graphin/lib/components/Hull";
+import {GraphinNode, GraphinEdge, GraphinData} from "@antv/graphin/es/typings/type";
 
-const { Hull, Tooltip } = Components;
+const {Hull} = Components;
 
 export function Topology() {
-
-    const [hullOptions, setOptions] =  useState<(HullCfg)[]>([]);
+    const [hullOptions, setOptions] = useState<(HullCfg)[]>([]);
 
     const generateRandomInt = (min: number, max: number) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    const data = Utils.mock(1).circle().graphin();
+    const data: GraphinData = {nodes: [], edges: []};
+
     const layout: Layout = {
-        type: 'force2',
+        type: "dagre",
+        // type: 'circular',
+        // type: 'graphin-force',
         // center: [200, 200],
         linkDistance: 20,
         nodeStrength: 1000,
@@ -22,7 +25,7 @@ export function Topology() {
         nodeSize: 40,
     };
 
-    for (let i = 1; i < 26; i++) {
+    for (let i = 0; i < 25; i++) {
         data.nodes.push({
             id: `node-${i}`,
             style: {
@@ -37,7 +40,7 @@ export function Topology() {
                     size: 50,
                 },
             },
-        });
+        } as GraphinNode);
     }
 
     for (let i = 0; i < data.nodes.length; i++) {
@@ -70,7 +73,7 @@ export function Topology() {
                     lineWidth: 6
                 },
             },
-        });
+        } as GraphinEdge);
     }
 
     const defaultNode = {
@@ -91,14 +94,14 @@ export function Topology() {
     };
 
     const modes = {
-        default: ['drag-node', 'drag-canvas', 'zoom-canvas'],
+        default: ['drag-node', 'drag-canvas', 'zoom-canvas', 'click-select'],
     };
 
     useEffect(() => {
         console.log(data);
         setOptions([
             {
-                members: ['node-6', 'node-1', 'node-3'],
+                members: ['node-2', 'node-1', 'node-3'],
             },
             {
                 members: ['node-5', 'node-4']
@@ -108,18 +111,10 @@ export function Topology() {
 
     return (
         <div className={'w-full h-full'}>
-            <Graphin style={{ background: 'black' }} data={data} layout={layout} defaultNode={defaultNode} modes={modes} {...graphinProps}>
-                <Hull options={hullOptions} />
-                <Tooltip bindType="node">
-                    {(node: any) => {
-                        return <div style={{ backgroundColor: 'rgba(255,255,255,0.8)', padding: '4px' }}>{node.id}</div>;
-                    }}
-                </Tooltip>
-                <Tooltip bindType="edge">
-                    {(edge: any) => {
-                        return <div style={{ backgroundColor: 'rgba(255,255,255,0.8)', padding: '4px' }}>Edge Label Value: {edge.model.tooltip}</div>;
-                    }}
-                </Tooltip>
+            <Graphin style={{background: 'black'}} data={data} layout={layout}
+                     defaultNode={defaultNode}
+                     modes={modes} {...graphinProps}>
+                <Hull options={hullOptions}/>
             </Graphin>
         </div>
     );
