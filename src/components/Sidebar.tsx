@@ -34,10 +34,10 @@ function Sidebar() {
                 <NavigatorButton
                     href="" isSandwichCollapsed={isSandwichCollapsed} isSubsection={false}
                     text="הקלטות" file={RecordingsLogo}
-                    possibleHrefSubsections={[Paths.Photo, Paths.Video, Paths.Gallery]}
+                    possibleHrefSubsections={[Paths.Camera, Paths.Video, Paths.Gallery]}
                     subsections={
                         <>
-                            <NavigatorButton href={Paths.Photo} isSandwichCollapsed={isSandwichCollapsed}
+                            <NavigatorButton href={Paths.Camera} isSandwichCollapsed={isSandwichCollapsed}
                                              text="מצלמה" file={CameraLogo} isSubsection={true}/>
                             <NavigatorButton href={Paths.Video} isSandwichCollapsed={isSandwichCollapsed}
                                              text="הסרטה" file={FilmmakerLogo} isSubsection={true}/>

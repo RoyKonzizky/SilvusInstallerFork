@@ -7,6 +7,7 @@ import {Topology} from "./components/Pages/Topology/Topology.tsx";
 import {Settings} from "./components/Pages/Settings/Settings.tsx";
 import {Paths} from "./components/Paths.ts";
 import {Provider} from "react-redux";
+import {Camera} from "./components/Pages/Camera/Camera.tsx";
 import store from "./redux/store.ts";
 import {Dashboard} from "./components/Pages/Dashboard/Dashboard.tsx";
 
@@ -20,8 +21,8 @@ export const router = createBrowserRouter([
         element: <><Sidebar/><Topology/></>,
     },
     {
-        path: Paths.Photo,
-        element: <><Sidebar/>PHOTO</>,
+        path: Paths.Camera,
+        element: <><Sidebar/><Camera/></>,
     },
     {
         path: Paths.Video,
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <Provider store={store}>
-            <div className="text-center text-3xl bg-black text-white h-screen w-screen">
+            <div className="flex text-center justify-center text-3xl bg-black text-white h-screen w-screen">
                 <RouterProvider router={router}/>
             </div>
         </Provider>
