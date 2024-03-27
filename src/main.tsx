@@ -13,7 +13,7 @@ import {Dashboard} from "./components/Pages/Dashboard/Dashboard.tsx";
 export const router = createBrowserRouter([
     {
         path: Paths.Main,
-        element: <><Sidebar/><Settings/></>,
+        element: <><Sidebar/><Settings className="text-3xl"/></>,
     },
     {
         path: Paths.Topology,
@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <Provider store={store}>
-            <div className="text-center text-4xl bg-black text-white h-screen w-screen">
+            <div className="text-center text-3xl bg-black text-white h-screen w-screen">
                 <RouterProvider router={router}/>
             </div>
         </Provider>

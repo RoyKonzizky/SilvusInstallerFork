@@ -2,8 +2,8 @@ import {ISettingInputProps} from "./ISettingInputProps.ts";
 
 function SettingInput(props: ISettingInputProps) {
     return (
-        <div className={`flex ${(props.type === "text" || props.type === "number") && "bg-[#303030]/70"} p-3 rounded-xl`}>
-            {(props.type === "text" || props.type === "number") && <label className="w-[300px] flex items-center text-start">{props.label}</label>}
+        <div className={`flex ${(props.type === "text" || props.type === "number") && "bg-[#303030]/70 w-[50%]"} p-3 rounded-xl`}>
+            {(props.type === "text" || props.type === "number") && <label className="w-[60%] flex items-center text-start">{props.label}</label>}
             <input type={(props.type === "number") ? "text" : props.type} value={props.type === "button" ? props.label : props.value}
                    onClick={() => {
                        if (props.onClick) props.onClick();
@@ -19,7 +19,7 @@ function SettingInput(props: ISettingInputProps) {
                    }}
                    inputMode={props.type === "number" ? "numeric" : "text"}
                    className={`text-center rounded-xl bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 ${props.type === "text" || props.type === "number"
-                       ? "w-[250px] text-start p-2"
+                       ? "w-[40%] text-start p-2"
                        : (props.type === "button" && "px-4 py-3")}`}
             />
         </div>

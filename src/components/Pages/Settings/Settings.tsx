@@ -5,14 +5,14 @@ import * as SettingsSlice from "../../../redux/Settings/settlingsSlice.ts";
 import {Input, isInputWithOnClick, isInputWithValue} from "./InputTypes/Input.ts";
 import {RootState} from "../../../redux/store.ts";
 import PresetsButton from "./PresetsButton/PresetsButton.tsx";
+import {ISettingsProps} from "./ISettingsProps.ts";
 
-export function Settings() {
+export function Settings(props: ISettingsProps) {
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
     const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth).toString());
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
     const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower).toString());
     const dispatch = useDispatch();
-
     const settingInputs: Input[][] = [
         [
             {type: "number", label: "Frequency (MHz)", value: frequency, setValue: setFrequency},
@@ -39,9 +39,9 @@ export function Settings() {
     ];
 
     return (
-        <div className="text-3xl h-screen flex flex-col justify-center items-center gap-y-8">
+        <div className={`${props.className !== "text-xs" && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
             {settingInputs.map((inputs, index) => (
-                <div key={index} className="flex gap-x-8">
+                <div key={index} className="flex gap-x-8 w-[50%]">
                     {inputs.map((input, idx) => (
                         <SettingInput
                             key={idx} type={input.type} label={input.label}
