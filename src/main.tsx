@@ -11,7 +11,7 @@ import {Camera} from "./components/Pages/Camera/Camera.tsx";
 import store from "./redux/store.ts";
 import {Dashboard} from "./components/Pages/Dashboard/Dashboard.tsx";
 
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
     {
         path: Paths.Main,
         element: <><Sidebar/><Settings className="text-3xl"/></>,
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <Provider store={store}>
-            <div className="flex text-center justify-center text-3xl bg-black text-white h-screen w-screen">
+            <div className="text-center text-3xl bg-black text-white h-screen w-screen">
                 <RouterProvider router={router}/>
             </div>
         </Provider>
