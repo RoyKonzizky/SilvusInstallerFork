@@ -7,12 +7,10 @@ export function Dashboard() {
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-semibold mb-4">Dashboard</h1>
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-2 gap-4">
                 {elements.map((element, index) => (
-                    <div key={index} className="bg-gray-900 text-xs">
-                        <div>
-                            {element}
-                        </div>
+                    <div key={index} className="bg-gray-900 text-xs p-3 rounded-xl">
+                        {element}
                     </div>
                 ))}
             </div>
