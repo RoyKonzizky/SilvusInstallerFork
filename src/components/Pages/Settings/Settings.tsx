@@ -39,7 +39,7 @@ export function Settings(props: ISettingsProps) {
     ];
 
     return (
-        <div className={`${props.className !== "text-xs" && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
+        <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
             {settingInputs.map((inputs, index) => (
                 <div key={index} className="flex gap-x-8 w-[50%]">
                     {inputs.map((input, idx) => (

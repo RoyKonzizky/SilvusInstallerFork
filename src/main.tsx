@@ -14,11 +14,11 @@ import {Dashboard} from "./components/Pages/Dashboard/Dashboard.tsx";
 const router = createBrowserRouter([
     {
         path: Paths.Main,
-        element: <><Sidebar/><Settings className="text-3xl"/></>,
+        element: <><Sidebar/><Settings isSmaller={false}/></>,
     },
     {
         path: Paths.Topology,
-        element: <><Sidebar/><Topology/></>,
+        element: <><Sidebar/><Topology isSmaller={false}/></>,
     },
     {
         path: Paths.Camera,

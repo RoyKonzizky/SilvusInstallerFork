@@ -1,3 +1,3 @@
 export interface ISettingsProps {
-    className: string;
+    isSmaller: boolean;
 }

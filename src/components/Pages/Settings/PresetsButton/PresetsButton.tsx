@@ -7,13 +7,13 @@ function PresetsButton() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     return (
-        <>
-            <div className="absolute bottom-1 left-1 cursor-pointer"
+        <div className="">
+            <div className="flex items-start justify-start absolute bottom-1 left-1 cursor-pointer"
                  onClick={() => setModalIsOpen(true)}>
                 <BottomCircle radius={40} image={PresetsImage} bgColor='#303030'/>
             </div>
             <PresetsButtonModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
-        </>
+        </div>
     );
 }
 

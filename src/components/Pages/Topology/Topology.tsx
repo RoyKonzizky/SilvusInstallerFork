@@ -1,5 +1,6 @@
 import {darkTheme, GraphCanvas, GraphCanvasRef, InternalGraphEdge, InternalGraphNode} from 'reagraph';
 import {useRef, useState} from "react";
+import {ITopologyProps} from "./ITopologyProps.ts";
 
 const nodes = [
     {
@@ -37,7 +38,7 @@ const edges = [
     },
 ];
 
-export function Topology() {
+export function Topology(props: ITopologyProps) {
     const graphRef = useRef<GraphCanvasRef | null>(null);
     const [contextMenuData, setContextMenuData] =
         useState<InternalGraphNode | null | InternalGraphEdge>(null);
@@ -59,7 +60,7 @@ export function Topology() {
     };
 
     return (
-        <div className="block absolute w-full h-full border border-black bg-black overflow-hidden">
+        <div className={`${props.isSmaller ? "w-[40%] h-[40%]" : "w-full h-full border border-black bg-black"} block absolute overflow-hidden`}>
             <GraphCanvas
                 theme={customTheme}
                 ref={graphRef}
