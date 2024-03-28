@@ -1,45 +1,34 @@
-import {useEffect, useState} from 'react';
+import {useState, /* useEffect */} from 'react';
+//import {Discovery} from 'onvif';
 
 export function Camera() {
-    const [videoUrl, setVideoUrl] = useState<string | null>(null);
-
+    const [devices, /*setDevices*/] = useState<any[]>([]);
+/*
     useEffect(() => {
-        const socket = new WebSocket('https://www.youtube.com/watch?v=41OKbAP3BgA'); // should be ws link, but I don't have one, so I put https link lol
-
-        socket.onopen = () => {
-            console.log('Connected to RTSP server');
-        };
-
-        socket.onmessage = (event) => {
-            // Handle incoming video data
-            const videoData = event.data;
-            // For simplicity, assuming the video data is a URL pointing to a video file
-            setVideoUrl(videoData);
-        };
-
-        socket.onclose = () => {
-            console.log('Connection closed');
-        };
-
-        socket.onerror = (error) => {
-            console.error('Socket error:', error);
-        };
-
-        return () => {
-            socket.close();
-        };
+        // Discover ONVIF devices on the network
+        Discovery.probe((err: any, devices: any[]) => {
+            if (err) {
+                console.error('Error discovering ONVIF devices:', err);
+            } else {
+                console.log('Discovered ONVIF devices:', devices);
+                // Perform further actions, such as fetching streams or controlling PTZ
+            }
+        });
     }, []);
-
+*/
     return (
         <div>
-            {videoUrl ? (
-                <video controls>
-                    <source src={videoUrl} type="video/mp4"/>
-                    Your browser does not support the video tag.
-                </video>
-            ) : (
-                <p>Waiting for video stream...</p>
-            )}
+            <h2>Discovered Devices</h2>
+            <ul>
+                {devices.map((device, index) => (
+                    <li key={index}>
+                        {/* Render device information */}
+                        <div>Name: {device.name}</div>
+                        <div>Manufacturer: {device.manufacturer}</div>
+                        {/* Add more device information as needed */}
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }

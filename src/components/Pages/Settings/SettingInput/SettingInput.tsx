@@ -18,9 +18,9 @@ function SettingInput(props: ISettingInputProps) {
                            event.preventDefault();
                    }}
                    inputMode={props.type === "number" ? "numeric" : "text"}
-                   className={`text-center rounded-xl bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 ${props.type === "text" || props.type === "number"
-                       ? "w-[40%] text-start p-2"
-                       : (props.type === "button" && "px-4 py-3")}`}
+                   className={`bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 ${props.type === "text" || props.type === "number"
+                       ? "w-[40%] text-start p-2 rounded-xl"
+                       : (props.type === "button" && "inline-block px-6 py-3 font-semibold rounded-full border-3 border-teal-500 text-teal-500 transition duration-150 ease-in-out")}`}
             />
         </div>
     );
