@@ -28,7 +28,7 @@ function PresetsButtonModal(props: IPresetsButtonModalProps) {
                         <div className="flex items-center">{preset}</div>
                     </div>
                 ))}
-                <input type="button" className="text-center mt-2 px-4 py-3 rounded-xl cursor-pointer bg-gray-800"
+                <input type="button" className="text-center mt-2 cursor-pointer bg-gray-800 inline-block px-6 py-3 font-semibold rounded-full border border-transparent border-3 border-teal-500 text-teal-500 transition duration-150 ease-in-out"
                        onClick={handleCloseModal} value="Save"/>
             </div>
         </Modal>

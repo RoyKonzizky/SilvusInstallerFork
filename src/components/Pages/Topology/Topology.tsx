@@ -60,7 +60,7 @@ export function Topology(props: ITopologyProps) {
     };
 
     return (
-        <div className={`${props.isSmaller ? "w-[30%] h-[30%]" : "w-full h-full border border-black bg-black"} block absolute overflow-hidden`}>
+        <div className={`${props.isSmaller ? "w-[35%] h-[35%]" : "w-full h-full border border-black bg-black"} block absolute overflow-hidden`}>
             <GraphCanvas
                 theme={customTheme}
                 ref={graphRef}
