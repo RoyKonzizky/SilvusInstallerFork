@@ -94,8 +94,49 @@ export function Topology() {
     };
 
     const modes = {
-        default: ['drag-node', 'drag-canvas', 'zoom-canvas', 'click-select'],
+        default: ['drag-node', 'drag-canvas', 'zoom-canvas', 'click-select',
+            {
+                type: 'tooltip',
+                formatText(model) {
+                    const text = 'ID: ' + model.id;
+                        // + '<br/> class: ' + model.class;
+                    return text;
+                },
+                shouldUpdate: e => {
+                    return true;
+                }
+            },
+            {
+                type: 'edge-tooltip',
+                formatText(model) {
+                    const text = 'source: ' + model.source
+                        + '<br/> target: ' + model.target;
+                        // + '<br/> weight: ' + model.weight;
+                    return text;
+                },
+                shouldUpdate: e => {
+                    return true;
+                }
+            }
+        ]
     };
+
+    // graph.on('node:click', e => {
+    //     const clickNodes = graph.findAllByState('node', 'click');
+    //     clickNodes.forEach(cn => {
+    //         graph.setItemState(cn, 'click', false);
+    //     });
+    //     const nodeItem = e.item;
+    //     graph.setItemState(nodeItem, 'click', true);
+    // });
+    // graph.on('edge:click', e => {
+    //     const clickEdges = graph.findAllByState('edge', 'click');
+    //     clickEdges.forEach(ce => {
+    //         graph.setItemState(ce, 'click', false);
+    //     });
+    //     const edgeItem = e.item;
+    //     graph.setItemState(edgeItem, 'click', true);
+    // });
 
     useEffect(() => {
         console.log(data);
