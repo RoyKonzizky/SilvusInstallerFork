@@ -11,8 +11,10 @@ export function Dashboard() {
             <h1 className="text-3xl font-semibold mb-4">Dashboard</h1>
             <div className={`grid grid-cols-2 gap-4`}>
                 {elements.map((element, index) => (
-                    <div key={index}
-                         className={`bg-gray-900 text-xs p-3 rounded-xl ${isOddLength && index === elements.length - 1 ? 'col-span-2' : ''}`}>
+                    <div
+                        key={index}
+                        className={`bg-gray-900 text-xs p-3 rounded-xl ${isOddLength && index === elements.length - 1 ? 'col-span-2' : ''}`}
+                    >
                         {element}
                     </div>
                 ))}
