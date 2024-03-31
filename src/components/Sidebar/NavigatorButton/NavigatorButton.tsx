@@ -1,12 +1,15 @@
 import {INavigatorButtonProps} from "./INavigatorButtonProps.ts";
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../redux/store.ts";
 
 function NavigatorButton(props: INavigatorButtonProps) {
     const navigate = useNavigate(); // Get the navigate function from the router context
     const { origin, href } = window.location;
     const [mirroredImage, setMirroredImage] = useState('');
     const [isPressed, setPressed] = useState(false);
+    const isSidebarCollapsed = useSelector((state: RootState) => state.collapsing.isSidebarCollapsed);
 
     function hrefCheck() {
         return href === origin + props.href || (props.subsections && props.possibleHrefSubsections?.some(subsection => href === `${origin}${subsection}`));
@@ -18,7 +21,7 @@ function NavigatorButton(props: INavigatorButtonProps) {
                 setPressed(!isPressed);
                 if (props.onClick) {
                     props.onClick();
-                    setMirroredImage(props.isSandwichCollapsed ? 'scale-x-[-1]' : '')
+                    setMirroredImage(isSidebarCollapsed ? 'scale-x-[-1]' : '')
                 }
                 if (props.href !== "") {
                     navigate(props.href);
@@ -31,7 +34,7 @@ function NavigatorButton(props: INavigatorButtonProps) {
                 : `${hrefCheck() ? 'bg-gray-600' : `${isPressed ? 'bg-gray-600' : 'bg-[#7A7A7A]'}`} text-black text-3xl p-3`}`}
         >
             <div className="flex justify-center items-center">
-                {!props.isSandwichCollapsed && props.text &&
+                {!isSidebarCollapsed && props.text &&
                     <p className="w-[200px]">
                         {props.text}
                     </p>

@@ -2,13 +2,14 @@ import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
 import CameraLogo from "../../assets/camera.svg";
 import FilmmakerLogo from "../../assets/filmmaker.svg";
 import GalleryLogo from "../../assets/gallery.svg";
+import {Paths} from "../Paths.ts";
 
 function SubsectionsOfRecordingsNavigatorButton() {
     return (
         <>
-            <NavigatorButton href="/camera" text="מצלמה" file={CameraLogo} isSubsection={true}/>
-            <NavigatorButton href="/filmmaker" text="הסרטה" file={FilmmakerLogo} isSubsection={true}/>
-            <NavigatorButton href="/gallery" text="גלריה" file={GalleryLogo} isSubsection={true}/>
+            <NavigatorButton href={Paths.Camera} text="מצלמה" file={CameraLogo} isSubsection={true}/>
+            <NavigatorButton href={Paths.Video} text="הסרטה" file={FilmmakerLogo} isSubsection={true}/>
+            <NavigatorButton href={Paths.Gallery} text="גלריה" file={GalleryLogo} isSubsection={true}/>
         </>
     );
 }

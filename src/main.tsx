@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-import Sidebar from "./components/Sidebar.tsx";
+import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
 import {Topology} from "./components/Pages/Topology/Topology.tsx";
 import {Settings} from "./components/Pages/Settings/Settings.tsx";
 import {Paths} from "./components/Paths.ts";
