@@ -1,32 +1,3 @@
-// import { useEffect, useRef } from 'react';
-// import { createManagedDeviceInNode } from 'onvif-rx';
-//
-// export function Camera() {
-//     const videoRef = useRef<HTMLVideoElement>(null);
-//
-//     useEffect(() => {
-//         const device = createManagedDeviceInNode({
-//             deviceUrl: 'http://[172.20.239.21]/onvif/media_service',
-//             password: 'admin',
-//             username: 'admin',
-//         });
-//
-//         device.api.Device.GetUsers()
-//             .toPromise()
-//             .then(res=> {
-//                 res.match({ // results are wrapped in a managed object for safer processing
-//                     ok: success => console.log(success.json), // successful response object
-//                     fail: railure => console.log(railure.status, railure.statusMessage) // request failure object
-//                 })
-//             })
-//     }, []);
-//
-//     return (
-//         <div className="flex justify-center h-full ml-[5%] w-[80%]">
-//             <video controls autoPlay ref={videoRef}/>
-//         </div>
-//     );
-// }
 import {useEffect, useRef} from 'react';
 import {useSelector} from "react-redux";
 import {RootState} from "../../../redux/store.ts";
