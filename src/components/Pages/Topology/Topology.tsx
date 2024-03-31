@@ -1,4 +1,4 @@
-import Graphin, { Components, Layout } from '@antv/graphin';
+import Graphin, {Components, Layout} from '@antv/graphin';
 import { useEffect, useState } from "react";
 import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import { GraphinData } from "@antv/graphin/es/typings/type";
@@ -6,24 +6,17 @@ import { GraphinData } from "@antv/graphin/es/typings/type";
 const { Hull } = Components;
 
 export function Topology() {
-    const [hullOptions, setOptions] = useState<HullCfg[]>([]);
+    const [hullOptions, setHullOptions] = useState<HullCfg[]>([]);
 
     const generateRandomInt = (min: number, max: number) => {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     };
 
-    const data: GraphinData = { nodes: [], edges: [] };
-
-    const layout: Layout = {
-        type: "dagre",
-        linkDistance: 20,
-        nodeStrength: 1000,
-        edgeStrength: 200,
-        nodeSize: 40,
-    };
+    const nodeArr = [];
+    const edgeArr = [];
 
     for (let i = 0; i < 25; i++) {
-        data.nodes.push({
+        nodeArr.push({
             id: `node-${i}`,
             style: {
                 label: {
@@ -40,9 +33,9 @@ export function Topology() {
         });
     }
 
-    for (let i = 0; i < data.nodes.length; i++) {
-        const source = data.nodes[i].id;
-        const target = data.nodes[generateRandomInt(0, data.nodes.length - 1)].id;
+    for (let i = 0; i < nodeArr.length; i++) {
+        const source = nodeArr[i].id;
+        const target = nodeArr[generateRandomInt(0, nodeArr.length - 1)].id;
         const labelValue = generateRandomInt(0, 35);
         let color;
         if (labelValue < 10) {
@@ -53,7 +46,7 @@ export function Topology() {
             color = 'yellow';
         }
 
-        data.edges.push({
+        edgeArr.push({
             source,
             target,
             label: `${labelValue}`,
@@ -74,6 +67,16 @@ export function Topology() {
         });
     }
 
+    const data: GraphinData = { nodes: nodeArr, edges: edgeArr };
+
+    const layout: Layout = {
+        type: "dagre",
+        linkDistance: 20,
+        nodeStrength: 1000,
+        edgeStrength: 200,
+        nodeSize: 40,
+    };
+
     const defaultNode = {
         defaultNode: {
             style: {
@@ -92,15 +95,12 @@ export function Topology() {
     };
 
     const modes = {
-        default: ['drag-node', 'drag-canvas', 'zoom-canvas', 'click-select',
+        default: ['drag-node', 'drag-canvas', 'zoom-canvas',
             {
                 type: 'tooltip',
                 formatText(model: { id: string; }) {
                     return 'Id: ' + model.id;
                 },
-                shouldUpdate: e => {
-                    return true;
-                }
             },
             {
                 type: 'edge-tooltip',
@@ -109,21 +109,28 @@ export function Topology() {
                         '<br/> Target: ' + model.target +
                         '<br/> Label: ' + model.label;
                 },
-                shouldUpdate: e => {
-                    return true;
-                }
+            },
+            {
+                type: 'click-select',
+                selectNode: true,
+                selectEdge: true,
+                formatText(model: { source: string; target: string; label: string; }) {
+                    return 'Source: ' + model.source +
+                        '<br/> Target: ' + model.target +
+                        '<br/> Label: ' + model.label;
+                },
             }
         ]
     };
 
     useEffect(() => {
         console.log(data);
-        setOptions([
+        setHullOptions([
             {
                 members: ['node-2', 'node-1', 'node-3'],
             },
             {
-                members: ['node-5', 'node-4']
+                members: ['node-5', 'node-4'],
             }
         ]);
     }, []);
@@ -132,7 +139,8 @@ export function Topology() {
         <div className={'w-full h-full'}>
             <Graphin style={{ background: 'black' }} data={data} layout={layout}
                      defaultNode={defaultNode}
-                     modes={modes} {...graphinProps}>
+                     modes={modes}
+                     {...graphinProps}>
                 <Hull options={hullOptions} />
             </Graphin>
         </div>
