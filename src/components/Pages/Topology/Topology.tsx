@@ -1,9 +1,10 @@
 import Graphin, {Components, Layout} from '@antv/graphin';
-import { useEffect, useState } from "react";
-import { HullCfg } from "@antv/graphin/lib/components/Hull";
-import { GraphinData } from "@antv/graphin/es/typings/type";
+import {useEffect, useState} from "react";
+import {HullCfg} from "@antv/graphin/lib/components/Hull";
+import {GraphinData} from "@antv/graphin/es/typings/type";
+import {GraphinEdge} from "@antv/graphin/lib/typings/type";
 
-const { Hull } = Components;
+const {Hull} = Components;
 
 export function Topology() {
     const [hullOptions, setHullOptions] = useState<HullCfg[]>([]);
@@ -67,10 +68,10 @@ export function Topology() {
         });
     }
 
-    const data: GraphinData = { nodes: nodeArr, edges: edgeArr };
+    const data: GraphinData = {nodes: nodeArr, edges: edgeArr};
 
     const layout: Layout = {
-        type: "dagre",
+        type: "force2",
         linkDistance: 20,
         nodeStrength: 1000,
         edgeStrength: 200,
@@ -94,6 +95,24 @@ export function Topology() {
         },
     };
 
+    const handleClick = (event: {
+        item: { getType: () => string; getModel: () => { id: string; label?: string } }
+    }) => {
+        const {item} = event;
+        const type = item.getType();
+        const model = item.getModel();
+
+        if (type === 'node') {
+            // Show tooltip for node
+            console.log('Clicked Node:', model.id);
+            // Implement your tooltip logic here
+        } else if (type === 'edge') {
+            // Show tooltip for edge
+            console.log('Clicked Edge:', `${(model as unknown as GraphinEdge).source + ' -> ' + (model as unknown as GraphinEdge).target}`);
+            // Implement your tooltip logic here
+        }
+    };
+
     const modes = {
         default: ['drag-node', 'drag-canvas', 'zoom-canvas',
             {
@@ -114,14 +133,11 @@ export function Topology() {
                 type: 'click-select',
                 selectNode: true,
                 selectEdge: true,
-                formatText(model: { source: string; target: string; label: string; }) {
-                    return 'Source: ' + model.source +
-                        '<br/> Target: ' + model.target +
-                        '<br/> Label: ' + model.label;
-                },
-            }
+                onClick: handleClick,
+            },
         ]
     };
+
 
     useEffect(() => {
         console.log(data);
@@ -137,11 +153,11 @@ export function Topology() {
 
     return (
         <div className={'w-full h-full'}>
-            <Graphin style={{ background: 'black' }} data={data} layout={layout}
+            <Graphin style={{background: 'black'}} data={data} layout={layout}
                      defaultNode={defaultNode}
                      modes={modes}
                      {...graphinProps}>
-                <Hull options={hullOptions} />
+                <Hull options={hullOptions}/>
             </Graphin>
         </div>
     );
