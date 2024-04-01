@@ -4,7 +4,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as SettingsSlice from "../../../redux/Settings/settlingsSlice.ts";
 import {Input, isInputWithOnClick, isInputWithValue} from "./InputTypes/Input.ts";
 import {RootState} from "../../../redux/store.ts";
-import PresetsButton from "./PresetsButton/PresetsButton.tsx";
 import {ISettingsProps} from "./ISettingsProps.ts";
 
 export function Settings(props: ISettingsProps) {
@@ -52,7 +51,6 @@ export function Settings(props: ISettingsProps) {
                     ))}
                 </div>
             ))}
-            <PresetsButton/>
         </div>
     );
 }

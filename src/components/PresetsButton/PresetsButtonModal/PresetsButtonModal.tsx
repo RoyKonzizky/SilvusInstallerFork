@@ -2,8 +2,8 @@ import {useState} from "react";
 import Modal from "react-modal";
 import {useDispatch, useSelector} from "react-redux";
 import {IPresetsButtonModalProps} from "./IPresetsButtonModalProps.ts";
-import {changeChosenSpectrum} from "../../../../../redux/Presets/presetsSlice.ts";
-import {RootState} from "../../../../../redux/store.ts";
+import {changeChosenSpectrum} from "../../../redux/Presets/presetsSlice.ts";
+import {RootState} from "../../../redux/store.ts";
 
 function PresetsButtonModal(props: IPresetsButtonModalProps) {
     const dispatch = useDispatch();
