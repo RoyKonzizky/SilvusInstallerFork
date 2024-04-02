@@ -7,7 +7,7 @@ export function Camera() {
     const isSidebarCollapsed = useSelector((state: RootState) => state.collapsing.isSidebarCollapsed);
 
     useEffect(() => {
-        const socket = new WebSocket('ws://172.20.239.21:80');
+        const socket = new WebSocket('ws://192.168.1.88:80');
 
         socket.onopen = () => {
             console.log('Connected to RTSP server');

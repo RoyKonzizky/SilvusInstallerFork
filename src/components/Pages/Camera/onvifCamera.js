@@ -2,7 +2,7 @@ var http= require('http');
 var Cam = require('onvif').Cam;
 
 new Cam({
-    hostname: '172.20.239.21',
+    hostname: '192.168.1.88',
     username: 'admin',
     password: 'admin'
 }, function(err) {
