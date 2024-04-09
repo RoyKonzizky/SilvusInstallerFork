@@ -133,6 +133,9 @@ export function Topology() {
                 type: 'click-select',
                 selectNode: true,
                 selectEdge: true,
+            },
+            {
+                type: 'click-select',
                 onClick: handleClick,
             },
         ]
