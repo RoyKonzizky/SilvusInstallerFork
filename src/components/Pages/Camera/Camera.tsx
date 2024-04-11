@@ -1,41 +1,20 @@
-import {useEffect, useRef} from 'react';
 import {useSelector} from "react-redux";
 import {RootState} from "../../../redux/store.ts";
+import ReactPlayer from "react-player";
 
 export function Camera() {
-    const videoRef = useRef<HTMLVideoElement>(null);
     const isSidebarCollapsed = useSelector((state: RootState) => state.collapsing.isSidebarCollapsed);
-
-    useEffect(() => {
-        const socket = new WebSocket('ws://192.168.1.88:80');
-
-        socket.onopen = () => {
-            console.log('Connected to RTSP server');
-        };
-
-        socket.onmessage = (event) => {
-            const videoData = event.data;
-            if (videoRef.current) {
-                videoRef.current.srcObject = new MediaStream([videoData]);
-            }
-        };
-
-        socket.onclose = () => {
-            console.log('Connection closed');
-        };
-
-        socket.onerror = (error) => {
-            console.error('Socket error:', error);
-        };
-
-        return () => {
-            socket.close();
-        };
-    }, []);
 
     return (
         <div className={`flex justify-center h-full ${isSidebarCollapsed ? "w-[94%]" : "w-[84%]"}`}>
-            <video controls autoPlay ref={videoRef}/>
+            {/* Change the URL according to the real RTSP link. The RTSP server is managed in the backend */}
+            <ReactPlayer
+                url="rtsp://localhost:8554/streamName"
+                playing={true}
+                controls={true}
+                width="auto"
+                height="auto"
+            />
         </div>
     );
 }
