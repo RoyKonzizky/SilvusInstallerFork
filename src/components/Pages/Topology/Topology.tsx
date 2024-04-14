@@ -1,164 +1,144 @@
-import Graphin, {Components, Layout} from '@antv/graphin';
-import {useEffect, useState} from "react";
-import {HullCfg} from "@antv/graphin/lib/components/Hull";
-import {GraphinData} from "@antv/graphin/es/typings/type";
-import {GraphinEdge} from "@antv/graphin/lib/typings/type";
-
-const {Hull} = Components;
+import {useEffect, useRef} from 'react';
+import G6, {EdgeConfig, Graph, Item} from '@antv/g6';
+import {NodeConfig} from '@antv/g6-core/lib/types';
 
 export function Topology() {
-    const [hullOptions, setHullOptions] = useState<HullCfg[]>([]);
-
-    const generateRandomInt = (min: number, max: number) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
-    const nodeArr = [];
-    const edgeArr = [];
-
-    for (let i = 0; i < 25; i++) {
-        nodeArr.push({
-            id: `node-${i}`,
-            style: {
-                label: {
-                    value: `Node ${i}`,
-                    fill: '#FFFFFF',
-                },
-                keyshape: {
-                    fill: '#87ff00',
-                    stroke: '#87ff00',
-                    fillOpacity: 1,
-                    size: 50,
-                },
-            },
-        });
-    }
-
-    for (let i = 0; i < nodeArr.length; i++) {
-        const source = nodeArr[i].id;
-        const target = nodeArr[generateRandomInt(0, nodeArr.length - 1)].id;
-        const labelValue = generateRandomInt(0, 35);
-        let color;
-        if (labelValue < 10) {
-            color = 'red';
-        } else if (labelValue > 30) {
-            color = 'green';
-        } else {
-            color = 'yellow';
-        }
-
-        edgeArr.push({
-            source,
-            target,
-            label: `${labelValue}`,
-            style: {
-                label: {
-                    value: `${labelValue}`,
-                    fill: color,
-                    fontSize: 30
-                },
-                keyshape: {
-                    endArrow: {
-                        path: '',
-                    },
-                    stroke: color,
-                    lineWidth: 6
-                },
-            },
-        });
-    }
-
-    const data: GraphinData = {nodes: nodeArr, edges: edgeArr};
-
-    const layout: Layout = {
-        type: "force2",
-        linkDistance: 20,
-        nodeStrength: 1000,
-        edgeStrength: 200,
-        nodeSize: 40,
-    };
-
-    const defaultNode = {
-        defaultNode: {
-            style: {
-                label: {
-                    fill: "#ffffff",
-                },
-            },
-        }
-    };
-
-    const graphinProps = {
-        zoom: {
-            min: 0.5,
-            max: 2,
-        },
-    };
-
-    const handleClick = (event: {
-        item: { getType: () => string; getModel: () => { id: string; label?: string } }
-    }) => {
-        const {item} = event;
-        const type = item.getType();
-        const model = item.getModel();
-
-        if (type === 'node') {
-            // Show tooltip for node
-            console.log('Clicked Node:', model.id);
-            // Implement your tooltip logic here
-        } else if (type === 'edge') {
-            // Show tooltip for edge
-            console.log('Clicked Edge:', `${(model as unknown as GraphinEdge).source + ' -> ' + (model as unknown as GraphinEdge).target}`);
-            // Implement your tooltip logic here
-        }
-    };
-
-    const modes = {
-        default: ['drag-node', 'drag-canvas', 'zoom-canvas',
-            {
-                type: 'tooltip',
-                formatText(model: { id: string; }) {
-                    return 'Id: ' + model.id;
-                },
-            },
-            {
-                type: 'edge-tooltip',
-                formatText(model: { source: string; target: string; label: string; }) {
-                    return 'Source: ' + model.source +
-                        '<br/> Target: ' + model.target +
-                        '<br/> Label: ' + model.label;
-                },
-            },
-            {
-                type: 'click-select',
-                selectNode: true,
-                selectEdge: true,
-                onClick: handleClick,
-            },
-        ]
-    };
-
+    const container = useRef(null);
+    let graph: Graph | null = null;
 
     useEffect(() => {
-        console.log(data);
-        setHullOptions([
-            {
-                members: ['node-2', 'node-1', 'node-3'],
-            },
-            {
-                members: ['node-5', 'node-4'],
+        if (!graph) {
+            graph = new G6.Graph({
+                container: container.current!,
+                width: 800,
+                height: 600,
+                modes: {
+                    default: ['drag-canvas', 'drag-node', 'zoom-canvas', 'click-select'],
+                },
+                defaultNode: {
+                    size: 50,
+                    style: {
+                        fill: '#319428',
+                        stroke: '#319428',
+                    },
+                    labelCfg: {
+                        position: 'bottom',
+                        style: {
+                            fill: '#ffffff',
+                            fontSize: 20,
+                        },
+                    },
+                },
+                defaultEdge: {
+                    style: {
+                        stroke: '#e2e2e2',
+                        lineWidth: 2,
+                    },
+                    labelCfg: {
+                        position: 'top ',
+                        style: {
+                            fill: '#ffffff',
+                            fontSize: 20,
+                        },
+                    },
+                },
+            });
+
+            const data = {
+                nodes: [] as NodeConfig[],
+                edges: [] as EdgeConfig[],
+            };
+
+            for (let i = 0; i < 25; i++) {
+                data.nodes.push({
+                    id: `node-${i}`,
+                    x: Math.random() * 800,
+                    y: Math.random() * 600,
+                    label: `Node-${i}`,
+                });
             }
-        ]);
+
+            for (let i = 0; i < data.nodes.length; i++) {
+                const source = data.nodes[i].id;
+                const target = data.nodes[Math.floor(Math.random() * data.nodes.length)].id;
+                const labelValue = Math.floor(Math.random() * 35);
+                let color;
+                if (labelValue < 10) {
+                    color = '#f00';
+                } else if (labelValue > 30) {
+                    color = '#17a617';
+                } else {
+                    color = '#deb600';
+                }
+
+                data.edges.push({
+                    id: `edge-${i}`,
+                    source,
+                    target,
+                    label: `${labelValue}`,
+                    style: {
+                        stroke: color,
+                        lineWidth: 6,
+                    },
+                });
+            }
+
+            graph.data(data);
+            graph.render();
+
+            const tooltip = new G6.Tooltip({
+                container: graph.get('container'),
+                offset: 10,
+                itemTypes: ['node', 'edge'],
+                getContent: (e) => {
+                    if (e?.item?.getType() === 'node') {
+                        return `<div><strong>${e.item.getModel().id}</strong></div>`;
+                    } else {
+                        return `<div>
+                                    <strong>${e?.item?.getModel().source}</strong> ->
+                                    <strong>${e?.item?.getModel().target}</strong><br/>
+                                    <strong>Label:</strong> ${e?.item?.getModel().label}
+                                </div>`;
+                    }
+                },
+                trigger: 'click',
+            });
+            graph.addPlugin(tooltip);
+
+            graph.on('node:click', (e) => {
+                const item = e.item;
+                console.log('Clicked Node:', item?.getModel().id);
+                graph?.setAutoPaint(false);
+                graph?.getNodes().forEach((node) => {
+                    graph?.setItemState(node, 'selected', false);
+                });
+                graph?.setItemState(item as Item, 'selected', true);
+                graph?.setAutoPaint(true);
+            });
+
+            graph.on('edge:click', (e) => {
+                const item = e.item;
+                console.log('Clicked Edge:', item?.getModel().id);
+                graph?.setAutoPaint(false);
+                graph?.getEdges().forEach((edge) => {
+                    graph?.setItemState(edge, 'selected', false);
+                });
+                graph?.setItemState(item as Item, 'selected', true);
+                graph?.setAutoPaint(true);
+            });
+        }
+
+        return () => {
+            if (graph) {
+                graph.destroy();
+                graph = null;
+            }
+        };
     }, []);
 
     return (
-        <div className={'w-full h-full'}>
-            <Graphin style={{background: 'black'}} data={data} layout={layout}
-                     defaultNode={defaultNode}
-                     modes={modes}
-                     {...graphinProps}>
-                <Hull options={hullOptions}/>
-            </Graphin>
+        <div className={"w-full h-full bg-black text-white"}>
+            <div ref={container} className={"bg-black text-white"}/>
         </div>
     );
 }
