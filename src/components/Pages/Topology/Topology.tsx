@@ -10,18 +10,17 @@ export function Topology() {
         height: window.innerHeight,
     });
 
+    const handleResize = () => {
+        if (container.current) {
+            setSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        }
+    };
+
     useEffect(() => {
-        const handleResize = () => {
-            if (container.current) {
-                setSize({
-                    width: window.innerWidth,
-                    height: window.innerHeight,
-                });
-            }
-        };
-
         handleResize();
-
         window.addEventListener('resize', handleResize);
 
         return () => {
