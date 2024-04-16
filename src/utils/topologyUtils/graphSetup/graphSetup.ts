@@ -11,6 +11,10 @@ export function initializeGraph(container: HTMLDivElement, width: number, height
         modes: {
             default: ['drag-canvas', 'drag-node', 'zoom-canvas', 'click-select'],
         },
+        layout: {
+            // type: 'fruchterman',
+            preventOverlap: true,
+        },
         defaultNode: getDefaultNodeConfig(),
         defaultEdge: getDefaultEdgeConfig(),
         fitCenter: true,
