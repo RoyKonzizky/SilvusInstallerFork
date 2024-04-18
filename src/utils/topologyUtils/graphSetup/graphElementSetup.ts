@@ -4,7 +4,7 @@ import {EdgeConfig} from "@antv/g6";
 export function getDefaultNodeConfig(): NodeConfig {
     return {
         id: "",
-        size: 50,
+        size: 15,
         style: {
             fill: '#319428',
             stroke: '#319428',
@@ -13,7 +13,7 @@ export function getDefaultNodeConfig(): NodeConfig {
             position: 'bottom',
             style: {
                 fill: '#ffffff',
-                fontSize: 20,
+                fontSize: 7,
             },
         },
     };
@@ -23,13 +23,13 @@ export function getDefaultEdgeConfig(): EdgeConfig {
     return {
         style: {
             stroke: '#e2e2e2',
-            lineWidth: 2,
+            lineWidth: 3,
         },
         labelCfg: {
-            // position: 'top ',
+            // position: 'top',
             style: {
                 fill: '#ffffff',
-                fontSize: 30,
+                fontSize: 7,
             },
         },
     };

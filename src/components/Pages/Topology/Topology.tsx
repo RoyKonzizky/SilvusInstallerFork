@@ -8,7 +8,7 @@ import settingsIcon from "../../../assets/settingsIconTopology.svg";
 export function Topology() {
     const container = useRef<HTMLDivElement>(null);
     let graph: Graph | null = null;
-    const graphData = generateRandomData(25);
+    const graphData = generateRandomData();
     const [size, setSize] = useState<{ width: number; height: number }>({
         width: window.innerWidth,
         height: window.innerHeight,
