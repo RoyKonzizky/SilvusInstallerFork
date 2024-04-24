@@ -2,8 +2,9 @@ import { useRef, useState, useEffect } from 'react';
 import { initializeGraph, generateData } from '../../../utils/topologyUtils/graphSetup/graphSetup.ts';
 import { Graph } from '@antv/g6';
 import {TableModal} from "./TableModal.tsx";
+import {ITopologyProps} from "./ITopologyProps.ts";
 
-export function Topology() {
+export function Topology(props: ITopologyProps) {
     const container = useRef<HTMLDivElement>(null);
     let graph: Graph | null = null;
     const graphData = generateData();
@@ -51,8 +52,10 @@ export function Topology() {
     }, [size]);
 
     return (
-        <div ref={container} className={'relative w-full h-full bg-black text-white'}>
-            <TableModal graphData={graphData} />
+        <div className={`${props.isSmaller ? "w-[35%] h-[35%]" : "w-full h-full border border-black bg-black"} block absolute overflow-hidden`}>
+            <div ref={container} className={'relative w-full h-full bg-black text-white'}>
+                <TableModal graphData={graphData}/>
+            </div>
         </div>
     );
 }
