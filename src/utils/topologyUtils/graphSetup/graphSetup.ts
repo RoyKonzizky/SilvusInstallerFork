@@ -12,7 +12,7 @@ export function initializeGraph(container: HTMLDivElement, width: number, height
             default: ['drag-canvas', 'drag-node', 'zoom-canvas', 'click-select'],
         },
         layout: {
-            type: 'mds',
+            type: 'force2',
             preventOverlap: true
         },
         defaultNode: getDefaultNodeConfig(),
@@ -48,7 +48,7 @@ export function initializeGraph(container: HTMLDivElement, width: number, height
     return graph;
 }
 
-export function generateRandomData(): { nodes: NodeConfig[], edges: EdgeConfig[] } {
+export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[] } {
     const data = {
         nodes: [
             {id: 'node-0', label: 'Node-0',},
