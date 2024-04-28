@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import HyperModal from "react-hyper-modal";
-import { TopologySettingsTable } from './TopologySettingsTable.tsx'; // Make sure to import TopologySettingsTable if it's used in the ModalComponent
+import { TopologySettingsTable } from './TopologySettingsTable.tsx';
 import settingsIcon from "../../../../assets/settingsIconTopology.svg";
 import {NodeConfig} from "@antv/g6-core/lib/types";
 import {ComboConfig, EdgeConfig} from "@antv/g6";
