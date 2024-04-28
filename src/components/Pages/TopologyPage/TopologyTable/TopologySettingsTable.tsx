@@ -1,14 +1,14 @@
-import {useEffect, useState} from 'react';
-import { Table, Button } from "antd";
+import { useEffect, useState } from 'react';
+import { Button, Table } from "antd";
 import { NodeConfig } from "@antv/g6-core/lib/types";
-import {ColumnsType} from "antd/lib/table";
+import { ColumnsType } from "antd/lib/table";
 
-interface ISettingsTable {
+interface ITopologySettingsTable {
     groups: string[];
     nodes: NodeConfig[];
 }
 
-export function SettingsTable(props: ISettingsTable) {
+export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [additionalColumn, setAdditionalColumn] = useState<string | null>(null);
     const [groups, setGroups]= useState(props.groups);
     const handleAddColumn = () => {

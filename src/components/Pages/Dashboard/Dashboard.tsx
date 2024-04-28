@@ -1,5 +1,5 @@
 import {Settings} from "../Settings/Settings.tsx";
-import {Topology} from "../Topology/Topology.tsx";
+import {Topology} from "../TopologyPage/Topology/Topology.tsx";
 import {Camera} from "../Camera/Camera.tsx";
 
 export function Dashboard() {

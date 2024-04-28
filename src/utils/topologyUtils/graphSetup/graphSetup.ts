@@ -1,4 +1,4 @@
-import G6, {EdgeConfig, Graph, Item} from '@antv/g6';
+import G6, {ComboConfig, EdgeConfig, Graph, Item} from '@antv/g6';
 import {NodeConfig} from '@antv/g6-core/lib/types';
 import {tooltipInit} from "../tooltipSetup.ts";
 import {getDefaultEdgeConfig, getDefaultNodeConfig} from "./graphElementSetup.ts";
@@ -48,8 +48,9 @@ export function initializeGraph(container: HTMLDivElement, width: number, height
     return graph;
 }
 
-export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[] } {
+export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[], combos: ComboConfig[] } {
     const data = {
+        combos: [],
         nodes: [
             {id: 'node-0', label: 'Node-0',},
             {id: 'node-1', label: 'Node-1',},
