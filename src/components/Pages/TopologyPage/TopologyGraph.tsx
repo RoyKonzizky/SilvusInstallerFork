@@ -1,11 +1,11 @@
 import {TableModal} from "./TopologyTable/TableModal.tsx";
 import {RefObject} from "react";
 import {NodeConfig} from "@antv/g6-core/lib/types";
-import {ComboConfig, EdgeConfig} from "@antv/g6";
+import {EdgeConfig} from "@antv/g6";
 
 interface ITopologyGraph {
     container: RefObject<HTMLDivElement>,
-    graphData: {nodes: NodeConfig[], edges: EdgeConfig[], combos: ComboConfig[]},
+    graphData: { nodes: NodeConfig[], edges: EdgeConfig[], combos: any[] },
 }
 
 export function TopologyGraph(props: ITopologyGraph) {

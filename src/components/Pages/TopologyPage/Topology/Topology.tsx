@@ -8,7 +8,6 @@ export function Topology(props: ITopologyProps) {
     const container = useRef<HTMLDivElement>(null);
     let graph: Graph | null = null;
     const graphData = generateData();
-    graphData.combos = [];
     const [size, setSize] = useState<{ width: number; height: number }>({
         width: window.innerWidth,
         height: window.innerHeight,

@@ -1,7 +1,7 @@
 import G6, {ComboConfig, EdgeConfig, Graph, Item} from '@antv/g6';
 import {NodeConfig} from '@antv/g6-core/lib/types';
 import {tooltipInit} from "../tooltipSetup.ts";
-import {getDefaultEdgeConfig, getDefaultNodeConfig} from "./graphElementSetup.ts";
+import {getDefaultComboConfig, getDefaultEdgeConfig, getDefaultNodeConfig} from "./graphElementSetup.ts";
 
 export function initializeGraph(container: HTMLDivElement, width: number, height: number): Graph {
     const graph = new G6.Graph({
@@ -9,7 +9,7 @@ export function initializeGraph(container: HTMLDivElement, width: number, height
         width,
         height,
         modes: {
-            default: ['drag-canvas', 'drag-node', 'zoom-canvas', 'click-select'],
+            default: ['drag-canvas', 'drag-node', 'zoom-canvas', 'click-select', 'drag-combo'],
         },
         layout: {
             type: 'force2',
@@ -17,6 +17,7 @@ export function initializeGraph(container: HTMLDivElement, width: number, height
         },
         defaultNode: getDefaultNodeConfig(),
         defaultEdge: getDefaultEdgeConfig(),
+        defaultCombo: getDefaultComboConfig(),
         fitCenter: true,
         fitView: true,
     });
@@ -45,12 +46,50 @@ export function initializeGraph(container: HTMLDivElement, width: number, height
         graph?.setAutoPaint(true);
     });
 
+    graph.on('combo:click', (e) => {
+        const item = e.item;
+        console.log('Clicked Combo:', item?.getModel().id);
+        graph?.setAutoPaint(false);
+        graph?.getCombos().forEach((combo) => {
+            graph?.setItemState(combo, 'selected', false);
+        });
+        graph?.setItemState(item as Item, 'selected', true);
+        graph?.setAutoPaint(true);
+    });
+
     return graph;
 }
 
-export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[], combos: ComboConfig[] } {
+export function generateData(): {
+    nodes: NodeConfig[];
+    edges: EdgeConfig[];
+    combos: ComboConfig[]
+} {
     const data = {
-        combos: [],
+        combos: [
+            {
+                id: 'combo-1',
+                label: 'Combo 1',
+                children: [
+                    {id: 'node-0'},
+                    {id: 'node-1'},
+                    {id: 'node-2'},
+                    {id: 'node-3'},
+                    {id: 'node-4'}
+                ],
+            },
+            {
+                id: 'combo-2',
+                label: 'Combo 2',
+                children: [
+                    {id: 'node-20'},
+                    {id: 'node-21'},
+                    {id: 'node-22'},
+                    {id: 'node-23'},
+                    {id: 'node-24'}
+                ],
+            },
+        ],
         nodes: [
             {id: 'node-0', label: 'Node-0',},
             {id: 'node-1', label: 'Node-1',},
@@ -76,7 +115,7 @@ export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[], comb
             {id: 'node-21', label: 'Node-21',},
             {id: 'node-22', label: 'Node-22',},
             {id: 'node-23', label: 'Node-23',},
-            {id: 'node-24', label: 'Node-24',}] as NodeConfig[],
+            {id: 'node-24', label: 'Node-24',}],
         edges: [{id: 'edge-0', source: 'node-0', target: 'node-21', label: '8'},
             {id: 'edge-1', source: 'node-1', target: 'node-2', label: '18'},
             {id: 'edge-2', source: 'node-2', target: 'node-3', label: '6'},
@@ -94,7 +133,6 @@ export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[], comb
             {id: 'edge-14', source: 'node-14', target: 'node-10', label: '4'},
             {id: 'edge-15', source: 'node-15', target: 'node-5', label: '16'},
             {id: 'edge-16', source: 'node-16', target: 'node-17', label: '28'},
-            {id: 'edge-17', source: 'node-17', target: 'node-9', label: '3'},
             {id: 'edge-18', source: 'node-18', target: 'node-10', label: '20'},
             {id: 'edge-19', source: 'node-19', target: 'node-24', label: '31'},
             {id: 'edge-20', source: 'node-20', target: 'node-5', label: '21'},
@@ -119,7 +157,6 @@ export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[], comb
             {id: 'edge-39', source: 'node-14', target: 'node-0', label: '8'},
             {id: 'edge-40', source: 'node-15', target: 'node-1', label: '8'},
             {id: 'edge-41', source: 'node-16', target: 'node-22', label: '12'},
-            {id: 'edge-42', source: 'node-17', target: 'node-8', label: '0'},
             {id: 'edge-43', source: 'node-18', target: 'node-24', label: '28'},
             {id: 'edge-44', source: 'node-19', target: 'node-12', label: '4'},
             {id: 'edge-45', source: 'node-20', target: 'node-14', label: '12'},
@@ -140,7 +177,7 @@ export function generateData(): { nodes: NodeConfig[], edges: EdgeConfig[], comb
             color = '#deb600';
         }
 
-        const edgeStyle = data.edges[i].style || {}; // Ensure style is initialized
+        const edgeStyle = data.edges[i].style || {};
         edgeStyle.stroke = color;
         data.edges[i].style = edgeStyle;
     }
