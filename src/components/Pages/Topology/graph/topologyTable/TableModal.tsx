@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import HyperModal from "react-hyper-modal";
-import { TopologySettingsTable } from './TopologySettingsTable.tsx';
-import settingsIcon from "../../../../assets/settingsIconTopology.svg";
-import {NodeConfig} from "@antv/g6-core/lib/types";
-import {ComboConfig, EdgeConfig} from "@antv/g6";
+import settingsIcon from "../../../../../assets/settingsIconTopology.svg";
+import {IUserEdge, IUserNode} from "@antv/graphin";
+import {Combo} from "@antv/graphin/es/typings/type";
+import {TopologySettingsTable} from "./TopologySettingsTable.tsx";
 
 interface ITableModal {
-    graphData: { nodes: NodeConfig[], edges: EdgeConfig[], combos: ComboConfig[]},
+    graphData: { nodes: IUserNode[], edges: IUserEdge[], combos: Combo[]},
 }
 
 export function TableModal(props:ITableModal) {
@@ -21,6 +21,8 @@ export function TableModal(props:ITableModal) {
                 <img className={"bg-white rounded-full"} src={settingsIcon} alt={"settings"}/>
             </button>
             <HyperModal isOpen={modalState} requestClose={closeModal}>
+                {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                {/*// @ts-ignore*/}
                 <TopologySettingsTable groups={props.graphData.combos.map(value => value.id)} nodes={props.graphData.nodes} />
             </HyperModal>
         </div>

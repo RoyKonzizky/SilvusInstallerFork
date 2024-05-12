@@ -1,69 +1,10 @@
-import G6, {ComboConfig, EdgeConfig, Graph, Item} from '@antv/g6';
-import {NodeConfig} from '@antv/g6-core/lib/types';
-import {tooltipInit} from "../tooltipSetup.ts";
-import {getDefaultComboConfig, getDefaultEdgeConfig, getDefaultNodeConfig} from "./graphElementSetup.ts";
-
-export function initializeGraph(container: HTMLDivElement, width: number, height: number): Graph {
-    const graph = new G6.Graph({
-        container,
-        width,
-        height,
-        modes: {
-            default: ['drag-canvas', 'drag-node', 'zoom-canvas', 'click-select', 'drag-combo'],
-        },
-        layout: {
-            type: 'force2',
-            preventOverlap: true
-        },
-        defaultNode: getDefaultNodeConfig(),
-        defaultEdge: getDefaultEdgeConfig(),
-        defaultCombo: getDefaultComboConfig(),
-        fitCenter: true,
-        fitView: true,
-    });
-
-    graph.addPlugin(tooltipInit(graph));
-
-    graph.on('node:click', (e) => {
-        const item = e.item;
-        console.log('Clicked Node:', item?.getModel().id);
-        graph?.setAutoPaint(false);
-        graph?.getNodes().forEach((node) => {
-            graph?.setItemState(node, 'selected', false);
-        });
-        graph?.setItemState(item as Item, 'selected', true);
-        graph?.setAutoPaint(true);
-    });
-
-    graph.on('edge:click', (e) => {
-        const item = e.item;
-        console.log('Clicked Edge:', item?.getModel().id);
-        graph?.setAutoPaint(false);
-        graph?.getEdges().forEach((edge) => {
-            graph?.setItemState(edge, 'selected', false);
-        });
-        graph?.setItemState(item as Item, 'selected', true);
-        graph?.setAutoPaint(true);
-    });
-
-    graph.on('combo:click', (e) => {
-        const item = e.item;
-        console.log('Clicked Combo:', item?.getModel().id);
-        graph?.setAutoPaint(false);
-        graph?.getCombos().forEach((combo) => {
-            graph?.setItemState(combo, 'selected', false);
-        });
-        graph?.setItemState(item as Item, 'selected', true);
-        graph?.setAutoPaint(true);
-    });
-
-    return graph;
-}
+import {IUserEdge, IUserNode} from "@antv/graphin";
+import {Combo} from "@antv/graphin/es/typings/type";
 
 export function generateData(): {
-    nodes: NodeConfig[];
-    edges: EdgeConfig[];
-    combos: ComboConfig[]
+    nodes: IUserNode[];
+    edges: IUserEdge[];
+    combos: Combo[]
 } {
     const data = {
         combos: [
@@ -115,13 +56,14 @@ export function generateData(): {
             {id: 'node-21', label: 'Node-21',},
             {id: 'node-22', label: 'Node-22',},
             {id: 'node-23', label: 'Node-23',},
-            {id: 'node-24', label: 'Node-24',}],
-        edges: [{id: 'edge-0', source: 'node-0', target: 'node-21', label: '8'},
+            {id: 'node-24', label: 'Node-24',}
+        ] as IUserNode[],
+        edges: [
+            {id: 'edge-0', source: 'node-0', target: 'node-21', label: '8'},
             {id: 'edge-1', source: 'node-1', target: 'node-2', label: '18'},
             {id: 'edge-2', source: 'node-2', target: 'node-3', label: '6'},
             {id: 'edge-3', source: 'node-3', target: 'node-20', label: '1'},
             {id: 'edge-4', source: 'node-4', target: 'node-23', label: '12'},
-            {id: 'edge-5', source: 'node-5', target: 'node-5', label: '33'},
             {id: 'edge-6', source: 'node-6', target: 'node-11', label: '31'},
             {id: 'edge-7', source: 'node-7', target: 'node-15', label: '26'},
             {id: 'edge-8', source: 'node-8', target: 'node-18', label: '3'},
@@ -153,7 +95,6 @@ export function generateData(): {
             {id: 'edge-35', source: 'node-10', target: 'node-13', label: '30'},
             {id: 'edge-36', source: 'node-11', target: 'node-21', label: '4'},
             {id: 'edge-37', source: 'node-12', target: 'node-20', label: '28'},
-            {id: 'edge-38', source: 'node-13', target: 'node-13', label: '16'},
             {id: 'edge-39', source: 'node-14', target: 'node-0', label: '8'},
             {id: 'edge-40', source: 'node-15', target: 'node-1', label: '8'},
             {id: 'edge-41', source: 'node-16', target: 'node-22', label: '12'},
@@ -163,23 +104,56 @@ export function generateData(): {
             {id: 'edge-46', source: 'node-21', target: 'node-9', label: '5'},
             {id: 'edge-47', source: 'node-22', target: 'node-14', label: '24'},
             {id: 'edge-48', source: 'node-23', target: 'node-14', label: '0'},
-            {id: 'edge-49', source: 'node-24', target: 'node-2', label: '11'}] as EdgeConfig[],
+            {id: 'edge-49', source: 'node-24', target: 'node-2', label: '11'}
+        ] as IUserEdge[],
     };
+
+    for (let i = 0; i < data.nodes.length; i++) {
+        const color = '#1fb639';
+
+        data.nodes[i] = {
+            id: data.nodes[i].id,
+            style: {
+                label: {
+                    value: data.nodes[i].label,
+                    fill: '#FFFFFF',
+                },
+                keyshape: {
+                    fill: color,
+                    stroke: color,
+                    fillOpacity: 1,
+                    size: 50,
+                },
+            },
+        };
+    }
 
     for (let i = 0; i < data.edges.length; i++) {
         const labelValue = Number(data.edges[i].label);
-        let color;
+
+        let edgeColor;
         if (labelValue < 10) {
-            color = '#f00';
+            edgeColor = 'red';
         } else if (labelValue > 30) {
-            color = '#17a617';
+            edgeColor = 'green';
         } else {
-            color = '#deb600';
+            edgeColor = 'yellow';
         }
 
-        const edgeStyle = data.edges[i].style || {};
-        edgeStyle.stroke = color;
-        data.edges[i].style = edgeStyle;
+        data.edges[i].style = {
+            label: {
+                value: `${labelValue}`,
+                fill: edgeColor,
+                fontSize: 30
+            },
+            keyshape: {
+                endArrow: {
+                    path: '',
+                },
+                stroke: edgeColor,
+                lineWidth: 6
+            },
+        };
     }
 
     return data;

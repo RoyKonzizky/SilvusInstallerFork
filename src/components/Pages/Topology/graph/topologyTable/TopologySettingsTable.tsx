@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Button, Table } from "antd";
-import { NodeConfig } from "@antv/g6-core/lib/types";
 import { ColumnsType } from "antd/lib/table";
+import {IUserNode} from "@antv/graphin";
 
 interface ITopologySettingsTable {
-    groups: string[];
-    nodes: NodeConfig[];
+    groups: string[],
+    nodes: IUserNode[]
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [additionalColumn, setAdditionalColumn] = useState<string | null>(null);
     const [groups, setGroups]= useState(props.groups);
     const handleAddColumn = () => {
-        // Add a new column when the button is clicked
         const newColumn = window.prompt("Enter the name of the new column:");
         if (newColumn) {
             setAdditionalColumn(newColumn);
@@ -32,7 +31,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             title: 'Node Label',
             dataIndex: 'label',
             key: 'label',
-            render: (_: string, record: any) => <span>{record.label}</span>,
+            render: (_: string, record: any) => <span>{record.style.label.value}</span>,
         },
         ...groups.map(group => ({
             title: group,
