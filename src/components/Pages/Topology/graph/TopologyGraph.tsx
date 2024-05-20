@@ -1,8 +1,8 @@
-import {TableModal} from "./topologyTable/TableModal.tsx";
-import Graphin, {IUserEdge, IUserNode} from "@antv/graphin";
-import {Combo} from "@antv/graphin/es/typings/type";
-import {useState} from "react";
-import {Popover} from "antd";
+import { TableModal } from "./topologyTable/TableModal.tsx";
+import Graphin, { IUserEdge, IUserNode } from "@antv/graphin";
+import { Combo } from "@antv/graphin/es/typings/type";
+import { useState, useRef } from "react";
+import { Popover } from "antd";
 
 interface ITopologyGraph {
     graphData: { nodes: IUserNode[], edges: IUserEdge[], combos: Combo[] },
@@ -11,10 +11,19 @@ interface ITopologyGraph {
 export function TopologyGraph(props: ITopologyGraph) {
     const [selectedElement, setSelectedElement] =
         useState<IUserNode | IUserEdge | null>();
+    const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+    const graphRef = useRef<any>(null);
 
     const handleElementClick = (event: { item: any; }) => {
         const clickedElement = event.item;
-        setSelectedElement(clickedElement.getModel());
+        const model = clickedElement.getModel();
+        setSelectedElement(model);
+
+        const graph = graphRef.current?.graph;
+        if (graph) {
+            const point = graph.getCanvasByPoint(model.x, model.y);
+            setPopoverPosition({ x: point.x, y: point.y });
+        }
     };
 
     const handleCloseButtonClick = () => {
@@ -36,14 +45,19 @@ export function TopologyGraph(props: ITopologyGraph) {
     };
 
     return (
-        <Graphin style={{background: "black", position: "relative", width: '100%', height: '100%', color: "white"}}
+        <Graphin ref={graphRef} style={{ background: "black", width: '100%', height: '100%', color: "white" }}
                  modes={modes} data={props.graphData}>
-            <TableModal graphData={props.graphData}/>
+            <TableModal graphData={props.graphData} />
             {selectedElement && (
-                <Popover title="Element Details" placement={"top"} arrow={false} open={!!selectedElement}
+                <Popover title="Element Details" placement={"top"} arrow={false}
+                         open={!!selectedElement}
+                         getPopupContainer={trigger => trigger.parentElement!}
                          overlayStyle={{
-                             zIndex: 1000, top: selectedElement.y, left: selectedElement.x, height: '75px',
-                             position: 'absolute'
+                             zIndex: 1000,
+                             top: popoverPosition.y,
+                             left: popoverPosition.x,
+                             height: '75px',
+                             position: 'absolute',
                          }}
                          content={
                              <div>
