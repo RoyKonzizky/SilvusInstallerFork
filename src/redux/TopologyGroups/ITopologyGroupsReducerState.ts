@@ -1,8 +1,9 @@
-import {NodeConfig} from "@antv/g6-core/lib/types";
-import {ComboConfig, EdgeConfig} from "@antv/g6";
+import { IUserEdge, IUserNode } from "@antv/graphin";
+import { Combo } from "@antv/graphin/es/typings/type";
 
 export interface ITopologyGroupsReducerState {
-    nodes: NodeConfig[],
-    edges: EdgeConfig[],
-    combos: ComboConfig[],
+    nodes: IUserNode[],
+    edges: IUserEdge[],
+    combos: Combo[],
+    hulls: any[],
 }
