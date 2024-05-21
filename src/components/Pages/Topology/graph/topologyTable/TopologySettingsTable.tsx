@@ -11,9 +11,9 @@ interface ITopologySettingsTable {
 export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [additionalColumn, setAdditionalColumn] =
         useState<string | null>(null);
-    const [groups, setGroups] = useState(props.groups);
     const [selectedCheckboxes, setSelectedCheckboxes] =
         useState<{ [key: string]: string | null }>({});
+    const [groups, setGroups] = useState(props.groups);
 
     const handleAddColumn = () => {
         const newColumn = window.prompt("Enter the name of the new column:");

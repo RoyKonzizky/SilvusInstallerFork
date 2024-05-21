@@ -1,11 +1,7 @@
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {Combo} from "@antv/graphin/es/typings/type";
 
-export function generateData(): {
-    nodes: IUserNode[];
-    edges: IUserEdge[];
-    combos: Combo[]
-} {
+export function generateData(): { nodes: IUserNode[]; edges: IUserEdge[]; combos: Combo[] } {
     const data = {
         combos: [
             {
