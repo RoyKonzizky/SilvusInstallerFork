@@ -1,9 +1,8 @@
 import { IUserEdge, IUserNode } from "@antv/graphin";
-import { Combo } from "@antv/graphin/es/typings/type";
+import {HullCfg} from "@antv/graphin/lib/components/Hull";
 
 export interface ITopologyGroupsReducerState {
     nodes: IUserNode[],
     edges: IUserEdge[],
-    combos: Combo[],
-    hulls: any[],
+    hullOptions: HullCfg[],
 }

@@ -1,17 +1,28 @@
-import {TableModal} from "./topologyTable/TableModal.tsx";
+import {useRef, useState, useEffect} from "react";
+import {useSelector} from "react-redux";
 import Graphin, {IUserEdge, IUserNode} from "@antv/graphin";
 import {Combo} from "@antv/graphin/es/typings/type";
-import {useRef, useState} from "react";
-import {ElementPopover} from "./ElementPopover.tsx";
+import Hull from "@antv/graphin/es/components/Hull";
+import {TableModal} from "./topologyTable/TableModal";
+import {ElementPopover} from "./ElementPopover";
+import {RootState} from "../../../../redux/store.ts";
 
 interface ITopologyGraph {
     graphData: { nodes: IUserNode[], edges: IUserEdge[], combos: Combo[] },
 }
 
 export function TopologyGraph(props: ITopologyGraph) {
-    const [selectedElement, setSelectedElement] = useState<IUserNode | IUserEdge | null>();
-    const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({x: 0, y: 0});
+    const [selectedElement, setSelectedElement] =
+        useState<IUserNode | IUserEdge | null>(null);
+    const [popoverPosition, setPopoverPosition] =
+        useState<{ x: number, y: number }>({x: 0, y: 0});
     const graphRef = useRef<any>(null);
+
+    const hullOptions = useSelector((state: RootState) => state.topologyGroups.hullOptions);
+
+    useEffect(() => {
+        console.log('Hull Options:', hullOptions);
+    }, [hullOptions]);
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();
@@ -40,14 +51,22 @@ export function TopologyGraph(props: ITopologyGraph) {
     };
 
     return (
-        <Graphin ref={graphRef} style={{background: "black", width: '100%', height: '100%', color: "white"}}
-                 modes={modes} data={props.graphData}>
+        <Graphin
+            ref={graphRef}
+            style={{background: "black", width: '100%', height: '100%', color: "white"}}
+            modes={modes}
+            data={props.graphData}
+        >
             <TableModal graphData={props.graphData}/>
             {selectedElement && (
-                <ElementPopover onClose={() => setSelectedElement(null)}
-                                selectedElement={selectedElement} position={popoverPosition}
+                <ElementPopover
+                    onClose={() => setSelectedElement(null)}
+                    selectedElement={selectedElement}
+                    position={popoverPosition}
                 />
             )}
+            {(hullOptions.length > 0 && hullOptions.every(hull => hull.members && hull.members.length > 0)) &&
+                (<Hull options={hullOptions}/>)}
         </Graphin>
     );
 }
