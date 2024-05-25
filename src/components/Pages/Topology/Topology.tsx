@@ -1,6 +1,6 @@
 import {ITopologyProps} from "./ITopologyProps.ts";
 import {TopologyGraph} from "./graph/TopologyGraph.tsx";
-import {generateData} from "../../../utils/topologyUtils/graphSetup/graphSetup.ts";
+import {generateData} from "../../../utils/topologyUtils/graphSetup.ts";
 
 export function Topology(props: ITopologyProps) {
     const graphData = generateData();

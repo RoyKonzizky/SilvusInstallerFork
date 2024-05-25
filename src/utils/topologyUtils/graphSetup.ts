@@ -1,6 +1,13 @@
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {Combo} from "@antv/graphin/es/typings/type";
 
+export const graphStyle = {
+    background: "black",
+    width: '100%',
+    height: '100%',
+    color: "white"
+};
+
 export function generateData(): { nodes: IUserNode[]; edges: IUserEdge[]; combos: Combo[] } {
     const data = {
         combos: [
