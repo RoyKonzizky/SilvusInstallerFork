@@ -1,4 +1,5 @@
 import {IUserNode} from "@antv/graphin";
+import {RestNode} from "@antv/graphin/es/typings/type";
 
 export function createDataSource(nodes: IUserNode[]) {
     return nodes.map((node: IUserNode, index: number) => ({key: index, ...node}))
@@ -18,4 +19,15 @@ export function updateHullOptions(groups: string[], nodes: IUserNode[], selected
                 .map(node => node.id)
         };
     });
+}
+export function convertDataToServerFormat(hulls: {id: string, members: string[]}[], nodes: IUserNode[] | RestNode[]) {
+    const numOfGroups = hulls.length;
+    const ips = hulls.map(hull => hull.members);
+    const statuses: number[][] = (nodes as RestNode[]).map(node => (node as RestNode).data.statuses);
+    const convertedData = {num_groups: numOfGroups, ips, statuses};
+    return JSON.stringify(convertedData);
+}
+
+export function isIUserNode(node: IUserNode | RestNode): node is IUserNode {
+    return (node as IUserNode).id !== undefined;
 }
