@@ -1,10 +1,10 @@
 import {useEffect, useState} from 'react';
 import {useDispatch} from "react-redux";
 import {Button, Table} from "antd";
-import {ColumnsType} from "antd/lib/table";
 import {IUserNode} from "@antv/graphin";
 import {updateHulls} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {createDataSource, deviceTalkStatus} from "../../../../../utils/topologyUtils/settingsTableUtils.ts";
+import {createDataSource, deviceTalkStatus, updateHullOptions
+} from "../../../../../utils/topologyUtils/settingsTableUtils.ts";
 import Select from 'react-select';
 
 interface ITopologySettingsTable {
@@ -13,37 +13,34 @@ interface ITopologySettingsTable {
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
-    const dispatch = useDispatch();
-    const [additionalColumn, setAdditionalColumn] = useState<string | null>(null);
+    const [additionalColumn, setAdditionalColumn] =
+        useState<string | null>(null);
+    const [selectedOptions, setSelectedOptions] =
+        useState<{ [group: string]: { [nodeId: string]: number } }>({});
     const [groups, setGroups] = useState(props.groups);
-    const [selectedOptions, setSelectedOptions] = useState<{ [group: string]: { [nodeId: string]: number } }>({});
+    const dispatch = useDispatch();
 
-    const handleAddColumn = () => {
+    function handleAddColumn() {
         const newColumn = window.prompt("Enter the name of the new column:");
         if (newColumn) setAdditionalColumn(newColumn);
-    };
+    }
 
-    const handleSelectChange = (group: string, nodeId: string, value: number | null) => {
+    function handleSelectChange(group: string, nodeId: string, value: number | null) {
         setSelectedOptions(prevOptions => ({
-            ...prevOptions,
-            [group]: {
-                ...prevOptions[group],
-                [nodeId]: value ?? 0
-            }
+            ...prevOptions, [group]: {...prevOptions[group], [nodeId]: value ?? 0}
         }));
-    };
+    }
 
-    const renderSelect = (record: any, group: string) => {
+    function renderSelect(record: any, group: string) {
         const nodeId = record.id;
         const value = selectedOptions[group]?.[nodeId] ?? 0;
         return (
             <Select options={deviceTalkStatus} placeholder={"סטטוס דיבור"} isClearable
-                    value={deviceTalkStatus.find(option => option.value === value)}
+                    value={deviceTalkStatus.find(option => option.value === value) || null}
                     onChange={(option) =>
-                        handleSelectChange(group, nodeId, option?.value ?? 0)}
-            />
+                        handleSelectChange(group, nodeId, option ? option.value : 0)}/>
         );
-    };
+    }
 
     const columns = [
         {
@@ -54,19 +51,16 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             title: group, dataIndex: group, key: group,
             render: (_: string, record: any) => renderSelect(record, group),
         })),
-    ] as ColumnsType;
+    ];
 
     useEffect(() => {
         if (additionalColumn) setGroups([...groups, additionalColumn]);
     }, [additionalColumn]);
 
     useEffect(() => {
-        const updatedHulls = groups.map(group => {
-            const members = props.nodes.filter(node => selectedOptions[group]?.[node.id] > 0);
-            return {id: group, members: members.map(node => node.id)};
-        });
+        const updatedHulls = updateHullOptions(groups, props.nodes, selectedOptions);
         dispatch(updateHulls(updatedHulls));
-    }, [selectedOptions, groups, props.nodes, dispatch]);
+    }, [selectedOptions, groups, dispatch]);
 
     return (
         <div>
