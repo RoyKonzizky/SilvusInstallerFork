@@ -5,7 +5,7 @@ export function createDataSource(nodes: IUserNode[]) {
 }
 
 export const deviceTalkStatus = [
-    { value: 0, label: 0 },
-    { value: 1, label: 1 },
-    { value: 2, label: 2 },
+    { value: 0, label: "לא בקבוצה" },
+    { value: 1, label: "מקשיב" },
+    { value: 2, label: "מדבר ומקשיב" },
 ];

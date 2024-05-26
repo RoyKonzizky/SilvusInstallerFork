@@ -13,27 +13,35 @@ interface ITopologySettingsTable {
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
-    const [additionalColumn, setAdditionalColumn] = useState<string | null>(null);
-    const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: { [group: string]: any } }>({});
-    const [groups, setGroups] = useState(props.groups);
     const dispatch = useDispatch();
+    const [additionalColumn, setAdditionalColumn] = useState<string | null>(null);
+    const [groups, setGroups] = useState(props.groups);
+    const [selectedOptions, setSelectedOptions] = useState<{ [group: string]: { [nodeId: string]: number } }>({});
 
     const handleAddColumn = () => {
         const newColumn = window.prompt("Enter the name of the new column:");
         if (newColumn) setAdditionalColumn(newColumn);
     };
 
-    const handleSelectChange = (recordKey: string, group: string, selectedOption: any) => {
-        setSelectedOptions(prevState => ({
-            ...prevState, [recordKey]: {...prevState[recordKey], [group]: selectedOption},
+    const handleSelectChange = (group: string, nodeId: string, value: number | null) => {
+        setSelectedOptions(prevOptions => ({
+            ...prevOptions,
+            [group]: {
+                ...prevOptions[group],
+                [nodeId]: value ?? 0
+            }
         }));
     };
 
     const renderSelect = (record: any, group: string) => {
-        const selectedOption = selectedOptions[record.key]?.[group] || null;
+        const nodeId = record.id;
+        const value = selectedOptions[group]?.[nodeId] ?? 0;
         return (
-            <Select options={deviceTalkStatus} value={selectedOption} placeholder={"סטטוס דיבור"}
-                onChange={(option) => handleSelectChange(record.key, group, option)} isClearable={true}/>
+            <Select options={deviceTalkStatus} placeholder={"סטטוס דיבור"} isClearable
+                    value={deviceTalkStatus.find(option => option.value === value)}
+                    onChange={(option) =>
+                        handleSelectChange(group, nodeId, option?.value ?? 0)}
+            />
         );
     };
 
@@ -53,15 +61,12 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [additionalColumn]);
 
     useEffect(() => {
-        const newHullOptions = groups.map(group => ({
-            id: group,
-            members: props.nodes
-                .filter(node => selectedOptions[node.key]?.[group]?.value === group)
-                .map(node => node.id)
-        }));
-        console.log(selectedOptions);
-        dispatch(updateHulls(newHullOptions));
-    }, [groups, selectedOptions]);
+        const updatedHulls = groups.map(group => {
+            const members = props.nodes.filter(node => selectedOptions[group]?.[node.id] > 0);
+            return {id: group, members: members.map(node => node.id)};
+        });
+        dispatch(updateHulls(updatedHulls));
+    }, [selectedOptions, groups, props.nodes, dispatch]);
 
     return (
         <div>

@@ -1,7 +1,6 @@
 import {useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import Graphin, {IUserEdge, IUserNode} from "@antv/graphin";
-import {Combo} from "@antv/graphin/es/typings/type";
 import Hull from "@antv/graphin/es/components/Hull";
 import {TableModal} from "./topologyTable/TableModal";
 import {ElementPopover} from "./ElementPopover";
@@ -10,7 +9,7 @@ import {HullCfg} from "@antv/graphin/lib/components/Hull";
 import {graphStyle} from "../../../../utils/topologyUtils/graphSetup.ts";
 
 interface ITopologyGraph {
-    graphData: { nodes: IUserNode[], edges: IUserEdge[], combos: Combo[] },
+    graphData: { nodes: IUserNode[], edges: IUserEdge[] },
 }
 
 export function TopologyGraph(props: ITopologyGraph) {

@@ -1,5 +1,4 @@
 import {IUserEdge, IUserNode} from "@antv/graphin";
-import {Combo} from "@antv/graphin/es/typings/type";
 
 export const graphStyle = {
     background: "black",
@@ -8,32 +7,8 @@ export const graphStyle = {
     color: "white"
 };
 
-export function generateData(): { nodes: IUserNode[]; edges: IUserEdge[]; combos: Combo[] } {
+export function generateData(): { nodes: IUserNode[]; edges: IUserEdge[]; } {
     const data = {
-        combos: [
-            {
-                id: 'combo-1',
-                label: 'Combo 1',
-                children: [
-                    {id: 'node-0'},
-                    {id: 'node-1'},
-                    {id: 'node-2'},
-                    {id: 'node-3'},
-                    {id: 'node-4'}
-                ],
-            },
-            {
-                id: 'combo-2',
-                label: 'Combo 2',
-                children: [
-                    {id: 'node-20'},
-                    {id: 'node-21'},
-                    {id: 'node-22'},
-                    {id: 'node-23'},
-                    {id: 'node-24'}
-                ],
-            },
-        ],
         nodes: [
             {id: 'node-0', label: 'Node-0',},
             {id: 'node-1', label: 'Node-1',},
