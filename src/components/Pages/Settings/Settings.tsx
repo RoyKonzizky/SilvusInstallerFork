@@ -1,18 +1,22 @@
 import SettingInput from "./SettingInput/SettingInput.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from 'react-redux';
-import * as SettingsSlice from "../../../redux/Settings/settlingsSlice.ts";
 import {Input, isInputWithOnClick, isInputWithValue} from "./InputTypes/Input.ts";
 import {RootState} from "../../../redux/store.ts";
 import PresetsButton from "./PresetsButton/PresetsButton.tsx";
 import {ISettingsProps} from "./ISettingsProps.ts";
+import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
+import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
+import {updateTheSettingsState} from "../../../redux/Settings/settlingsSlice.ts";
 
 export function Settings(props: ISettingsProps) {
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
     const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth).toString());
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
     const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower).toString());
+    const [ipAddress, setIpAddress] = useState("");
     const dispatch = useDispatch();
+
     const settingInputs: Input[][] = [
         [
             {type: "number", label: "Frequency (MHz)", value: frequency, setValue: setFrequency},
@@ -23,20 +27,28 @@ export function Settings(props: ISettingsProps) {
         ], [
             {
                 type: "button", label: "Save",
-                onClick: () => dispatch(SettingsSlice.updateTheSettingsState({
+                onClick: () => dispatch(updateTheSettingsState({
                     frequency: frequency === "" ? 0 : parseInt(frequency), bandwidth: bandwidth === "" ? 0 : parseInt(bandwidth),
                     networkId: networkId, totalTransitPower: totalTransitPower === "" ? 0 : totalTransitPower
                 }))
             },
             {
                 type: "button", label: "Save Network",
-                onClick: () => dispatch(SettingsSlice.updateTheSettingsState({
+                onClick: () => dispatch(updateTheSettingsState({
                     frequency: frequency === "" ? 0 : parseInt(frequency), bandwidth: bandwidth === "" ? 0 : parseInt(bandwidth),
                     networkId: networkId, totalTransitPower: totalTransitPower === "" ? 0 : totalTransitPower
                 }))
             }
         ]
     ];
+
+    useEffect(() => {
+        setIpAddress("172.20.238.213"); // TODO: change it to the server's IP answer when the server will be on! probably radio_ip from /net_data
+        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
+        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
+        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.NetworkId, ipAddress, setNetworkId);
+        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.TotalTransitPower, ipAddress, setTotalTransitPower);
+    }, [dispatch, ipAddress]);
 
     return (
         <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>

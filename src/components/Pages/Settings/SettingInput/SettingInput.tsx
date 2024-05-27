@@ -1,6 +1,8 @@
 import {ISettingInputProps} from "./ISettingInputProps.ts";
 
 function SettingInput(props: ISettingInputProps) {
+    const isNetworkID = props.label === "Network ID";
+
     return (
         <div className={`flex ${(props.type === "text" || props.type === "number") && "bg-[#303030]/70 w-[50%]"} p-3 rounded-xl`}>
             {(props.type === "text" || props.type === "number") && <label className="w-[60%] flex items-center text-start">{props.label}</label>}
@@ -17,6 +19,8 @@ function SettingInput(props: ISettingInputProps) {
                        if (props.type === "text" && [' ', '/', '\\'].indexOf(event.key) !== -1)
                            event.preventDefault();
                    }}
+                   readOnly={isNetworkID}
+                   disabled={isNetworkID}
                    inputMode={props.type === "number" ? "numeric" : "text"}
                    className={`bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 ${props.type === "text" || props.type === "number"
                        ? "w-[40%] text-start p-2 rounded-xl"
