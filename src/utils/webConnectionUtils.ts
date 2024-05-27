@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const sendPttGroupsToServer = async (data:{groups:string[], selectedOptions: {[p: string]: {[p: string]: number}}}) => {
+export const sendPttGroupsToServer = async (data:{groups:string[], selectedOptions: {[p: string]: {[p: string]: number}}}) => {
     try {
         await axios.post('your-server-url', data);
         console.log('Data sent successfully');
@@ -10,7 +10,7 @@ const sendPttGroupsToServer = async (data:{groups:string[], selectedOptions: {[p
 };
 // sendDataToServer({ groups: groups, selectedOptions: selectedOptions });
 
-const fetchBatteryData = async () => {
+export const fetchBatteryData = async () => {
     try {
         const response = await axios.get('your-server-url/get-battery');
         const batteryData = response.data;
@@ -25,7 +25,7 @@ const fetchBatteryData = async () => {
 //     // Handle the received battery data
 // });
 
-const fetchSnrsData = async () => {
+export const fetchSnrsData = async () => {
     try {
         const response = await axios.get('your-server-url/get-snrs');
         const snrsData = response.data;
