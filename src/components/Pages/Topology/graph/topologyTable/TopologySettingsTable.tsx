@@ -1,26 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
-import { Button, Table } from "antd";
+import { Button, Table, message } from "antd";
 import { IUserNode } from "@antv/graphin";
 import { updateHulls } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {createDataSource, deviceTalkStatus, isIUserNode, updateHullOptions
-} from "../../../../../utils/topologyUtils/settingsTableUtils.ts";
-import Select from 'react-select';
 import { RestNode } from "@antv/graphin/es/typings/type";
+import { createDataSource, getColumns, isIUserNode, updateHullOptions, selectedOptionsType } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 
 interface ITopologySettingsTable {
     groups: string[],
-    nodes: (IUserNode | RestNode)[]
+    nodes: (IUserNode | RestNode)[],
+    resetOnClose: boolean
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [additionalColumn, setAdditionalColumn] = useState<string | null>(null);
-    const [selectedOptions, setSelectedOptions] = useState<{ [group: string]: { [nodeId: string]: number } }>({});
+    const [selectedOptions, setSelectedOptions] = useState<selectedOptionsType>({});
     const [groups, setGroups] = useState<string[]>(props.groups);
     const [nodes, setNodes] = useState<(IUserNode | RestNode)[]>(props.nodes);
     const dispatch = useDispatch();
 
     function handleAddColumn() {
+        if (groups.length >= 15) return(message.warning("You can only add up to 15 groups."));
+
         const newColumn = window.prompt("Enter the name of the new column:");
         if (newColumn) setAdditionalColumn(newColumn);
     }
@@ -28,54 +29,15 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     function handleSelectChange(group: string, nodeId: string, value: number | null) {
         const newValue = value ?? 0;
         setSelectedOptions(prevOptions => ({
-            ...prevOptions,
-            [group]: {
-                ...prevOptions[group],
-                [nodeId]: newValue
-            }
+            ...prevOptions, [group]: { ...prevOptions[group], [nodeId]: newValue }
         }));
-
         setNodes(prevNodes =>
             prevNodes.map(node => {
-                if (isIUserNode(node) && node.id === nodeId) {
-                    return { ...node, data: { ...node.data, [group]: newValue } };
-                }
+                if (isIUserNode(node) && node.id === nodeId) return {...node, data: {...node.data, [group]: newValue}};
                 return node;
             })
         );
     }
-
-    function renderSelect(record: any, group: string) {
-        if (!isIUserNode(record)) {
-            return null;
-        }
-        const nodeId = record.id;
-        const value = selectedOptions[group]?.[nodeId] ?? 0;
-        return (
-            <Select
-                options={deviceTalkStatus}
-                placeholder={"סטטוס דיבור"}
-                isClearable
-                value={deviceTalkStatus.find(option => option.value === value) || null}
-                onChange={(option) => handleSelectChange(group, nodeId, option ? option.value : null)}
-            />
-        );
-    }
-
-    const columns = [
-        {
-            title: 'Node Label',
-            dataIndex: 'label',
-            key: 'label',
-            render: (_: string, record: any) => <span>{record.style.label.value}</span>,
-        },
-        ...groups.map(group => ({
-            title: group,
-            dataIndex: group,
-            key: group,
-            render: (_: string, record: any) => renderSelect(record, group),
-        })),
-    ];
 
     useEffect(() => {
         if (additionalColumn) setGroups([...groups, additionalColumn]);
@@ -84,7 +46,9 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     useEffect(() => {
         const updatedHulls = updateHullOptions(groups, nodes as IUserNode[], selectedOptions);
         dispatch(updateHulls(updatedHulls));
-    }, [selectedOptions, groups, dispatch, nodes]);
+    }, [selectedOptions, groups, dispatch, nodes, props.resetOnClose]);
+
+    const columns = getColumns(groups, selectedOptions, handleSelectChange);
 
     return (
         <div>
