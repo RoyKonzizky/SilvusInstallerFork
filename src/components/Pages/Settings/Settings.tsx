@@ -8,6 +8,7 @@ import {ISettingsProps} from "./ISettingsProps.ts";
 import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
 import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 import {updateTheSettingsState} from "../../../redux/Settings/settlingsSlice.ts";
+import {fetchRadioIpData} from "../../../utils/settingsUtils.ts";
 
 export function Settings(props: ISettingsProps) {
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
@@ -42,12 +43,16 @@ export function Settings(props: ISettingsProps) {
         ]
     ];
 
-    useEffect(() => {
-        setIpAddress("172.20.238.213"); // TODO: change it to the server's IP answer when the server will be on! probably radio_ip from /net_data
-        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
-        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
-        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.NetworkId, ipAddress, setNetworkId);
-        getInfoFromTheSilvusDevice(dispatch, SilvusDataType.TotalTransitPower, ipAddress, setTotalTransitPower);
+    useEffect( () => {
+        const loadData = async () => {
+            const ip = await fetchRadioIpData();
+            setIpAddress(ip ? ip : "172.20.238.213"); // just for testing
+            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
+            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
+            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.NetworkId, ipAddress, setNetworkId);
+            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.TotalTransitPower, ipAddress, setTotalTransitPower);
+        }
+        loadData().then(r => r);
     }, [dispatch, ipAddress]);
 
     return (
