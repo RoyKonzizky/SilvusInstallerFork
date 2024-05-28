@@ -5,15 +5,15 @@ import Select from "react-select";
 export type selectedOptionsType = { [p: string]: { [p: string]: number } };
 export type handleSelectChangeType = (group: string, nodeId: string, value: number | null) => void;
 
-export function createDataSource(nodes: IUserNode[]) {
-    return nodes.map((node: IUserNode, index: number) => ({key: index, ...node}))
-}
-
 export const deviceTalkStatus = [
     {value: 0, label: "לא בקבוצה"},
     {value: 1, label: "מקשיב"},
     {value: 2, label: "מדבר ומקשיב"},
 ];
+
+export function createDataSource(nodes: IUserNode[]) {
+    return nodes.map((node: IUserNode, index: number) => ({key: index, ...node}))
+}
 
 export function updateHullOptions(groups: string[], nodes: IUserNode[], selectedOptions: selectedOptionsType) {
     return groups.map(group => {
@@ -23,14 +23,6 @@ export function updateHullOptions(groups: string[], nodes: IUserNode[], selected
                 .map(node => node.id)
         };
     });
-}
-
-export function convertDataToServerFormat(hulls: { id: string, members: string[] }[], nodes: IUserNode[] | RestNode[]) {
-    const numOfGroups = hulls.length;
-    const ips = hulls.map(hull => hull.members);
-    const statuses: number[][] = (nodes as RestNode[]).map(node => (node as RestNode).data.statuses);
-    const convertedData = {num_groups: numOfGroups, ips, statuses};
-    return JSON.stringify(convertedData);
 }
 
 export function isIUserNode(node: IUserNode | RestNode): node is IUserNode {
@@ -52,7 +44,7 @@ export function renderSelect(record: any, group: string, selectedOptions: select
 }
 
 export function getColumns(groups: string[], selectedOptions: selectedOptionsType,
-                           handleSelectChange: (group: string, nodeId: string, value: number | null) => void) {
+                           handleSelectChange: handleSelectChangeType) {
     return [
         {
             title: 'Node Label', dataIndex: 'label', key: 'label',
