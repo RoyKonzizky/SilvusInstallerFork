@@ -6,7 +6,7 @@ import {TableModal} from "./topologyTable/TableModal";
 import {ElementPopover} from "./ElementPopover";
 import {RootState} from "../../../../redux/store.ts";
 import {HullCfg} from "@antv/graphin/lib/components/Hull";
-import {graphStyle} from "../../../../utils/topologyUtils/graphSetup.ts";
+import {graphStyle} from "../../../../utils/topologyUtils/graphUtils.ts";
 
 interface ITopologyGraph {
     graphData: { nodes: IUserNode[], edges: IUserEdge[] },
