@@ -8,7 +8,7 @@ import {ISettingsProps} from "./ISettingsProps.ts";
 import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
 import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 import {updateTheSettingsState} from "../../../redux/Settings/settlingsSlice.ts";
-import {fetchRadioIpData} from "../../../utils/settingsUtils.ts";
+import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
 
 export function Settings(props: ISettingsProps) {
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
@@ -45,14 +45,21 @@ export function Settings(props: ISettingsProps) {
 
     useEffect( () => {
         const loadData = async () => {
-            const ip = await fetchRadioIpData();
-            setIpAddress(ip ? ip : "172.20.238.213"); // just for testing
+            const basicSettingsResponse = await fetchBasicSettingsData();
+            console.log(basicSettingsResponse);
+            setIpAddress(basicSettingsResponse.radio_ip ?? "172.20.238.213"); // just for testing -- ip ? ip : "172.20.238.213"
+            // option from the server API/Docker:
+            setFrequency(basicSettingsResponse.frequency);
+            setBandwidth(basicSettingsResponse.bw);
+            setNetworkId(basicSettingsResponse.net_id);
+            setTotalTransitPower(basicSettingsResponse.power_dBm)
+            // option from the Silvus:
             getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
             getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
             getInfoFromTheSilvusDevice(dispatch, SilvusDataType.NetworkId, ipAddress, setNetworkId);
             getInfoFromTheSilvusDevice(dispatch, SilvusDataType.TotalTransitPower, ipAddress, setTotalTransitPower);
         }
-        loadData().then(r => r);
+        loadData();
     }, [dispatch, ipAddress]);
 
     return (
