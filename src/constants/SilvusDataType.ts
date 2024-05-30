@@ -1,3 +1,3 @@
 export enum SilvusDataType {
-    NetworkId = 'nodeid', Frequency = 'freq', Bandwidth = 'bw', TotalTransitPower = 'power_dBm'
+    NetworkId = 'nw_name', Frequency = 'freq', Bandwidth = 'bw', TotalTransitPower = 'power_dBm'
 }
