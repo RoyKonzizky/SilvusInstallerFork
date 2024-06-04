@@ -16,8 +16,8 @@ export function TableModal(props: ITableModal) {
 
     return (
         <div>
-            <button className={"text-black absolute z-50 left-1 top-1 w-20 h-24 rounded"} onClick={openModal}>
-                <img className={"bg-white rounded-full"} src={settingsIcon} alt={"settings"}/>
+            <button className={'text-black absolute z-50 left-1 top-1 w-20 h-24 rounded'} onClick={openModal}>
+                <img className={'bg-white rounded-full'} src={settingsIcon} alt={"settings"}/>
             </button>
             <HyperModal isOpen={modalState} requestClose={closeModal}>
                 <TopologySettingsTable resetOnClose={modalState} groups={[]}

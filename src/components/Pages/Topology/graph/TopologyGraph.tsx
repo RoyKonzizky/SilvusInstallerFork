@@ -3,7 +3,7 @@ import {useSelector} from "react-redux";
 import Graphin, {IUserEdge, IUserNode} from "@antv/graphin";
 import Hull from "@antv/graphin/es/components/Hull";
 import {TableModal} from "./topologyTable/TableModal";
-import {ElementPopover} from "./ElementPopover";
+import {ElementPopover} from "./popover/ElementPopover.tsx";
 import {RootState} from "../../../../redux/store.ts";
 import {HullCfg} from "@antv/graphin/lib/components/Hull";
 import {graphStyle} from "../../../../utils/topologyUtils/graphUtils.ts";

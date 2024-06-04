@@ -53,7 +53,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     return (
         <div>
             <Button onClick={handleAddColumn} className="mb-2">Add Group</Button>
-            <Table className={"bottom-0"} columns={columns} dataSource={createDataSource(nodes as IUserNode[])} />
+            <Table className={'bottom-0'} columns={columns} dataSource={createDataSource(nodes as IUserNode[])} />
         </div>
     );
 }

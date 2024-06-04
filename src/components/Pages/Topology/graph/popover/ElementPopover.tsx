@@ -1,5 +1,6 @@
 import {Popover} from "antd";
 import {IUserEdge, IUserNode} from "@antv/graphin";
+import {Battery} from "./Battery.tsx";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -21,15 +22,15 @@ export function ElementPopover(props: IElementPopoverProps) {
                      <div>
                          {props.selectedElement?.type === 'graphin-circle' ?
                              <div>
-                                 <p>{`The node ID  is ${props.selectedElement?.id}`}</p>
-                                 <p>{`battery is at ${Math.round(props.selectedElement?.data)}%`}</p>
+                                 <p className={"text-xl"}>{`ID: ${props.selectedElement?.id}`}</p>
+                                 <Battery voltage={Math.round(props.selectedElement?.data)} />
                              </div>
                              :
                              <p>{`SNR is ${props.selectedElement?.data}`}</p>
                          }
                          <button
-                             className={"bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded " +
-                                 "focus:outline-none z-50 flex justify-center"} onClick={props.onClose}>X
+                             className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +
+                                 'focus:outline-none z-50 flex justify-center'} onClick={props.onClose}>X
                          </button>
                      </div>
                  }
