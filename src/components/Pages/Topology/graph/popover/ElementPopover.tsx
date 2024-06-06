@@ -30,7 +30,7 @@ export function ElementPopover(props: IElementPopoverProps) {
                          }
                          <button
                              className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +
-                                 'focus:outline-none z-50 flex justify-center'} onClick={props.onClose}>X
+                                 'focus:outline-none z-50 flex justify-center absolute top-2 right-2 round'} onClick={props.onClose}>X
                          </button>
                      </div>
                  }

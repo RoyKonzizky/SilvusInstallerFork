@@ -1,9 +1,9 @@
 import {IUserNode} from "@antv/graphin";
 
-export type devicesType = { radio_ip: string, node_ids: string[], node_ips: string[] };
+// export type devicesType = { radio_ip: string, node_ids: string[], node_ips: string[] };
+export type devicesType = {ip: string, id: string}[];
 export type batteriesType = {ip: string, percent: string}[];
-export type snrElementType = [[string, string], string];
-export type snrsType = snrElementType[];
+export type snrsType = {id1: string, id2: string, snr: string}[];
 
 export function convertDataToServerFormat(hulls: { id: string, members: string[] }[], nodes: IUserNode[]) {
     const numOfGroups = hulls.length;

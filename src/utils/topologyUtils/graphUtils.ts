@@ -10,14 +10,14 @@ export const graphStyle = {
 
 export function createNodesFromData(devices: devicesType, batteries: batteriesType) {
     const nodes: IUserNode[] = [];
-    for (let i = 0; i < devices.node_ids.length; i++) {
+    for (let i = 0; i < devices.length; i++) {
         const color = '#1fb639';
 
         nodes[i] = {
-            id: devices.node_ids[i].toString(),
+            id: devices[i].id.toString(),
             style: {
                 label: {
-                    value: devices.node_ips[i].toString(),
+                    value: devices[i].ip.toString(),
                     fill: '#FFFFFF',
                 },
                 keyshape: {
@@ -36,9 +36,8 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
 export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
     const edges: IUserEdge[] = [];
 
-    for (const snrElement of snrs) {
-        const [nodeIds, snr] = snrElement;
-        const labelValue = Number(snr);
+    for (let i = 0; i < snrs.length; i++) {
+        const labelValue = Number(snrs[i].snr);
 
         let edgeColor;
         if (labelValue < 30) {
@@ -50,8 +49,8 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
         }
 
         edges.push({
-            source: nodeIds[0],
-            target: nodeIds[1],
+            source: snrs[i].id1,
+            target: snrs[i].id2,
             style: {
                 label: {
                     value: `${labelValue}`,
@@ -72,7 +71,12 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
     return edges;
 }
 
-export function removeDuplicates(arr: snrsType): snrsType {
-    return arr.filter((item,
-        index)=> arr.indexOf(item) === index);
+export function nodeLabelEdit(nodes: IUserNode[], nodeToEdit: IUserNode, labelChange: string): IUserNode[] {
+    const index = nodes.indexOf(nodeToEdit);
+    if (index !== -1) {
+        if (nodes[index].style) {
+            nodes[index].style!.label!.value = labelChange;
+        }
+    }
+    return nodes;
 }
