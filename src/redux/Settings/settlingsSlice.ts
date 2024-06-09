@@ -10,9 +10,21 @@ const settingsSlice = createSlice({
             state.bandwidth = action.payload.bandwidth;
             state.networkId = action.payload.networkId;
             state.totalTransitPower = action.payload.totalTransitPower;
+        },
+        setFrequency: (state, action) => {
+            state.frequency = action.payload;
+        },
+        setBandwidth: (state, action) => {
+            state.bandwidth = action.payload;
+        },
+        setNetworkId: (state, action) => {
+            state.networkId = action.payload;
+        },
+        setTotalTransitPower: (state, action) => {
+            state.totalTransitPower = action.payload;
         }
     },
 });
 
-export const { updateTheSettingsState } = settingsSlice.actions;
+export const { updateTheSettingsState, setFrequency, setBandwidth, setNetworkId, setTotalTransitPower} = settingsSlice.actions;
 export default settingsSlice.reducer;
