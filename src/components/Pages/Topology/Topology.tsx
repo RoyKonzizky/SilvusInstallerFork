@@ -11,7 +11,7 @@ export function Topology(props: ITopologyProps) {
     const [batteries, setBatteries] = useState<batteriesType | null>(null);
     const [snrsData, setSnrsData] = useState<snrsType | null>(null);
     const [graphData, setGraphData] = useState<{ nodes: IUserNode[], edges: IUserEdge[] } | null>(null);
-    const radioIp = '172.20.238.213';
+    const radioIp = '172.20.241.202';
     const ws = new WebSocket("ws://localhost:8080/ws");
     ws.onopen = () => {
         console.log('WebSocket connected');
@@ -32,6 +32,7 @@ export function Topology(props: ITopologyProps) {
     useEffect(() => {
         ws.onmessage = (event) => {
             try {
+                console.log(event.data);
                 const newData = JSON.parse(event.data);
                 console.log('Parsed WebSocket message:', newData);
                 console.log('Message type:', newData.type);

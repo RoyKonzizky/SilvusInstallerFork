@@ -14,7 +14,7 @@ export function Settings(props: ISettingsProps) {
     const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth).toString());
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
     const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower).toString());
-    const [ipAddress, setIpAddress] = useState("");
+    const [ipAddress, setIpAddress] = useState("172.20.241.202");
     const dispatch = useDispatch();
 
     const settingInputs: Input[][] = [
@@ -46,7 +46,7 @@ export function Settings(props: ISettingsProps) {
         const loadData = async () => {
             const basicSettingsResponse = await fetchBasicSettingsData();
             console.log(basicSettingsResponse);
-            setIpAddress(basicSettingsResponse.radio_ip ?? "172.20.238.213"); // just for testing -- ip ? ip : "172.20.238.213"
+            setIpAddress(basicSettingsResponse.radio_ip ?? "172.20.241.202"); // just for testing -- ip ? ip : "172.20.238.213"
             // option from the server API/Docker:
             setFrequency(basicSettingsResponse.frequency);
             setBandwidth(basicSettingsResponse.bw);

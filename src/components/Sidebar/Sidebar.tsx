@@ -5,9 +5,9 @@ import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
 import ExpandCollapseLogo from '../../assets/expand_collapse.svg';
 import SettingsLogo from '../../assets/settings.svg';
 import TopologyLogo from '../../assets/topology.svg';
-import RecordingsLogo from "../../assets/recordings.svg";
+// import RecordingsLogo from "../../assets/recordings.svg";
 import DashboardLogo from "../../assets/dashboard.svg";
-import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
+// import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
 import {Paths} from "../Paths.ts";
 import PresetsButton from "../PresetsButton/PresetsButton.tsx";
 
@@ -30,12 +30,12 @@ export function Sidebar() {
                 <div className='mt-[5vh]'>
                     <NavigatorButton href={Paths.Main} isSubsection={false} text="הגדרות" file={SettingsLogo}/>
                     <NavigatorButton href={Paths.Topology} isSubsection={false} text="טופולוגיה" file={TopologyLogo}/>
-                    <NavigatorButton
-                        href="" isSubsection={false}
-                        text="הקלטות" file={RecordingsLogo}
-                        possibleHrefSubsections={[Paths.Camera, Paths.Video, Paths.Gallery]}
-                        subsections={<SubsectionsOfRecordingsNavigatorButton/>}
-                    />
+                    {/*<NavigatorButton*/}
+                    {/*    href="" isSubsection={false}*/}
+                    {/*    text="הקלטות" file={RecordingsLogo}*/}
+                    {/*    possibleHrefSubsections={[Paths.Camera, Paths.Video, Paths.Gallery]}*/}
+                    {/*    subsections={<SubsectionsOfRecordingsNavigatorButton/>}*/}
+                    {/*/>*/}
                 </div>
             </div>
             <PresetsButton/>
