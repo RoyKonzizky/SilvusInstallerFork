@@ -1,11 +1,12 @@
 import {useEffect, useState} from 'react';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Button, Table} from "antd";
 import {IUserNode} from "@antv/graphin";
 import {updateHulls} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {createDataSource, deviceTalkStatus, updateHullOptions
+import {convertHullsToSelectedOptions, convertSelectedOptionsToHulls, createDataSource, deviceTalkStatus
 } from "../../../../../utils/topologyUtils/settingsTableUtils.ts";
 import Select from 'react-select';
+import {RootState} from "../../../../../redux/store.ts";
 
 interface ITopologySettingsTable {
     groups: string[],
@@ -13,12 +14,15 @@ interface ITopologySettingsTable {
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
+    const dispatch = useDispatch();
+    const hullOptions = useSelector((state: RootState) => state.topologyGroups.hullOptions);
+    const initialSelectedOptions = convertHullsToSelectedOptions(hullOptions, props.nodes);
+    const initialGroups = props.groups.length ? props.groups : Object.keys(initialSelectedOptions);
+    const [selectedOptions, setSelectedOptions] =
+        useState<{ [group: string]: { [nodeId: string]: number } }>(initialSelectedOptions);
+    const [groups, setGroups] = useState<string[]>(initialGroups);
     const [additionalColumn, setAdditionalColumn] =
         useState<string | null>(null);
-    const [selectedOptions, setSelectedOptions] =
-        useState<{ [group: string]: { [nodeId: string]: number } }>({});
-    const [groups, setGroups] = useState(props.groups);
-    const dispatch = useDispatch();
 
     function handleAddColumn() {
         const newColumn = window.prompt("Enter the name of the new column:");
@@ -58,9 +62,10 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [additionalColumn]);
 
     useEffect(() => {
-        const updatedHulls = updateHullOptions(groups, props.nodes, selectedOptions);
+        const updatedHulls = convertSelectedOptionsToHulls(groups, props.nodes,
+            selectedOptions);
         dispatch(updateHulls(updatedHulls));
-    }, [selectedOptions, groups, dispatch]);
+    }, [selectedOptions, groups, props.nodes, dispatch]);
 
     return (
         <div>
