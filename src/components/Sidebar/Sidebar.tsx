@@ -8,7 +8,7 @@ import TopologyLogo from '../../assets/topology.svg';
 // import RecordingsLogo from "../../assets/recordings.svg";
 import DashboardLogo from "../../assets/dashboard.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
-import {Paths} from "../Paths.ts";
+import {Paths} from "../../constants/Paths.ts";
 import PresetsButton from "../PresetsButton/PresetsButton.tsx";
 
 export function Sidebar() {
@@ -20,6 +20,8 @@ export function Sidebar() {
         }
     }, []);
 
+    if (window.location.pathname === Paths.Main) return null;
+
     return (
         <>
             <div
@@ -28,7 +30,7 @@ export function Sidebar() {
                                  onClick={() => dispatch(interactExpandingAndCollapsingButton())}/>
                 <NavigatorButton href={Paths.Dashboard} isSubsection={false} text="לוח" file={DashboardLogo}/>
                 <div className='mt-[5vh]'>
-                    <NavigatorButton href={Paths.Main} isSubsection={false} text="הגדרות" file={SettingsLogo}/>
+                    <NavigatorButton href={Paths.Settings} isSubsection={false} text="הגדרות" file={SettingsLogo}/>
                     <NavigatorButton href={Paths.Topology} isSubsection={false} text="טופולוגיה" file={TopologyLogo}/>
                     {/*<NavigatorButton*/}
                     {/*    href="" isSubsection={false}*/}

@@ -1,6 +1,6 @@
 import {Dispatch, SetStateAction} from "react";
 
-export interface ISettingInputProps {
+export interface IAppInputProps {
     label: string;
     type: string;
     onClick?: () => void;

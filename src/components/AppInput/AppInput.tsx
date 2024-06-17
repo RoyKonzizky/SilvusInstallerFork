@@ -1,6 +1,6 @@
-import {ISettingInputProps} from "./ISettingInputProps.ts";
+import {IAppInputProps} from "./IAppInputProps.ts";
 
-function SettingInput(props: ISettingInputProps) {
+function AppInput(props: IAppInputProps) {
     return (
         <div className={`flex ${(props.type === "text" || props.type === "number") && "bg-[#303030]/70 w-[50%]"} p-3 rounded-xl`}>
             {(props.type === "text" || props.type === "number") && <label className="w-[60%] flex items-center text-start">{props.label}</label>}
@@ -26,4 +26,4 @@ function SettingInput(props: ISettingInputProps) {
     );
 }
 
-export default SettingInput;
+export default AppInput;

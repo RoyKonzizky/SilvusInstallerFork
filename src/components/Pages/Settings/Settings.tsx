@@ -1,7 +1,7 @@
-import SettingInput from "./SettingInput/SettingInput.tsx";
+import AppInput from "../../AppInput/AppInput.tsx";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from 'react-redux';
-import {Input, isInputWithOnClick, isInputWithValue} from "./InputTypes/Input.ts";
+import {Input, isInputWithOnClick, isInputWithValue} from "../../AppInput/InputTypes/Input.ts";
 import {RootState} from "../../../redux/store.ts";
 import {ISettingsProps} from "./ISettingsProps.ts";
 import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
@@ -66,7 +66,7 @@ export function Settings(props: ISettingsProps) {
             {settingInputs.map((inputs, index) => (
                 <div key={index} className="flex justify-center gap-x-8 w-[50%]">
                     {inputs.map((input, idx) => (
-                        <SettingInput
+                        <AppInput
                             key={idx} type={input.type} label={input.label}
                             value={isInputWithValue(input) ? input.value : undefined}
                             setValue={isInputWithValue(input) ? input.setValue : undefined}

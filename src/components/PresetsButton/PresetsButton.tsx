@@ -2,7 +2,7 @@ import BottomCircle from "./BottomCircle/BottomCircle.tsx";
 import {useState} from "react";
 import PresetsButtonModal from "./PresetsButtonModal/PresetsButtonModal.tsx";
 import PresetsImage from "../../assets/presets.svg";
-import {Paths} from "../Paths.ts";
+import {Paths} from "../../constants/Paths.ts";
 
 function PresetsButton() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
