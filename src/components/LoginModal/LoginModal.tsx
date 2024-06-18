@@ -35,7 +35,7 @@ export function LoginModal(props: ILoginModalProps) {
 
     return (
         <>
-            <Modal isOpen={props.modalIsOpen} shouldCloseOnOverlayClick={false}
+            <Modal isOpen={props.modalIsOpen} shouldCloseOnOverlayClick={false} ariaHideApp={false}
                    className={`text-white text-3xl text-center flex justify-center items-center h-screen bg-[#000000]/75`}
             >
                 <div
