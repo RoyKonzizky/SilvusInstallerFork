@@ -7,6 +7,8 @@ import {isIPv4, isIPv6} from "../../../scripts/ipScripts.ts";
 import {ErrorMessage} from "../../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {fetchLogin} from "../../../utils/loginUtils.ts";
+import {useDispatch} from "react-redux";
+import {setIp} from "../../../redux/IP/IPSlice.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -14,6 +16,7 @@ export function Login() {
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const dispatch = useDispatch();
 
     const loginInputs: Input[][] = [
         [{type: "text", label: "IP Address", value: ipAddress, setValue: setIpAddress}],
@@ -22,6 +25,7 @@ export function Login() {
                 if (ipAddress !== "" && (isIPv4(ipAddress) || isIPv6(ipAddress))) {
                     await fetchLogin(ipAddress);
                     const isProtectedDevice = false;
+                    dispatch(setIp(ipAddress));
                     if (isProtectedDevice) setLoginModalIsOpen(true);
                     else navigate(Paths.Settings);
                 } else {
@@ -39,7 +43,7 @@ export function Login() {
             </div>
             <ErrorMessage errorMessage={errorMessage} modalIsOpen={errorModalIsOpen}
                           setModalIsOpen={setErrorModalIsOpen}/>
-            <LoginModal ipAddress={ipAddress} modalIsOpen={loginModalIsOpen} setModalIsOpen={setLoginModalIsOpen}/>
+            <LoginModal modalIsOpen={loginModalIsOpen} setModalIsOpen={setLoginModalIsOpen}/>
         </>
     );
 }

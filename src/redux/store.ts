@@ -2,13 +2,15 @@ import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import settingsReducer from './Settings/settlingsSlice.ts';
 import presetsReducer from './Presets/presetsSlice.ts';
 import collapsingReducer from './Collapsing/collapsingSlice';
-import topologyGroupsSlice from "./TopologyGroups/topologyGroupsSlice.ts";
+import topologyReducer from "./TopologyGroups/topologyGroupsSlice.ts";
+import ipReducer from "./IP/IPSlice.ts";
 
 const rootReducer = combineReducers({
     settings: settingsReducer,
     presets: presetsReducer,
     collapsing: collapsingReducer,
-    topologyGroups: topologyGroupsSlice,
+    topologyGroups: topologyReducer,
+    ip: ipReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const fetchBasicSettingsData = async () => {
     try {
-        const response = await axios.post('http://localhost:8080/basic-settings');
+        const response = await axios.post('http://localhost:8000/basic-settings');
         console.log('Response received:', response.data);
         return response.data;
     } catch (error) {

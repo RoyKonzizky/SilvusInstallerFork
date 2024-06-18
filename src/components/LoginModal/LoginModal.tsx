@@ -7,6 +7,8 @@ import {Paths} from "../../constants/Paths.ts";
 import {ErrorMessage} from "../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../AppInputs/AppInputs.tsx";
 import {fetchProtectedLogin} from "../../utils/loginUtils.ts";
+import {useSelector} from "react-redux";
+import {RootState} from "../../redux/store.ts";
 
 export function LoginModal(props: ILoginModalProps) {
     const navigate = useNavigate();
@@ -14,6 +16,7 @@ export function LoginModal(props: ILoginModalProps) {
     const [password, setPassword] = useState('');
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
 
     const loginInputs: Input[][] = [
         [{type: "text", label: "Username", value: username, setValue: setUsername}],
@@ -40,7 +43,7 @@ export function LoginModal(props: ILoginModalProps) {
             >
                 <div
                     className="bg-black p-4 rounded-xl w-[50%] h-[50%] flex flex-col justify-center items-center gap-y-8">
-                    Login into the device in {props.ipAddress}
+                    Login into the device in {ipAddress}
                     <AppInputs appInputs={loginInputs} className={'w-[160%]'}/>
                 </div>
             </Modal>

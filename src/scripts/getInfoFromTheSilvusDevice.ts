@@ -12,13 +12,13 @@ export function getInfoFromTheSilvusDevice(dispatch: Dispatch<UnknownAction>, me
                 dispatch(setNetworkId(response.data.result[0]));
                 break;
             case SilvusDataType.Frequency:
-                dispatch(setFrequency(response.data.result[0] as number));
+                dispatch(setFrequency(response.data.result[0]));
                 break;
             case SilvusDataType.Bandwidth:
-                dispatch(setBandwidth(response.data.result[0] as number));
+                dispatch(setBandwidth(response.data.result[0]));
                 break;
             case SilvusDataType.TotalTransitPower:
-                dispatch(setTotalTransitPower(response.data.result[0] as number));
+                dispatch(setTotalTransitPower(response.data.result[0]));
                 break;
         }
     }).catch(error => {

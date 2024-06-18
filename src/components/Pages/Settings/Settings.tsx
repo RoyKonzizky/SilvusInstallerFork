@@ -3,19 +3,19 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Input} from "../../AppInputs/InputTypes/Input.ts";
 import {RootState} from "../../../redux/store.ts";
 import {ISettingsProps} from "./ISettingsProps.ts";
-import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
-import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 import {updateTheSettingsState} from "../../../redux/Settings/settlingsSlice.ts";
-import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {bandwidthValues, frequencyValues, totalTransitPowerValues} from "../../../constants/SilvusDropDownValues.ts";
+import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
+// import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
+// import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 
 export function Settings(props: ISettingsProps) {
-    const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
-    const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth).toString());
+    const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency));
+    const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth));
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
-    const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower).toString());
-    const [ipAddress, setIpAddress] = useState(""); // "172.20.241.202"
+    const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower));
+    const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
     const dispatch = useDispatch();
 
     const settingInputs: Input[][] = [
@@ -46,18 +46,16 @@ export function Settings(props: ISettingsProps) {
     useEffect(() => {
         const loadData = async () => {
             const basicSettingsResponse = await fetchBasicSettingsData();
-            console.log(basicSettingsResponse);
-            setIpAddress(basicSettingsResponse.radio_ip); // basicSettingsResponse.radio_ip ?? "172.20.241.202"
             // option from the server API/Docker:
             setFrequency(basicSettingsResponse.frequency);
             setBandwidth(basicSettingsResponse.bw);
             setNetworkId(basicSettingsResponse.nw_name);
             setTotalTransitPower(basicSettingsResponse.power_dBm);
             // option from the Silvus:
-            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
-            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
-            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.NetworkId, ipAddress, setNetworkId);
-            getInfoFromTheSilvusDevice(dispatch, SilvusDataType.TotalTransitPower, ipAddress, setTotalTransitPower);
+            // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
+            // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
+            // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.NetworkId, ipAddress, setNetworkId);
+            // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.TotalTransitPower, ipAddress, setTotalTransitPower);
         }
         loadData();
     }, [dispatch, ipAddress]);

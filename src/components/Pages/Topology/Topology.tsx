@@ -20,7 +20,7 @@ export function Topology(props: ITopologyProps) {
     useEffect(() => {
         const sendRadioIpToServer = async () => {
             try {
-                const response = await axios.post('http://localhost:8080/set-radio-ip', {radio_ip: radioIp});
+                const response = await axios.post('http://localhost:8000/set-radio-ip', {radio_ip: radioIp});
                 console.log('Radio IP sent successfully:', response.data);
             } catch (error) {
                 console.error('Error sending radio IP:', error);
