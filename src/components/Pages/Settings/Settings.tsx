@@ -51,7 +51,7 @@ export function Settings(props: ISettingsProps) {
             setFrequency(basicSettingsResponse.frequency);
             setBandwidth(basicSettingsResponse.bw);
             setNetworkId(basicSettingsResponse.nw_name);
-            setTotalTransitPower(basicSettingsResponse.power_dBm)
+            setTotalTransitPower(basicSettingsResponse.power_dBm);
             // option from the Silvus:
             getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
             getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
@@ -64,7 +64,7 @@ export function Settings(props: ISettingsProps) {
     return (
         <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
             {settingInputs.map((inputs, index) => (
-                <div key={index} className="flex justify-center gap-x-8 w-[50%]">
+                <div key={index} className="flex justify-center gap-x-8 w-[52%]">
                     {inputs.map((input, idx) => (
                         <AppInput
                             key={idx} type={input.type} label={input.label}

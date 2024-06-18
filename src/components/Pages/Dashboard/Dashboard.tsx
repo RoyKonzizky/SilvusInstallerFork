@@ -1,9 +1,9 @@
 import {Settings} from "../Settings/Settings.tsx";
 import {Topology} from "../Topology/Topology.tsx";
-import {Camera} from "../Camera/Camera.tsx";
+// import {Camera} from "../Camera/Camera.tsx";
 
 export function Dashboard() {
-    const elements = [<Settings isSmaller={true}/>, <Topology isSmaller={true}/>, <Camera/>, <>VIDEO</>, <>GALLERY</>];
+    const elements = [<Settings isSmaller={true}/>, <Topology isSmaller={true}/>/*, <Camera/>, <>VIDEO</>, <>GALLERY</>*/];
     const isOddLength = elements.length % 2 === 1;
 
     return (
