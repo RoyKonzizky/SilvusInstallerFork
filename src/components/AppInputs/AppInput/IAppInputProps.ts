@@ -6,4 +6,5 @@ export interface IAppInputProps {
     onClick?: () => void;
     value?: string;
     setValue?: Dispatch<SetStateAction<string>>;
+    values?: string[];
 }

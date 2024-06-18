@@ -5,4 +5,5 @@ export interface InputWithValue {
     label: string;
     value: string;
     setValue: Dispatch<SetStateAction<string>>;
+    values?: string[];
 }

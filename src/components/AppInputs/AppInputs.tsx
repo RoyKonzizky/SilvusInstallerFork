@@ -13,6 +13,7 @@ export function AppInputs(props: IAppInputsProps) {
                             value={isInputWithValue(input) ? input.value : undefined}
                             setValue={isInputWithValue(input) ? input.setValue : undefined}
                             onClick={isInputWithOnClick(input) ? input.onClick : undefined}
+                            values={isInputWithValue(input) ? input.values : undefined}
                         />
                     ))}
                 </div>
