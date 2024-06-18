@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 import {Paths} from "../../constants/Paths.ts";
 import {ErrorMessage} from "../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../AppInputs/AppInputs.tsx";
-// import {fetchProtectedLogin} from "../../utils/loginUtils.ts";
+import {fetchProtectedLogin} from "../../utils/loginUtils.ts";
 
 export function LoginModal(props: ILoginModalProps) {
     const navigate = useNavigate();
@@ -20,7 +20,7 @@ export function LoginModal(props: ILoginModalProps) {
         [{type: "text", label: "Password", value: password, setValue: setPassword}],
         [{
             type: "button", label: "Enter", onClick: async () => {
-                const logInSuccessResult = "Success" // await fetchProtectedLogin({username: username, password: password}); // "Success";
+                const logInSuccessResult = await fetchProtectedLogin({username: username, password: password}); // "Success";
                 if (logInSuccessResult === "Success") {
                     props.setModalIsOpen(false);
                     navigate(Paths.Settings);
