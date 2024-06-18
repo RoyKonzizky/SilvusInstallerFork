@@ -40,6 +40,7 @@ export function LoginModal(props: ILoginModalProps) {
             >
                 <div
                     className="bg-black p-4 rounded-xl w-[50%] h-[50%] flex flex-col justify-center items-center gap-y-8">
+                    Login into the device in {props.ipAddress}
                     <AppInputs appInputs={loginInputs} className={'w-[160%]'}/>
                 </div>
             </Modal>

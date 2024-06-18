@@ -39,7 +39,7 @@ export function Login() {
             </div>
             <ErrorMessage errorMessage={errorMessage} modalIsOpen={errorModalIsOpen}
                           setModalIsOpen={setErrorModalIsOpen}/>
-            <LoginModal modalIsOpen={loginModalIsOpen} setModalIsOpen={setLoginModalIsOpen}/>
+            <LoginModal ipAddress={ipAddress} modalIsOpen={loginModalIsOpen} setModalIsOpen={setLoginModalIsOpen}/>
         </>
     );
 }
