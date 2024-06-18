@@ -1,13 +1,13 @@
-import AppInput from "../../AppInput/AppInput.tsx";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from 'react-redux';
-import {Input, isInputWithOnClick, isInputWithValue} from "../../AppInput/InputTypes/Input.ts";
+import {Input} from "../../AppInputs/InputTypes/Input.ts";
 import {RootState} from "../../../redux/store.ts";
 import {ISettingsProps} from "./ISettingsProps.ts";
 import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
 import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 import {updateTheSettingsState} from "../../../redux/Settings/settlingsSlice.ts";
 import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
+import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 
 export function Settings(props: ISettingsProps) {
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency).toString());
@@ -42,7 +42,7 @@ export function Settings(props: ISettingsProps) {
         ]
     ];
 
-    useEffect( () => {
+    useEffect(() => {
         const loadData = async () => {
             const basicSettingsResponse = await fetchBasicSettingsData();
             console.log(basicSettingsResponse);
@@ -63,18 +63,7 @@ export function Settings(props: ISettingsProps) {
 
     return (
         <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
-            {settingInputs.map((inputs, index) => (
-                <div key={index} className="flex justify-center gap-x-8 w-[52%]">
-                    {inputs.map((input, idx) => (
-                        <AppInput
-                            key={idx} type={input.type} label={input.label}
-                            value={isInputWithValue(input) ? input.value : undefined}
-                            setValue={isInputWithValue(input) ? input.setValue : undefined}
-                            onClick={isInputWithOnClick(input) ? input.onClick : undefined}
-                        />
-                    ))}
-                </div>
-            ))}
+            <AppInputs appInputs={settingInputs} className={'w-[82%]'}/>
         </div>
     );
 }
