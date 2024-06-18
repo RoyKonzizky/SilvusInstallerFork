@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const fetchLogin = async (ipAddress: string) => {
     try {
-        const response = await axios.post('http://localhost:8080/set-radio-ip', ipAddress);
+        const response = await axios.post('http://localhost:8080/set-radio-ip', {ip: ipAddress});
         console.log('Response received:', response.data);
         return response.data;
     } catch (error) {

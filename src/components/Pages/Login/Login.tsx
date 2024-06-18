@@ -6,7 +6,7 @@ import {LoginModal} from "../../LoginModal/LoginModal.tsx";
 import {isIPv4, isIPv6} from "../../../scripts/ipScripts.ts";
 import {ErrorMessage} from "../../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
-//import {fetchLogin} from "../../../utils/loginUtils.ts";
+import {fetchLogin} from "../../../utils/loginUtils.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -20,7 +20,8 @@ export function Login() {
         [{
             type: "button", label: "Enter", onClick: async () => {
                 if (ipAddress !== "" && (isIPv4(ipAddress) || isIPv6(ipAddress))) {
-                    const isProtectedDevice = true; // await fetchLogin(ipAddress);
+                    await fetchLogin(ipAddress);
+                    const isProtectedDevice = true;
                     if (isProtectedDevice) setLoginModalIsOpen(true);
                     else navigate(Paths.Settings);
                 } else {
