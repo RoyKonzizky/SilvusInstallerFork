@@ -3,7 +3,7 @@ import {Input} from "../../AppInputs/InputTypes/Input.ts";
 import {Paths} from "../../../constants/Paths.ts";
 import {useNavigate} from "react-router-dom";
 import {LoginModal} from "../../LoginModal/LoginModal.tsx";
-import {isIPv4, isIPv6} from "../../../utils/ipUtils.ts";
+import {isIPv4, isIPv6} from "../../../scripts/ipScripts.ts";
 import {ErrorMessage} from "../../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 //import {fetchLogin} from "../../../utils/loginUtils.ts";
