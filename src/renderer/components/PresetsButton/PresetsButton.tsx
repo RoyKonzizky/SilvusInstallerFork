@@ -9,7 +9,7 @@ function PresetsButton() {
 
     return (
         <div>
-            {window.location.href === window.location.origin + Paths.Main &&
+            {window.location.href === window.location.origin + Paths.Settings &&
                 <div className="flex items-start justify-start absolute bottom-1 left-1 cursor-pointer"
                  onClick={() => setModalIsOpen(true)}>
                 <BottomCircle radius={40} image={PresetsImage} bgColor='#303030'/>
