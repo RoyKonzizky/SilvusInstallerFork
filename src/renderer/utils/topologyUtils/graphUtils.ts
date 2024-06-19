@@ -40,9 +40,9 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
         const labelValue = Number(snrs[i].snr);
 
         let edgeColor;
-        if (labelValue < 30) {
+        if (labelValue < 20) {
             edgeColor = 'red';
-        } else if (labelValue > 60) {
+        } else if (labelValue > 30) {
             edgeColor = 'green';
         } else {
             edgeColor = 'yellow';
