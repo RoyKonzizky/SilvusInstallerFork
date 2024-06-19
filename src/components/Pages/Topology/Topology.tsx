@@ -1,7 +1,6 @@
 import {useEffect, useState} from 'react';
 import {ITopologyProps} from "./ITopologyProps";
 import {TopologyGraph} from "./graph/TopologyGraph";
-import axios from 'axios';
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {createEdgesFromData, createNodesFromData} from "../../../utils/topologyUtils/graphUtils.ts";
 import {batteriesType, devicesType, snrsType} from "../../../utils/webConnectionUtils.ts";
@@ -16,7 +15,6 @@ export function Topology(props: ITopologyProps) {
         useState<snrsType | null>(null);
     const [graphData, setGraphData] =
         useState<{ nodes: IUserNode[], edges: IUserEdge[] } | null>(null);
-    const radioIp = '172.20.241.202';
     const ws_url = "ws://localhost:8080/ws";
     const { lastJsonMessage } = useWebSocket(
         ws_url, {
@@ -25,19 +23,6 @@ export function Topology(props: ITopologyProps) {
             onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
         }
     );
-
-    useEffect(() => {
-        const sendRadioIpToServer = async () => {
-            try {
-                const response = await axios.post('http://localhost:8080/set-radio-ip',
-                    {radio_ip: radioIp});
-                console.log('Radio IP sent successfully:', response.data);
-            } catch (error) {
-                console.error('Error sending radio IP:', error);
-            }
-        };
-        sendRadioIpToServer();
-    }, []);
 
     useEffect(() => {
         if (lastJsonMessage) {
