@@ -9,7 +9,6 @@ import DashboardLogo from "../../assets/dashboard.svg";
 // import RecordingsLogo from "../../assets/recordings.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
 import {Paths} from "../../constants/Paths.ts";
-import PresetsButton from "../PresetsButton/PresetsButton.tsx";
 
 export function Sidebar() {
     const dispatch = useDispatch();
@@ -40,7 +39,6 @@ export function Sidebar() {
                     {/*/>*/}
                 </div>
             </div>
-            <PresetsButton/>
         </>
     );
 }

@@ -3,8 +3,9 @@ import {useState} from "react";
 import PresetsButtonModal from "./PresetsButtonModal/PresetsButtonModal.tsx";
 import PresetsImage from "../../assets/presets.svg";
 import {Paths} from "../../constants/Paths.ts";
+import {IPresetsButtonProps} from "./IPresetsButtonProps.ts";
 
-function PresetsButton() {
+function PresetsButton(props: IPresetsButtonProps) {
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     return (
@@ -15,7 +16,8 @@ function PresetsButton() {
                 <BottomCircle radius={40} image={PresetsImage} bgColor='#303030'/>
             </div>
             }
-            <PresetsButtonModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+            <PresetsButtonModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}
+                                selectedPreset={props.selectedPreset} setSelectedPreset={props.setSelectedPreset}/>
         </div>
     );
 }

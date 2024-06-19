@@ -1,18 +1,14 @@
-import {useState} from "react";
 import Modal from "react-modal";
-import {useDispatch, useSelector} from "react-redux";
 import {IPresetsButtonModalProps} from "./IPresetsButtonModalProps.ts";
-import {changeChosenSpectrum} from "../../../redux/Presets/presetsSlice.ts";
-import {RootState} from "../../../redux/store.ts";
+import {useState} from "react";
 
 function PresetsButtonModal(props: IPresetsButtonModalProps) {
-    const dispatch = useDispatch();
+    const [selectedPreset, setSelectedPreset] = useState(props.selectedPreset);
     const presets = ["High", "Medium", "Low"];
-    const [selectedPreset, setSelectedPreset] = useState(useSelector((state: RootState) => state.presets.chosenSpectrum));
 
     const handleCloseModal = () => {
+        props.setSelectedPreset(selectedPreset);
         props.setModalIsOpen(false);
-        dispatch(changeChosenSpectrum(selectedPreset));
     };
 
     return (

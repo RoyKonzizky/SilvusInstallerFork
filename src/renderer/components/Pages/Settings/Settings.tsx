@@ -7,6 +7,8 @@ import {updateTheSettingsState} from "../../../redux/Settings/settlingsSlice.ts"
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {bandwidthValues, frequencyValues, totalTransitPowerValues} from "../../../constants/SilvusDropDownValues.ts";
 import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
+import PresetsButton from "../../PresetsButton/PresetsButton.tsx";
+import {changePreset} from "../../../utils/presetsUtils.ts";
 // import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
 // import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 
@@ -16,6 +18,7 @@ export function Settings(props: ISettingsProps) {
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
     const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower));
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
+    const [selectedPreset, setSelectedPreset] = useState(useSelector((state: RootState) => state.presets.chosenSpectrum));
     const dispatch = useDispatch();
 
     const settingInputs: Input[][] = [
@@ -28,17 +31,11 @@ export function Settings(props: ISettingsProps) {
         ], [
             {
                 type: "button", label: "Save",
-                onClick: () => dispatch(updateTheSettingsState({
-                    frequency: frequency, bandwidth: bandwidth,
-                    networkId: networkId, totalTransitPower: totalTransitPower
-                }))
+                onClick: () => dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
             },
             {
                 type: "button", label: "Save Network",
-                onClick: () => dispatch(updateTheSettingsState({
-                    frequency: frequency, bandwidth: bandwidth,
-                    networkId: networkId, totalTransitPower: totalTransitPower
-                }))
+                onClick: () => dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
             }
         ]
     ];
@@ -60,9 +57,16 @@ export function Settings(props: ISettingsProps) {
         loadData();
     }, [dispatch, ipAddress]);
 
+    useEffect(() => {
+        changePreset(selectedPreset, setFrequency, setBandwidth, setTotalTransitPower);
+    }, [selectedPreset]);
+
     return (
-        <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
-            <AppInputs appInputs={settingInputs} className={'w-[130%]'}/>
-        </div>
+        <>
+            <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
+                <AppInputs appInputs={settingInputs} className={'w-[130%]'}/>
+            </div>
+            <PresetsButton selectedPreset={selectedPreset} setSelectedPreset={setSelectedPreset}/>
+        </>
     );
 }
