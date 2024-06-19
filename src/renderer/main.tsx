@@ -1,6 +1,5 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import {Sidebar} from "./components/Sidebar/Sidebar.tsx";
 import {Topology} from "./components/Pages/Topology/Topology.tsx";
@@ -11,6 +10,7 @@ import {Camera} from "./components/Pages/Camera/Camera.tsx";
 import store from "./redux/store.ts";
 import {Dashboard} from "./components/Pages/Dashboard/Dashboard.tsx";
 import {Login} from "./components/Pages/Login/Login.tsx";
+import './index.css';
 
 const router = createBrowserRouter([
     {

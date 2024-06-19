@@ -6,11 +6,21 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                additionalData: `@import "./src/index.css";`,
+                additionalData: `@import "./src/renderer/index.css";`,
             },
         },
     },
     define: {
         "global": {},
+    },
+    build: {
+        outDir: 'dist',
+        rollupOptions: {
+            external: ['electron'],
+        },
+    },
+    server: {
+        port: 5173, // Ensure this matches the port in your main.js
+        strictPort: true,
     },
 });

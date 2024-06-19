@@ -1,6 +1,12 @@
 import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import CameraLogo from "../../assets/camera.svg";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import FilmmakerLogo from "../../assets/filmmaker.svg";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import GalleryLogo from "../../assets/gallery.svg";
 import {Paths} from "../../constants/Paths.ts";
 

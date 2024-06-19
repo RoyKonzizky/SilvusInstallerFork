@@ -28,7 +28,7 @@ async function handleFileOpen() {
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
     webPreferences: {
-      preload: path__namespace.join(__dirname, "../preload/preload.js"),
+      preload: path__namespace.join(__dirname, "../preload/preload.cjs"),
       webSecurity: false
     }
   });

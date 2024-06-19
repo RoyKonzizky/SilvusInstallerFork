@@ -2,12 +2,16 @@
   "name": "Silvus",
   "private": true,
   "version": "0.0.0",
-  "main": "./out/main/main.js",
+  "type": "module",
+  "main": "out/main/main.cjs",
   "scripts": {
-    "dev": "electron-vite dev -w",
-    "build": "electron-vite build",
-    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "electron-vite preview"
+    "start": "npm run build && npm run electron:start",
+    "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:dev": "cross-env IS_DEV=true electron-forge start",
+    "electron:build": "electron-forge make",
+    "electron:package": "electron-forge package"
   },
   "dependencies": {
     "@antv/g6": "^4.8.24",
@@ -33,6 +37,7 @@
     "styled-react-modal": "^3.1.1"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-modal": "^3.16.3",
@@ -42,6 +47,7 @@
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.18",
     "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "electron": "^31.0.1",
     "electron-builder": "^24.13.3",
     "electron-vite": "^2.2.0",
