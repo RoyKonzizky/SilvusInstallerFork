@@ -1,10 +1,10 @@
 import {useState} from 'react';
 import HyperModal from "react-hyper-modal";
-import settingsIcon from '../../../../../assets/settingsIconTopology.svg';
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {TopologySettingsTable} from "./TopologySettingsTable.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/store.ts";
+import settingsIcon from "../../../../../assets/settingsIconTopology.svg";
 
 interface ITableModal {
     graphData: { nodes: IUserNode[], edges: IUserEdge[] },
@@ -20,7 +20,7 @@ export function TableModal(props: ITableModal) {
 
     return (
         <div>
-            <button className={'text-black absolute z-50 left-1 top-1 w-20 h-24 rounded'} onClick={openModal}>
+            <button className={'text-black w-20 h-24 rounded'} onClick={openModal}>
                 <img className={'bg-white rounded-full'} src={settingsIcon} alt={"settings"}/>
             </button>
             <HyperModal isOpen={modalState} requestClose={closeModal}>

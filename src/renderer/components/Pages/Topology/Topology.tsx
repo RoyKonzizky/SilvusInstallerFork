@@ -1,39 +1,33 @@
 import {useEffect, useState} from 'react';
 import {ITopologyProps} from "./ITopologyProps";
 import {TopologyGraph} from "./graph/TopologyGraph";
-import axios from 'axios';
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {createEdgesFromData, createNodesFromData} from "../../../utils/topologyUtils/graphUtils.ts";
 import {batteriesType, devicesType, snrsType} from "../../../utils/webConnectionUtils.ts";
+import useWebSocket from "react-use-websocket";
 
 export function Topology(props: ITopologyProps) {
-    const [devices, setDevices] = useState<devicesType | null>(null);
-    const [batteries, setBatteries] = useState<batteriesType | null>(null);
-    const [snrsData, setSnrsData] = useState<snrsType | null>(null);
-    const [graphData, setGraphData] = useState<{ nodes: IUserNode[], edges: IUserEdge[] } | null>(null);
-    const radioIp = '172.20.241.202';
-    const ws = new WebSocket("ws://localhost:8080/ws");
-    ws.onopen = () => {
-        console.log('WebSocket connected');
-    };
+    const [devices, setDevices] =
+        useState<devicesType | null>(null);
+    const [batteries, setBatteries] =
+        useState<batteriesType | null>(null);
+    const [snrsData, setSnrsData] =
+        useState<snrsType | null>(null);
+    const [graphData, setGraphData] =
+        useState<{ nodes: IUserNode[], edges: IUserEdge[] } | null>(null);
+    const ws_url = "ws://localhost:8080/ws";
+    const { lastJsonMessage } = useWebSocket(
+        ws_url, {
+            share: true,
+            shouldReconnect: () => true, onError: (error) => console.error('WebSocket error:', error),
+            onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
+        }
+    );
 
     useEffect(() => {
-        const sendRadioIpToServer = async () => {
+        if (lastJsonMessage) {
             try {
-                const response = await axios.post('http://localhost:8000/set-radio-ip', {radio_ip: radioIp});
-                console.log('Radio IP sent successfully:', response.data);
-            } catch (error) {
-                console.error('Error sending radio IP:', error);
-            }
-        };
-        sendRadioIpToServer();
-    }, []);
-
-    useEffect(() => {
-        ws.onmessage = (event) => {
-            try {
-                console.log(event.data);
-                const newData = JSON.parse(event.data);
+                const newData = lastJsonMessage as { type: string, data: any };
                 console.log('Parsed WebSocket message:', newData);
                 console.log('Message type:', newData.type);
 
@@ -47,36 +41,25 @@ export function Topology(props: ITopologyProps) {
                     console.log('Unknown message type:', newData.type);
                 }
             } catch (error) {
-                console.error('Error parsing WebSocket message:', error);
+                console.error('Error handling WebSocket message:', error);
             }
-        };
-
-        ws.onclose = () => {
-            console.log('WebSocket disconnected');
-        };
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-    }, []);
+        }
+    }, [lastJsonMessage]);
 
     useEffect(() => {
-        const loadData = async () => {
-            if (devices && batteries && snrsData) {
-                try {
-                    const nodes = createNodesFromData(devices, batteries);
-                    const edges = createEdgesFromData(snrsData);
-                    setGraphData({nodes, edges});
-                } catch (error) {
-                    console.error('Error in loading data:', error);
-                }
+        if (devices && batteries && snrsData) {
+            try {
+                setGraphData({nodes: createNodesFromData(devices, batteries),
+                    edges: createEdgesFromData(snrsData)});
+            } catch (error) {
+                console.error('Error in loading data:', error);
             }
-        };
-        loadData();
+        }
     }, [devices, batteries, snrsData]);
 
     return (
-        <div
-            className={`${props.isSmaller ? 'w-[35%] h-[35%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
+        <div className={`${props.isSmaller ? 'w-[35%] h-[35%]' : 
+                'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {graphData ? (<TopologyGraph graphData={graphData}/>) : <h1 className={"h-24 w-36"}>LOADING</h1>}
         </div>
     );
