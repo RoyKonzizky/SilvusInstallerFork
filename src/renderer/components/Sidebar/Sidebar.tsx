@@ -2,20 +2,10 @@ import {useEffect} from 'react';
 import {useDispatch} from "react-redux";
 import {interactExpandingAndCollapsingButton} from "../../redux/Collapsing/collapsingSlice.ts";
 import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import ExpandCollapseLogo from '../../assets/expand_collapse.svg';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import SettingsLogo from '../../assets/settings.svg';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import TopologyLogo from '../../assets/topology.svg';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import DashboardLogo from "../../assets/dashboard.svg";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 // import RecordingsLogo from "../../assets/recordings.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
 import {Paths} from "../../constants/Paths.ts";

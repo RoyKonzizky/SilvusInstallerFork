@@ -1,7 +1,5 @@
 import {useState} from 'react';
 import HyperModal from "react-hyper-modal";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import settingsIcon from '../../../../../assets/settingsIconTopology.svg';
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {TopologySettingsTable} from "./TopologySettingsTable.tsx";
