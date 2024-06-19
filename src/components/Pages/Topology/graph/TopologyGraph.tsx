@@ -2,11 +2,11 @@ import {useEffect, useRef, useState} from "react";
 import {useSelector} from "react-redux";
 import Graphin, {IUserEdge, IUserNode} from "@antv/graphin";
 import Hull from "@antv/graphin/es/components/Hull";
-import {TableModal} from "./topologyTable/TableModal";
 import {ElementPopover} from "./popover/ElementPopover.tsx";
 import {RootState} from "../../../../redux/store.ts";
 import {HullCfg} from "@antv/graphin/lib/components/Hull";
 import {graphStyle} from "../../../../utils/topologyUtils/graphUtils.ts";
+import {TopologyTopBar} from "../topBar/TopologyTopBar.tsx";
 
 interface ITopologyGraph {
     graphData: { nodes: IUserNode[], edges: IUserEdge[] },
@@ -18,7 +18,8 @@ export function TopologyGraph(props: ITopologyGraph) {
     const [popoverPosition, setPopoverPosition] =
         useState<{ x: number, y: number }>({x: 0, y: 0});
     const hullsFromSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
-    const [hullOptions, setHullOptions] = useState<HullCfg[]>(hullsFromSelector ?? []);
+    const [hullOptions, setHullOptions] =
+        useState<HullCfg[]>(hullsFromSelector ?? []);
     const graphRef = useRef<any>(null);
     const [showHulls, setShowHulls] = useState(false);
 
@@ -61,12 +62,12 @@ export function TopologyGraph(props: ITopologyGraph) {
 
     return (
         <Graphin ref={graphRef} modes={modes} data={props.graphData} style={graphStyle}>
-            <TableModal graphData={props.graphData}/>
             {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
                                                  position={popoverPosition} selectedElement={selectedElement}/>)}
             {showHulls && (hullOptions.length > 0 &&
                     hullOptions.every(hull => hull.members && hull.members.length > 0)) &&
                 (<Hull options={hullOptions}/>)}
+            <TopologyTopBar graphData={props.graphData}/>
         </Graphin>
     );
 }

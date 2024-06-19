@@ -6,7 +6,13 @@ export default {
     './public/index.html',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        graphinEdgeYellow: '#ffff00',
+        graphinEdgeGreen: '#008000',
+        graphinEdgeRed: '#ff0000',
+      },
+    },
   },
   plugins: [],
   // Enable the @apply feature
