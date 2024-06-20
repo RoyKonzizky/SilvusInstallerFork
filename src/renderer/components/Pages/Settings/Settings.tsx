@@ -24,10 +24,10 @@ export function Settings(props: ISettingsProps) {
     const settingInputs: Input[][] = [
         [
             {type: "text", label: "Frequency (MHz)", value: frequency, setValue: setFrequency, values: frequencyValues},
-            {type: "text", label: "Bandwidth", value: bandwidth, setValue: setBandwidth, values: bandwidthValues}
+            {type: "text", label: "Bandwidth", value: bandwidth, setValue: setBandwidth, values: bandwidthValues, additionalText: 'MHz'}
         ], [
             {type: "text", label: "Network ID", value: networkId, setValue: setNetworkId},
-            {type: "text", label: "Total Transit Power", value: totalTransitPower, setValue: setTotalTransitPower, values: totalTransitPowerValues}
+            {type: "text", label: "Total Transit Power", value: totalTransitPower, setValue: setTotalTransitPower, values: totalTransitPowerValues, additionalText: 'dBm'}
         ], [
             {
                 type: "button", label: "Save",
@@ -46,7 +46,7 @@ export function Settings(props: ISettingsProps) {
             // option from the server API/Docker:
             setFrequency(basicSettingsResponse.frequency);
             setBandwidth(basicSettingsResponse.bw);
-            setNetworkId(basicSettingsResponse.nw_name);
+            setNetworkId(basicSettingsResponse.net_id);
             setTotalTransitPower(basicSettingsResponse.power_dBm);
             // option from the Silvus:
             // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);

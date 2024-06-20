@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const fetchLogin = async (ipAddress: string) => {
     try {
-        const response = await axios.post('http://localhost:8000/set-radio-ip', {radio_ip: ipAddress});
+        const response = await axios.post('http://localhost:8080/set-radio-ip', {radio_ip: ipAddress});
         console.log('Response received:', response.data);
         return response.data;
     } catch (error) {
@@ -13,7 +13,7 @@ export const fetchLogin = async (ipAddress: string) => {
 
 export const fetchProtectedLogin = async (loginUser: { password: string; username: string }) => {
     try {
-        const response = await axios.post('http://localhost:8000/log-in', loginUser);
+        const response = await axios.post('http://localhost:8080/log-in', loginUser);
         console.log('Response received:', response.data);
         return response.data;
     } catch (error) {

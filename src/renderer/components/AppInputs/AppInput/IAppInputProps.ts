@@ -7,4 +7,5 @@ export interface IAppInputProps {
     value?: string;
     setValue?: Dispatch<SetStateAction<string>>;
     values?: string[];
+    additionalText?: string;
 }

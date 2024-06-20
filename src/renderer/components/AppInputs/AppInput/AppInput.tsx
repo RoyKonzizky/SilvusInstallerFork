@@ -3,7 +3,7 @@ import { IAppInputProps } from './IAppInputProps';
 function AppInput(props: IAppInputProps) {
     return (
         <div className={`flex ${(props.type === 'text' || props.type === 'number') && 'bg-[#303030]/70 w-[50%]'} p-3 rounded-xl`}>
-            {(props.type === 'text' || props.type === 'number') && <label className="w-[60%] flex items-center text-start">{props.label}</label>}
+            {(props.type === 'text' || props.type === 'number') && <label className="w-[60%] flex items-center text-start">{props.label} {props.additionalText}</label>}
             {props.values ? (
                 <select
                     value={props.value}
@@ -14,7 +14,7 @@ function AppInput(props: IAppInputProps) {
                 >
                     {props.values.map((val) => (
                         <option key={val} value={val}>
-                            {val}
+                            {val} {props.additionalText}
                         </option>
                     ))}
                 </select>
