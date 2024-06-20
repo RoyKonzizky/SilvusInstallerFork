@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "electron:dev": "cross-env IS_DEV=true electron-forge start",
     "electron:build": "electron-forge make",
-    "electron:package": "electron-forge package"
+    "electron:package": "electron-forge package",
+    "package": "electron-packager . Silvus --platform=win32 --arch=x64 --out=C:\\\\ --overwrite"
   },
   "dependencies": {
     "@antv/g6": "^4.8.24",
@@ -23,6 +24,7 @@
     "antd": "^5.18.1",
     "axios": "^1.7.2",
     "d3": "^7.9.0",
+    "electron-packager": "^17.1.2",
     "react": "^18.2.0",
     "react-collapsed": "^4.1.2",
     "react-dom": "^18.2.0",
