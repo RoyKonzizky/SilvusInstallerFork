@@ -6,6 +6,7 @@ import ExpandCollapseLogo from '../../assets/expand_collapse.svg';
 import SettingsLogo from '../../assets/settings.svg';
 import TopologyLogo from '../../assets/topology.svg';
 import DashboardLogo from "../../assets/dashboard.svg";
+import LogoutLogo from "../../assets/logout.svg";
 // import RecordingsLogo from "../../assets/recordings.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
 import {Paths} from "../../constants/Paths.ts";
@@ -37,6 +38,9 @@ export function Sidebar() {
                     {/*    possibleHrefSubsections={[Paths.Camera, Paths.Video, Paths.Gallery]}*/}
                     {/*    subsections={<SubsectionsOfRecordingsNavigatorButton/>}*/}
                     {/*/>*/}
+                </div>
+                <div className='mt-[30vh]'>
+                    <NavigatorButton href={Paths.Main} isSubsection={false} text="יציאה" file={LogoutLogo}/>
                 </div>
             </div>
         </>
