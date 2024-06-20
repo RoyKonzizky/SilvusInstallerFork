@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const os = require('os');
 const path = require('path');
 const { exec } = require('child_process');
 
@@ -23,7 +24,11 @@ function createWindow() {
 }
 
 function startPythonServer() {
-    pythonServer = exec('c:/Users/Hadar/Documents/svApp/venv/Scripts/python.exe c:/Users/Hadar/Documents/svApp/app/main.py');
+    const homeDir = os.homedir();
+    const pythonPath = path.join(homeDir, 'Documents', 'svApp', 'venv', 'Scripts', 'python.exe');
+    const scriptPath = path.join(homeDir, 'Documents', 'svApp', 'app', 'main.py');
+
+    pythonServer = exec(`${pythonPath} ${scriptPath}`);
 
     pythonServer.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
