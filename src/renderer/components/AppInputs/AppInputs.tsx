@@ -1,12 +1,19 @@
-import {IAppInputsProps} from "./IAppInputsProps.ts";
 import AppInput from "./AppInput/AppInput.tsx";
-import {isInputWithOnClick, isInputWithValue} from "./InputTypes/Input.ts";
+import { isInputWithOnClick, isInputWithValue } from "./InputTypes/Input.ts";
+import { Input } from "./InputTypes/Input.ts";
 
-export function AppInputs(props: IAppInputsProps) {
+export interface IAppInputs {
+    appInputs: Input[][],
+    className: string,
+    isSmaller: boolean,
+}
+
+export function AppInputs(props: IAppInputs) {
     return (
-        <div className="flex flex-col justify-center items-center gap-y-8">
+        <div className={`${props.isSmaller ? 'flex flex-col' : 'flex flex-col justify-center items-center gap-y-8'}`}>
             {props.appInputs.map((inputs, index) => (
-                <div key={index} className={`flex justify-center gap-x-8 ${props.className}`}>
+                <div key={index} className={`flex ${props.isSmaller ? 
+                    'flex-col justify-center items-center' : 'justify-center gap-x-8'} ${props.className}`}>
                     {inputs.map((input, idx) => (
                         <AppInput
                             key={idx} type={input.type} label={input.label}
