@@ -30,3 +30,4 @@ while ($process.HasExited -eq $false) {
 }
 
 Write-Output "The app has exited."
+exit
