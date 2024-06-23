@@ -1,8 +1,8 @@
 "use strict";
 const electron = require("electron");
-const os = require('os');
-const path = require('path');
-const { exec } = require('child_process');
+const os = require("os");
+const path = require("path");
+const { spawn } = require("child_process");
 
 function _interopNamespaceDefault(e) {
   const n = Object.create(null, { [Symbol.toStringTag]: { value: "Module" } });
@@ -23,6 +23,7 @@ function _interopNamespaceDefault(e) {
 const path__namespace = /* @__PURE__ */ _interopNamespaceDefault(path);
 let mainWindow;
 let pythonServer;
+let isQuiting = false;
 
 async function handleFileOpen() {
   const { canceled, filePaths } = await electron.dialog.showOpenDialog({});
@@ -33,20 +34,20 @@ async function handleFileOpen() {
 
 function startPythonServer() {
   const homeDir = os.homedir();
-  const pythonPath = path.join(homeDir, 'Documents', 'svApp', 'venv', 'Scripts', 'python.exe');
-  const scriptPath = path.join(homeDir, 'Documents', 'svApp', 'app', 'main.py');
+  const pythonPath = path.join(homeDir, "Documents", "svApp", "venv", "Scripts", "python.exe");
+  const scriptPath = path.join(homeDir, "Documents", "svApp", "app", "main.py");
 
-  pythonServer = exec(`${pythonPath} ${scriptPath}`);
+  pythonServer = spawn(pythonPath, [scriptPath]);
 
-  pythonServer.stdout.on('data', (data) => {
+  pythonServer.stdout.on("data", (data) => {
     console.log(`Python server stdout: ${data}`);
   });
 
-  pythonServer.stderr.on('data', (data) => {
+  pythonServer.stderr.on("data", (data) => {
     console.error(`Python server stderr: ${data}`);
   });
 
-  pythonServer.on('close', (code) => {
+  pythonServer.on("close", (code) => {
     console.log(`Python server exited with code ${code}`);
   });
 }
@@ -59,6 +60,8 @@ function stopPythonServer() {
 
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
+    width: 800,
+    height: 600,
     webPreferences: {
       preload: path__namespace.join(__dirname, "../preload/preload.cjs"),
       webSecurity: false
@@ -68,7 +71,19 @@ function createWindow() {
   mainWindow.loadURL("http://localhost:5173");
 
   mainWindow.on("closed", () => {
+    stopPythonServer();
     mainWindow = null;
+  });
+
+  mainWindow.on("minimize", (event) => {
+    event.preventDefault();
+  });
+
+  mainWindow.on("close", (event) => {
+    if (!isQuiting) {
+      event.preventDefault();
+      mainWindow.hide();
+    }
   });
 }
 
@@ -79,7 +94,6 @@ electron.app.whenReady().then(() => {
 });
 
 electron.app.on("window-all-closed", () => {
-  stopPythonServer(); // Stop the Python server when all windows are closed
   if (process.platform !== "darwin") {
     electron.app.quit();
   }
@@ -88,9 +102,12 @@ electron.app.on("window-all-closed", () => {
 electron.app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
+  } else {
+    mainWindow.show();
   }
 });
 
-electron.app.on('will-quit', () => {
+electron.app.on("before-quit", () => {
+  isQuiting = true;
   stopPythonServer(); // Stop the Python server when Electron app is quitting
 });

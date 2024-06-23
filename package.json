@@ -7,10 +7,11 @@
   "scripts": {
     "start": "npm run build && npm run electron:start",
     "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
+    "vite": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "electron:dev": "cross-env IS_DEV=true electron-forge start",
-    "electron:build": "electron-forge make",
+    "electron:dev": "cross-env IS_DEV=true electron .",
+    "electron:build": "electron-builder",
     "electron:package": "electron-forge package",
     "package": "electron-packager . Silvus --platform=win32 --arch=x64 --out=C:\\\\ --overwrite"
   },
@@ -34,7 +35,8 @@
     "react-router-dom": "^6.22.3",
     "react-select": "^5.8.0",
     "react-use-websocket": "^4.8.1",
-    "redux": "^5.0.1"
+    "redux": "^5.0.1",
+    "tree-kill": "^1.2.2"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
@@ -58,5 +60,27 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.0.2",
     "vite": "^4.3.2"
+  },
+  "build": {
+    "appId": "com.yourapp.id",
+    "productName": "Silvus",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "main.js",
+      "preload.js",
+      "package.json",
+      "start-app-environment.ps1"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
