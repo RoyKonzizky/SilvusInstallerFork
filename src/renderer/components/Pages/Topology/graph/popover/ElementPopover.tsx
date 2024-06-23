@@ -1,6 +1,7 @@
 import {Popover} from "antd";
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {Battery} from "./Battery.tsx";
+import { useTranslation } from 'react-i18next';
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -9,8 +10,10 @@ interface IElementPopoverProps {
 }
 
 export function ElementPopover(props: IElementPopoverProps) {
+    const { t, } = useTranslation();
+
     return (
-        <Popover title="Element Details" placement={"top"} arrow={false} open={!!props.selectedElement}
+        <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
                  getPopupContainer={trigger => trigger.parentElement!}
                  overlayStyle={{
                      height: '75px', position: 'absolute',
@@ -22,11 +25,11 @@ export function ElementPopover(props: IElementPopoverProps) {
                      <div>
                          {props.selectedElement?.type === 'graphin-circle' ?
                              <div>
-                                 <p className={"text-xl"}>{`ID: ${props.selectedElement?.id}`}</p>
+                                 <p className={"text-xl"}>{`${t('id')}: ${props.selectedElement?.id}`}</p>
                                  <Battery voltage={Math.round(props.selectedElement?.data)} />
                              </div>
                              :
-                             <p>{`SNR is ${props.selectedElement?.data}`}</p>
+                             <p>{`SNR = ${props.selectedElement?.data}`}</p>
                          }
                          <button
                              className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +

@@ -10,9 +10,12 @@ import LogoutLogo from "../../assets/logout.svg";
 // import RecordingsLogo from "../../assets/recordings.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
 import {Paths} from "../../constants/Paths.ts";
+import '../../i18n.ts';
+import { useTranslation } from 'react-i18next';
 
 export function Sidebar() {
     const dispatch = useDispatch();
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         if ((performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming).type === "reload") {
@@ -28,10 +31,12 @@ export function Sidebar() {
                 className="absolute top-0 right-0 p-4 bg-[#7A7A7A] flex flex-col items-end min-w-[100px] h-screen z-50">
                 <NavigatorButton href="" isSubsection={false} text="" file={ExpandCollapseLogo}
                                  onClick={() => dispatch(interactExpandingAndCollapsingButton())}/>
-                <NavigatorButton href={Paths.Dashboard} isSubsection={false} text="לוח" file={DashboardLogo}/>
+                <NavigatorButton href="" isSubsection={false} text={i18n.language === 'he' ? 'עב' : 'EN'}
+                                 onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'he' : 'en')}/>
+                <NavigatorButton href={Paths.Dashboard} isSubsection={false} text={t('dashboard')} file={DashboardLogo}/>
                 <div className='mt-[5vh]'>
-                    <NavigatorButton href={Paths.Settings} isSubsection={false} text="הגדרות" file={SettingsLogo}/>
-                    <NavigatorButton href={Paths.Topology} isSubsection={false} text="טופולוגיה" file={TopologyLogo}/>
+                    <NavigatorButton href={Paths.Settings} isSubsection={false} text={t('settings')} file={SettingsLogo}/>
+                    <NavigatorButton href={Paths.Topology} isSubsection={false} text={t('topology')} file={TopologyLogo}/>
                     {/*<NavigatorButton*/}
                     {/*    href="" isSubsection={false}*/}
                     {/*    text="הקלטות" file={RecordingsLogo}*/}
@@ -39,8 +44,8 @@ export function Sidebar() {
                     {/*    subsections={<SubsectionsOfRecordingsNavigatorButton/>}*/}
                     {/*/>*/}
                 </div>
-                <div className='mt-[30vh]'>
-                    <NavigatorButton href={Paths.Main} isSubsection={false} text="יציאה" file={LogoutLogo}/>
+                <div className='mt-[20vh]'>
+                    <NavigatorButton href={Paths.Main} isSubsection={false} text={t('exit')} file={LogoutLogo}/>
                 </div>
             </div>
         </>

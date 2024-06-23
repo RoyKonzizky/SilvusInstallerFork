@@ -9,6 +9,7 @@ import {bandwidthValues, frequencyValues, totalTransitPowerValues} from "../../.
 import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
 import PresetsButton from "../../PresetsButton/PresetsButton.tsx";
 import {changePreset} from "../../../utils/presetsUtils.ts";
+import { useTranslation } from 'react-i18next';
 // import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
 // import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 
@@ -20,21 +21,22 @@ export function Settings(props: ISettingsProps) {
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
     const [selectedPreset, setSelectedPreset] = useState(useSelector((state: RootState) => state.presets.chosenSpectrum));
     const dispatch = useDispatch();
+    const { t, } = useTranslation();
 
     const settingInputs: Input[][] = [
         [
-            {type: "text", label: "Frequency (MHz)", value: frequency, setValue: setFrequency, values: frequencyValues},
-            {type: "text", label: "Bandwidth", value: bandwidth, setValue: setBandwidth, values: bandwidthValues, additionalText: 'MHz'}
+            {type: "text", label: t('frequency'), value: frequency, setValue: setFrequency, values: frequencyValues},
+            {type: "text", label: t('bandwidth'), value: bandwidth, setValue: setBandwidth, values: bandwidthValues}
         ], [
-            {type: "text", label: "Network ID", value: networkId, setValue: setNetworkId},
-            {type: "text", label: "Total Transit Power", value: totalTransitPower, setValue: setTotalTransitPower, values: totalTransitPowerValues, additionalText: 'dBm'}
+            {type: "text", label: t('networkId'), value: networkId, setValue: setNetworkId},
+            {type: "text", label: t('totalTransitPower'), value: totalTransitPower, setValue: setTotalTransitPower, values: totalTransitPowerValues}
         ], [
             {
-                type: "button", label: "Save",
+                type: "button", label: t("save"),
                 onClick: () => dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
             },
             {
-                type: "button", label: "Save Network",
+                type: "button", label: t("saveNetwork"),
                 onClick: () => dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
             }
         ]
@@ -64,7 +66,7 @@ export function Settings(props: ISettingsProps) {
     return (
         <>
             <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
-                <AppInputs appInputs={settingInputs} className={'w-[130%]'}/>
+                <AppInputs appInputs={settingInputs} className={'w-[140%]'}/>
             </div>
             <PresetsButton selectedPreset={selectedPreset} setSelectedPreset={setSelectedPreset}/>
         </>

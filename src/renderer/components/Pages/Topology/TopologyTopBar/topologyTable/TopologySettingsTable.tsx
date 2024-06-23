@@ -7,6 +7,7 @@ import { RestNode } from "@antv/graphin/es/typings/type";
 import {createDataSource, getColumns, isIUserNode, convertSelectedOptionsToHulls, convertHullsToSelectedOptions,
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import {RootState} from "../../../../../redux/store.ts";
+import { useTranslation } from 'react-i18next';
 
 interface ITopologySettingsTable {
     groups: string[],
@@ -26,10 +27,11 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [additionalColumn, setAdditionalColumn] =
         useState<string | null>(null);
     const [nodes, setNodes] = useState<(IUserNode | RestNode)[]>(props.nodes);
+    const { t, } = useTranslation();
 
     function handleAddColumn() {
-        if (groups.length >= 15) return(message.warning("You can only add up to 15 groups."));
-        const newColumn = window.prompt("Enter the name of the new column:");
+        if (groups.length >= 15) return(message.warning(t('handleAddColumnWarning')));
+        const newColumn = window.prompt(t('handleAddColumnPrompt'));
         if (newColumn) setAdditionalColumn(newColumn);
     }
 
@@ -60,7 +62,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
 
     return (
         <div>
-            <Button onClick={handleAddColumn} className={'mb-2'}>Add Group</Button>
+            <Button onClick={handleAddColumn} className={'mb-2'}>{t("AddGroup")}</Button>
             <Table className={'bottom-0'} columns={columns} dataSource={createDataSource(nodes as IUserNode[])} />
         </div>
     );
