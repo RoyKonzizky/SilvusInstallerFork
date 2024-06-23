@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Input} from "../../AppInputs/InputTypes/Input.ts";
 import {Paths} from "../../../constants/Paths.ts";
 import {useNavigate} from "react-router-dom";
@@ -6,9 +6,9 @@ import {LoginModal} from "../../LoginModal/LoginModal.tsx";
 import {isIPv4, isIPv6} from "../../../scripts/ipScripts.ts";
 import {ErrorMessage} from "../../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
-import {fetchLogin} from "../../../utils/loginUtils.ts";
 import {useDispatch} from "react-redux";
 import {setIp} from "../../../redux/IP/IPSlice.ts";
+import {startUp, startUpDataType} from "../../../utils/loginUtils.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -16,15 +16,16 @@ export function Login() {
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [startUpData, setStartUpData] =
+        useState<startUpDataType>({type: "", msg: {ip: "", isProtected: 1}});
     const dispatch = useDispatch();
 
     const loginInputs: Input[][] = [
-        [{type: "text", label: "IP Address", value: ipAddress, setValue: setIpAddress}],
+        [{type: "text", label: "IP Address", value: ipAddress ?? startUpData.msg.ip, setValue: setIpAddress ?? startUpData.msg.ip}],
         [{
             type: "button", label: "Enter", onClick: async () => {
                 if (ipAddress !== "" && (isIPv4(ipAddress) || isIPv6(ipAddress))) {
-                    await fetchLogin(ipAddress);
-                    const isProtectedDevice = false;
+                    const isProtectedDevice = startUpData.msg.isProtected;
                     dispatch(setIp(ipAddress));
                     if (isProtectedDevice) setLoginModalIsOpen(true);
                     else navigate(Paths.Settings);
@@ -35,6 +36,13 @@ export function Login() {
             }
         }]
     ];
+
+    useEffect(() => {
+        const callStartup = async () => {
+            setStartUpData(await startUp());
+        }
+        callStartup();
+    }, [])
 
     return (
         <>
