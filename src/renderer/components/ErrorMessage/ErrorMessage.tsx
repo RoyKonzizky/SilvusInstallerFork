@@ -14,7 +14,7 @@ export function ErrorMessage(props: IErrorMessageProps) {
         >
             <div className="bg-black p-4 rounded-xl">
                 Error: {props.errorMessage}
-                <AppInputs appInputs={errorInputs} className={'w-[160%] mt-5'}/>
+                <AppInputs appInputs={errorInputs} className={'w-[160%] mt-5'} isSmaller={false}/>
             </div>
         </Modal>
     );

@@ -44,7 +44,7 @@ export function LoginModal(props: ILoginModalProps) {
                 <div
                     className="bg-black p-4 rounded-xl w-[50%] h-[50%] flex flex-col justify-center items-center gap-y-8">
                     Login into the device in {ipAddress}
-                    <AppInputs appInputs={loginInputs} className={'w-[160%]'}/>
+                    <AppInputs appInputs={loginInputs} className={'w-[160%]'} isSmaller={false}/>
                 </div>
             </Modal>
             <ErrorMessage errorMessage={errorMessage} modalIsOpen={errorModalIsOpen}

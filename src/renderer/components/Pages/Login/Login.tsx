@@ -19,13 +19,13 @@ export function Login() {
     const [startUpData, setStartUpData] =
         useState<startUpDataType>({type: "", msg: {ip: "", isProtected: 1}});
     const dispatch = useDispatch();
+    const [isProtectedDevice, setIsProtectedDevice] = useState(false);
 
     const loginInputs: Input[][] = [
-        [{type: "text", label: "IP Address", value: ipAddress ?? startUpData.msg.ip, setValue: setIpAddress ?? startUpData.msg.ip}],
+        [{type: "text", label: "IP Address", value: ipAddress, setValue: setIpAddress}],
         [{
             type: "button", label: "Enter", onClick: async () => {
                 if (ipAddress !== "" && (isIPv4(ipAddress) || isIPv6(ipAddress))) {
-                    const isProtectedDevice = startUpData.msg.isProtected;
                     dispatch(setIp(ipAddress));
                     if (isProtectedDevice) setLoginModalIsOpen(true);
                     else navigate(Paths.Settings);
@@ -40,9 +40,17 @@ export function Login() {
     useEffect(() => {
         const callStartup = async () => {
             setStartUpData(await startUp());
+            if (startUpData.type === "Fail") {
+                setErrorMessage(startUpData.msg as string);
+                setErrorModalIsOpen(true);
+            }
+            if (startUpData.type === "Success") {
+                setIpAddress((startUpData.msg as {ip: string, isProtected: number}).ip);
+                setIsProtectedDevice((startUpData.msg as {ip: string, isProtected: number}).isProtected === 1);
+            }
         }
         callStartup();
-    }, [])
+    }, [startUpData])
 
     return (
         <>
