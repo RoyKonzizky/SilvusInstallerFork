@@ -47,7 +47,7 @@ export function Login() {
     return (
         <>
             <div className={"h-screen flex flex-col justify-center items-center gap-y-8"}>
-                <AppInputs appInputs={loginInputs} className={'w-[200%]'}/>
+                <AppInputs appInputs={loginInputs} className={'w-[200%]'} isSmaller={false}/>
             </div>
             <ErrorMessage errorMessage={errorMessage} modalIsOpen={errorModalIsOpen}
                           setModalIsOpen={setErrorModalIsOpen}/>

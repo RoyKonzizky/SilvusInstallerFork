@@ -58,7 +58,7 @@ export function Topology(props: ITopologyProps) {
     }, [devices, batteries, snrsData]);
 
     return (
-        <div className={`${props.isSmaller ? 'w-[35%] h-[35%]' : 
+        <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 
                 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {graphData ? (<TopologyGraph graphData={graphData}/>) : <h1 className={"h-24 w-36"}>LOADING</h1>}
         </div>
