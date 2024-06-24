@@ -28,5 +28,9 @@
   "error": "Error",
   "id": "ID",
   "elementDetails": "Element Details",
-  "SNRLegend": "SNR Legend"
+  "SNRLegend": "SNR Legend",
+  "add": "Add",
+  "cancel": "Cancel",
+  "AddGroup": "Add Group",
+  "InsertGroupName": "Insert group name"
 }
