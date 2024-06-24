@@ -27,7 +27,7 @@ function PresetsButtonModal(props: IPresetsButtonModalProps) {
                className={`text-white text-3xl text-center flex justify-center items-center h-screen bg-[#000000]/75`}
         >
             <div className="bg-black p-4 rounded-xl">
-                <div className="mb-2">{t('presetHeader')}</div>
+                <div className={`mb-2 flex ${i18n.language === 'he' && "justify-end"}`}>{t('presetHeader')}</div>
                 {presets.map((preset, index) => (
                     <div key={index} className={`flex texl-3xl w-[400px] ${i18n.language === 'he' && "justify-end"}`}>
                         {i18n.language === 'he' && <div className="flex items-center">{t(`preset${preset}`)}</div> }
