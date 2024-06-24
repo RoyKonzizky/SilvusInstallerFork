@@ -32,5 +32,8 @@
   "add": "הוסף",
   "cancel": "ביטול",
   "AddGroup": "הוספת קבוצה",
-  "InsertGroupName": "הכניסו שם קבוצה"
+  "InsertGroupName": "הכניסו שם קבוצה",
+  "badConnection": "חיבור רע: פחות מ-20db\u200E",
+  "mediumConnection": "חיבור בינוני: בין 20db\u200E ל-30db\u200E",
+  "goodConnection": "חיבור טוב: יותר מ-30db\u200E"
 }

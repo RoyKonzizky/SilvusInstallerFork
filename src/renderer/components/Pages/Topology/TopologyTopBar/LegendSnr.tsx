@@ -19,7 +19,7 @@ export function LegendSnr() {
             <Modal closable={true} centered={true} open={modalState} afterClose={closeModal} onCancel={closeModal}
                    title={t('SNRLegend')} footer={null}>
                 <div className={'p-4 bg-white rounded'}>
-                    {snrColors.map((value, index) => (
+                    {snrColors(t).map((value, index) => (
                         <div key={index} className={'flex items-center mb-2'}>
                             <p className={'text-l text-black mr-2'}>{value.explanation}</p>
                             <div className={`w-6 h-6 ${value.color}`}></div>
