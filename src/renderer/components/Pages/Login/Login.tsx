@@ -9,6 +9,8 @@ import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {fetchLogin} from "../../../utils/loginUtils.ts";
 import {useDispatch} from "react-redux";
 import {setIp} from "../../../redux/IP/IPSlice.ts";
+import { useTranslation } from 'react-i18next';
+import "../../../i18n.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -17,11 +19,12 @@ export function Login() {
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const dispatch = useDispatch();
+    const { t, } = useTranslation();
 
     const loginInputs: Input[][] = [
-        [{type: "text", label: "IP Address", value: ipAddress, setValue: setIpAddress}],
+        [{type: "text", label: t("IP Address"), value: ipAddress, setValue: setIpAddress}],
         [{
-            type: "button", label: "Enter", onClick: async () => {
+            type: "button", label: t("enter"), onClick: async () => {
                 if (ipAddress !== "" && (isIPv4(ipAddress) || isIPv6(ipAddress))) {
                     await fetchLogin(ipAddress);
                     const isProtectedDevice = false;
@@ -30,7 +33,7 @@ export function Login() {
                     else navigate(Paths.Settings);
                 } else {
                     setErrorModalIsOpen(true);
-                    setErrorMessage('IP is not existed or was inputted incorrectly.');
+                    setErrorMessage(t('loginErrorMessage'));
                 }
             }
         }]

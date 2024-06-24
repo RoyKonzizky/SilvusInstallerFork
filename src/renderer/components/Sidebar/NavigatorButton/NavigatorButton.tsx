@@ -6,7 +6,7 @@ import {RootState} from "../../../redux/store.ts";
 
 function NavigatorButton(props: INavigatorButtonProps) {
     const navigate = useNavigate(); // Get the navigate function from the router context
-    const { origin, href } = window.location;
+    const {origin, href} = window.location;
     const [mirroredImage, setMirroredImage] = useState('');
     const [isPressed, setPressed] = useState(false);
     const isSidebarCollapsed = useSelector((state: RootState) => state.collapsing.isSidebarCollapsed);
@@ -29,18 +29,18 @@ function NavigatorButton(props: INavigatorButtonProps) {
                     setPressed(res ? res : false);
                 }
             }}
-            className={`mt-5 mb-5 rounded-xl cursor-pointer ${props.isSubsection
-                ? `${hrefCheck() ? 'bg-[#7A7A7A]' : `${isPressed ? 'bg-[#7A7A7A]' : 'bg-gray-600'}`} text-white text-xl p-2`
-                : `${hrefCheck() ? 'bg-gray-600' : `${isPressed ? 'bg-gray-600' : 'bg-[#7A7A7A]'}`} text-black text-3xl p-3`}`}
+            className={`flex mt-5 mb-5 rounded-xl cursor-pointer ${props.isSubsection
+                ? `${hrefCheck() ? 'bg-[#7A7A7A]' : `${isPressed && props.file ? 'bg-[#7A7A7A]' : 'bg-gray-600'}`} text-white text-xl p-2`
+                : `${hrefCheck() ? 'bg-gray-600' : `${isPressed && props.file ? 'bg-gray-600' : 'bg-[#7A7A7A]'}`} text-black text-3xl p-3`}`}
         >
             <div className="flex justify-center items-center">
-                {!isSidebarCollapsed && props.text &&
+                {!isSidebarCollapsed && props.text && props.file &&
                     <p className="w-[200px]">
                         {props.text}
                     </p>
                 }
-                <img className={`${props.isSubsection ? 'h-12 w-12' : 'h-16 w-16'} ${mirroredImage}`} src={props.file}
-                     alt=""/>
+                {props.file ? <img className={`${props.isSubsection ? 'h-12 w-12' : 'h-16 w-16'} ${mirroredImage}`}
+                                   src={props.file} alt=""/> : <div className="flex items-center text-white mr-4">{props.text}</div>}
             </div>
             {(isPressed || hrefCheck()) && props.subsections}
         </div>

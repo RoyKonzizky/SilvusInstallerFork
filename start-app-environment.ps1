@@ -9,6 +9,10 @@ function Test-Process {
     return $null -ne $process
 }
 
+# Stop any previous instances of the app
+Write-Output "Stopping any previous instances of the app..."
+Stop-Process -Name "node" -ErrorAction SilentlyContinue
+
 # Start the app
 Write-Output "Starting the app..."
 $process = Start-Process "npm" "run dev" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
@@ -30,3 +34,4 @@ while ($process.HasExited -eq $false) {
 }
 
 Write-Output "The app has exited."
+exit

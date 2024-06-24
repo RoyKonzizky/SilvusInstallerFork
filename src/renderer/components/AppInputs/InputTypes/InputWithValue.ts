@@ -6,5 +6,4 @@ export interface InputWithValue {
     value: string;
     setValue: Dispatch<SetStateAction<string>>;
     values?: string[];
-    additionalText?: string;
 }

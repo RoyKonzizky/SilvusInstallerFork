@@ -1,14 +1,16 @@
 import {Settings} from "../Settings/Settings.tsx";
 import {Topology} from "../Topology/Topology.tsx";
 // import {Camera} from "../Camera/Camera.tsx";
+import { useTranslation } from 'react-i18next';
 
 export function Dashboard() {
     const elements = [<Settings isSmaller={true}/>, <Topology isSmaller={true}/>/*, <Camera/>, <>VIDEO</>, <>GALLERY</>*/];
     const isOddLength = elements.length % 2 === 1;
+    const { t, } = useTranslation();
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-semibold mb-4">Dashboard</h1>
+            <h1 className="text-3xl font-semibold mb-4">{t('dashboard')}</h1>
             <div className={`grid grid-cols-2 gap-4`}>
                 {elements.map((element, index) => (
                     <div

@@ -5,6 +5,7 @@ import {IUserEdge, IUserNode} from "@antv/graphin";
 import {createEdgesFromData, createNodesFromData} from "../../../utils/topologyUtils/graphUtils.ts";
 import {batteriesType, devicesType, snrsType} from "../../../utils/webConnectionUtils.ts";
 import useWebSocket from "react-use-websocket";
+import { useTranslation } from 'react-i18next';
 
 export function Topology(props: ITopologyProps) {
     const [devices, setDevices] =
@@ -23,6 +24,7 @@ export function Topology(props: ITopologyProps) {
             onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
         }
     );
+    const { t, } = useTranslation();
 
     useEffect(() => {
         if (lastJsonMessage) {
@@ -60,7 +62,7 @@ export function Topology(props: ITopologyProps) {
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[35%]' : 
                 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
-            {graphData ? (<TopologyGraph graphData={graphData}/>) : <h1 className={"h-24 w-36"}>LOADING</h1>}
+            {graphData ? (<TopologyGraph graphData={graphData}/>) : <h1 className={"h-24 w-36"}>{t('loading')}</h1>}
         </div>
     );
 }
