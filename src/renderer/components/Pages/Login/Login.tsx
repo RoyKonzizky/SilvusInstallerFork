@@ -16,8 +16,6 @@ export function Login() {
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [startUpData, setStartUpData] =
-        useState<startUpDataType>({type: "", msg: {ip: "", isProtected: 1}});
     const dispatch = useDispatch();
     const [isProtectedDevice, setIsProtectedDevice] = useState(false);
 
@@ -39,7 +37,7 @@ export function Login() {
 
     useEffect(() => {
         const callStartup = async () => {
-            setStartUpData(await startUp());
+            const startUpData: startUpDataType = await startUp();
             if (startUpData.type === "Fail") {
                 setErrorMessage(startUpData.msg as string);
                 setErrorModalIsOpen(true);
@@ -50,7 +48,7 @@ export function Login() {
             }
         }
         callStartup();
-    }, [startUpData])
+    }, []);
 
     return (
         <>
