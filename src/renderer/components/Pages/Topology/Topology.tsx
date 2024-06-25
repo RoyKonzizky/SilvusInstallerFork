@@ -3,7 +3,7 @@ import {ITopologyProps} from "./ITopologyProps";
 import {TopologyGraph} from "./graph/TopologyGraph";
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {createEdgesFromData, createNodesFromData} from "../../../utils/topologyUtils/graphUtils.ts";
-import {batteriesType, devicesType, snrsType} from "../../../utils/webConnectionUtils.ts";
+import {batteriesType, devicesType, snrsType} from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
 
 export function Topology(props: ITopologyProps) {

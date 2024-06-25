@@ -2,7 +2,7 @@ import axios from "axios";
 import {Dispatch, SetStateAction} from "react";
 import {UnknownAction} from "@reduxjs/toolkit";
 import {setBandwidth, setFrequency, setNetworkId, setTotalTransitPower} from "../redux/Settings/settlingsSlice.ts";
-import {SilvusDataType} from "../constants/SilvusDataType.ts";
+import {SilvusDataType} from "../constants/types/SilvusDataType.ts";
 
 export function getInfoFromTheSilvusDevice(dispatch: Dispatch<UnknownAction>, methodName: string, ipAddress: string, setStateActionForSetting: Dispatch<SetStateAction<string>>) {
     axios.post(`http://${ipAddress}/streamscape_api`, `{"jsonrpc":"2.0","method":"${methodName}","id":"sbkb5u0c"}`).then(response => {

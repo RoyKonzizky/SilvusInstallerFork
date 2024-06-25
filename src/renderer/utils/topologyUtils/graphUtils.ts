@@ -1,5 +1,5 @@
 import {IUserEdge, IUserNode} from "@antv/graphin";
-import {batteriesType, devicesType, snrsType} from "../webConnectionUtils.ts";
+import {batteriesType, devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
 
 export const graphStyle = {
     background: "black",
@@ -27,7 +27,7 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
                     size: 50,
                 },
             },
-            data: batteries[i] ? batteries[i].percent.toString() : 'N/A',
+            data: {battery: batteries[i] ? batteries[i].percent.toString() : 'N/A', statuses: []},
         };
     }
     return nodes as IUserNode[];

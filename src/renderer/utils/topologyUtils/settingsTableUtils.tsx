@@ -2,6 +2,7 @@ import {IUserNode} from "@antv/graphin";
 import {RestNode} from "@antv/graphin/es/typings/type";
 import Select from "react-select";
 import {HullCfg} from "@antv/graphin/lib/components/Hull";
+import axios from "axios";
 
 export type selectedOptionsType = { [p: string]: { [p: string]: number } };
 export type handleSelectChangeType = (group: string, nodeId: string, value: number | null) => void;
@@ -16,7 +17,7 @@ export function createDataSource(nodes: IUserNode[]) {
     return nodes.map((node: IUserNode, index: number) => ({key: index, ...node}))
 }
 
-export function convertSelectedOptionsToHulls(groups: string[], nodes: IUserNode[], selectedOptions: {[p: string]: {[p: string]: number}}) {
+export function convertSelectedOptionsToHulls(groups: string[], nodes: IUserNode[], selectedOptions: selectedOptionsType) {
     return groups.map(group => {
         return {
             id: group,
@@ -74,3 +75,24 @@ export function getColumns(groups: string[], selectedOptions: selectedOptionsTyp
         })),
     ];
 }
+
+export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
+    const num_groups = hulls.length;
+    const ips = nodes.map(node => node.style?.label?.value) as string[];
+    const statuses = nodes.map(node => node.data.statuses);
+    console.log(JSON.stringify({num_groups, ips, statuses}));
+    return {num_groups, ips, statuses};
+}
+
+export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
+    try {
+        const response = await axios.post(
+            'http://localhost:8080/set-ptt-groups', JSON.stringify(convertPttDataToServerFormat(hullOptions, nodes)),
+        );
+        console.log('Response received:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching Radio IP data:', error);
+        return null;
+    }
+};
