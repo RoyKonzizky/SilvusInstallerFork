@@ -10,9 +10,9 @@ import { RootState } from "../../../../../redux/store.ts";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 
 interface ITopologySettingsTable {
-    groups: string[];
-    nodes: (IUserNode | RestNode)[];
-    resetOnClose: boolean;
+    groups: string[],
+    nodes: (IUserNode | RestNode)[],
+    resetOnClose: boolean,
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
@@ -38,8 +38,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 if (isIUserNode(node) && node.id === nodeId) {
                     const updatedStatuses = groups.map((grp) => selectedOptions[grp]?.[node.id] ?? 0);
                     updatedStatuses[groups.indexOf(group)] = newValue;
-                    return {...node, data: {...node.data, statuses: updatedStatuses,},
-                    };
+                    return {...node, data: {...node.data, statuses: updatedStatuses,},};
                 }
                 return node;
             })
@@ -59,8 +58,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             prevNodes.map((node) => {
                 if (isIUserNode(node)) {
                     const updatedStatuses= groups.map((group)=>selectedOptions[group]?.[node.id] ?? 0);
-                    return {...node, data: {...node.data, statuses: updatedStatuses,},
-                    };
+                    return {...node, data: {...node.data, statuses: updatedStatuses,},};
                 }
                 return node;
             })
