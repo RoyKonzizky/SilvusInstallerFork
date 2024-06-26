@@ -20,10 +20,12 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const hullOptions = useSelector((state: RootState) => state.topologyGroups.hullOptions);
     const initialSelectedOptions =
         convertHullsToSelectedOptions(hullOptions, props.nodes as unknown as IUserNode[]);
-    const [selectedOptions, setSelectedOptions] = useState<{ [group: string]: { [nodeId: string]: number } }>(initialSelectedOptions);
+    const [selectedOptions, setSelectedOptions] =
+        useState<{ [group: string]: { [nodeId: string]: number } }>(initialSelectedOptions);
     const [groups, setGroups] =
         useState<string[]>(props.groups.length ? props.groups : Object.keys(initialSelectedOptions));
-    const [nodes, setNodes] = useState<(IUserNode | RestNode)[]>(props.nodes);
+    const [nodes, setNodes] =
+        useState<(IUserNode | RestNode)[]>(props.nodes);
 
     const handleAddGroup = (groupName: string) => {
         setGroups((prevGroups) => [...prevGroups, groupName]);
