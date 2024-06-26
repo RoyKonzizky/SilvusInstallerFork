@@ -9,8 +9,8 @@ export type handleSelectChangeType = (group: string, nodeId: string, value: numb
 
 export const deviceTalkStatus = [
     {value: 0, label: "לא בקבוצה"},
-    {value: 1, label: "מקשיב"},
-    {value: 2, label: "מדבר ומקשיב"},
+    {value: 2, label: "מקשיב"},
+    {value: 1, label: "מדבר ומקשיב"},
 ];
 
 export function createDataSource(nodes: IUserNode[]) {
