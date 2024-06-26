@@ -27,7 +27,10 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
                     size: 50,
                 },
             },
-            data: {battery: batteries[i] ? batteries[i].percent.toString() : 'N/A', statuses: []},
+            data: {
+                battery: batteries[i] ? batteries[i].percent.toString() : 'N/A',
+                statuses: [1]
+            },
         };
     }
     return nodes as IUserNode[];
