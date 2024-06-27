@@ -37,7 +37,7 @@ function PresetsButtonModal(props: IPresetsButtonModalProps) {
                         {i18n.language === 'en' && <div className="flex items-center">{t(`preset${preset}`)}</div> }
                     </div>
                 ))}
-                <AppInputs appInputs={presetsInputs} className={'w-[200%]'}/>
+                <AppInputs appInputs={presetsInputs} className={'w-[200%]'} isSmaller={false}/>
             </div>
         </Modal>
     );

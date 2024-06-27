@@ -66,7 +66,7 @@ export function Settings(props: ISettingsProps) {
     return (
         <>
             <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
-                <AppInputs appInputs={settingInputs} className={'w-[140%]'}/>
+                <AppInputs appInputs={settingInputs} className={props.isSmaller ? 'flex-col' : 'w-[130%]'} isSmaller={props.isSmaller} />
             </div>
             <PresetsButton selectedPreset={selectedPreset} setSelectedPreset={setSelectedPreset}/>
         </>
