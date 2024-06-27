@@ -3,6 +3,8 @@ import {RestNode} from "@antv/graphin/es/typings/type";
 import Select from "react-select";
 import {HullCfg} from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
+import { Button } from "antd";
+import binIcon from "../../assets/bin.png"
 
 export type selectedOptionsType = { [p: string]: { [p: string]: number } };
 export type handleSelectChangeType = (group: string, nodeId: string, value: number | null) => void;
@@ -63,14 +65,24 @@ export function renderSelect(record: any, group: string, selectedOptions: select
 }
 
 export function getColumns(groups: string[], selectedOptions: selectedOptionsType,
-                           handleSelectChange: handleSelectChangeType) {
+                           handleSelectChange: handleSelectChangeType,
+                           handleDeleteGroup: (group: string) => void) {
     return [
         {
             title: 'Node Label', dataIndex: 'label', key: 'label',
             render: (_: string, record: any) => <span>{record.style.label.value}</span>,
         },
         ...groups.map(group => ({
-            title: group, dataIndex: group, key: group,
+            title: (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {group}
+                    <Button type="link" onClick={() => handleDeleteGroup(group)}>
+                        <img className={"w-6 h-6"} src={binIcon} alt={"Delete"}/>
+                    </Button>
+                </div>
+            ),
+            dataIndex: group,
+            key: group,
             render: (_: string, record: any) => renderSelect(record, group, selectedOptions, handleSelectChange),
         })),
     ];
@@ -80,19 +92,22 @@ export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[
     const num_groups = hulls.length;
     const ips = nodes.map(node => node.style?.label?.value) as string[];
     const statuses = nodes.map(node => node.data.statuses);
-    console.log(JSON.stringify({num_groups, ips, statuses}));
-    return {num_groups, ips, statuses};
+    // console.log(statuses);
+    return {ips, num_groups, statuses};
 }
 
 export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
     try {
         const response = await axios.post(
-            'http://localhost:8080/set-ptt-groups', JSON.stringify(convertPttDataToServerFormat(hullOptions, nodes)),
+            'http://localhost:8080/set-ptt-groups', convertPttDataToServerFormat(hullOptions, nodes),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
         );
         console.log('Response received:', response.data);
-        return response.data;
     } catch (error) {
-        console.error('Error fetching Radio IP data:', error);
-        return null;
+        console.error('Error sending data:', error);
     }
 };

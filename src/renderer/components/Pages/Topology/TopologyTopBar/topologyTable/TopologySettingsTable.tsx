@@ -28,19 +28,31 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         useState<(IUserNode | RestNode)[]>(props.nodes);
 
     const handleAddGroup = (groupName: string) => {
-        setGroups((prevGroups) => [...prevGroups, groupName]);
+        if (groups.length < 15){
+            setGroups((prevGroups) => [...prevGroups, groupName]);
+        }
+    };
+
+    const handleDeleteGroup = (groupName: string) => {
+        if (groups.length > 1){
+            setGroups((prevGroups) => prevGroups.filter((group) => group !== groupName));
+            setSelectedOptions((prevOptions) => {
+                const { [groupName]: _, ...rest } = prevOptions;
+                return rest;
+            });
+        }
     };
 
     const handleSelectChange = (group: string, nodeId: string, value: number | null) => {
         const newValue = value ?? 0;
         setSelectedOptions((prevOptions) =>
-            ({...prevOptions, [group]: { ...prevOptions[group], [nodeId]: newValue }}));
+            ({ ...prevOptions, [group]: { ...prevOptions[group], [nodeId]: newValue } }));
         setNodes((prevNodes) =>
             prevNodes.map((node) => {
                 if (isIUserNode(node) && node.id === nodeId) {
                     const updatedStatuses = groups.map((grp) => selectedOptions[grp]?.[node.id] ?? 0);
                     updatedStatuses[groups.indexOf(group)] = newValue;
-                    return {...node, data: {...node.data, statuses: updatedStatuses,},};
+                    return { ...node, data: { ...node.data, statuses: updatedStatuses, }, };
                 }
                 return node;
             })
@@ -53,7 +65,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
 
     useEffect(() => {
         sendPttGroups(hullOptions, nodes as IUserNode[]);
-    }, [hullOptions, nodes, props.resetOnClose]);
+    }, [props.resetOnClose]);
 
     useEffect(() => {
         setNodes((prevNodes) =>
@@ -67,11 +79,32 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         );
     }, [groups, selectedOptions]);
 
+    useEffect(() => {
+        if (hullOptions.length > 0){
+            for (let i = 0; i < nodes.length; i++) {
+                setSelectedOptions((prevOptions) =>
+                    ({ ...prevOptions, [groups[0]]: { ...prevOptions[groups[0]], [nodes[i].id]: 1 } }));
+                setNodes((prevNodes) =>
+                    prevNodes.map((node) => {
+                        if (isIUserNode(node) && node.id === nodes[i].id) {
+                            const updatedStatuses = groups.map((grp) =>
+                                selectedOptions[grp]?.[node.id] ?? 0);
+                            updatedStatuses[groups.indexOf("group1")] = 1;
+                            return { ...node, data: { ...node.data, statuses: updatedStatuses, }, };
+                        }
+                        return node;
+                    })
+                );
+            }
+        }
+        dispatch(updateHulls(convertSelectedOptionsToHulls(groups, nodes as IUserNode[], selectedOptions)));
+    }, []);
+
     return (
         <div>
             <GroupAdditionModal groups={groups} nodes={nodes as IUserNode[]} selectedOptions={selectedOptions}
                                 onAdd={handleAddGroup} />
-            <Table className={'bottom-0'} columns={getColumns(groups, selectedOptions, handleSelectChange)}
+            <Table className={'bottom-0'} columns={getColumns(groups, selectedOptions, handleSelectChange, handleDeleteGroup)}
                    dataSource={createDataSource(nodes as IUserNode[])} />
         </div>
     );
