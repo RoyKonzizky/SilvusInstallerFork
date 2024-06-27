@@ -33,9 +33,10 @@ async function handleFileOpen() {
 }
 
 function startPythonServer() {
-  const homeDir = os.homedir();
-  const pythonPath = path.join(homeDir, "Documents", "svApp", "venv", "Scripts", "python.exe");
-  const scriptPath = path.join(homeDir, "Documents", "svApp", "app", "main.py");
+  const projectRoot = path.resolve(__dirname, "../..");
+  const svAppDir = path.join(projectRoot, "../svApp");
+  const pythonPath = path.join(svAppDir, "venv", "Scripts", "python.exe");
+  const scriptPath = path.join(svAppDir, "app", "main.py");
 
   pythonServer = spawn(pythonPath, [scriptPath]);
 
