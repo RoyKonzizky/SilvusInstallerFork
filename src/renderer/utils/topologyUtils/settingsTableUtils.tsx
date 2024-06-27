@@ -2,6 +2,7 @@ import {IUserNode} from "@antv/graphin";
 import {RestNode} from "@antv/graphin/es/typings/type";
 import Select from "react-select";
 import {HullCfg} from "@antv/graphin/lib/components/Hull";
+import {TFunction} from "i18next";
 
 export type selectedOptionsType = { [p: string]: { [p: string]: number } };
 export type handleSelectChangeType = (group: string, nodeId: string, value: number | null) => void;
@@ -62,10 +63,10 @@ export function renderSelect(record: any, group: string, selectedOptions: select
 }
 
 export function getColumns(groups: string[], selectedOptions: selectedOptionsType,
-                           handleSelectChange: handleSelectChangeType) {
+                           handleSelectChange: handleSelectChangeType, t: TFunction<"translation", undefined>) {
     return [
         {
-            title: 'Node Label', dataIndex: 'label', key: 'label',
+            title: t('Node Label'), dataIndex: 'label', key: 'label',
             render: (_: string, record: any) => <span>{record.style.label.value}</span>,
         },
         ...groups.map(group => ({

@@ -8,6 +8,7 @@ import {createDataSource, getColumns, isIUserNode, convertSelectedOptionsToHulls
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { RootState } from "../../../../../redux/store.ts";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
+import { useTranslation } from 'react-i18next';
 
 interface ITopologySettingsTable {
     groups: string[];
@@ -23,6 +24,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [selectedOptions, setSelectedOptions] = useState<{ [group: string]: { [nodeId: string]: number } }>(initialSelectedOptions);
     const [groups, setGroups] = useState<string[]>(initialGroups);
     const [nodes, setNodes] = useState<(IUserNode | RestNode)[]>(props.nodes);
+    const { t, } = useTranslation();
 
     const handleAddGroup = (groupName: string) => {
         setGroups((prevGroups) => [...prevGroups, groupName]);
@@ -49,7 +51,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         dispatch(updateHulls(updatedHulls));
     }, [selectedOptions, groups, dispatch, nodes, props.resetOnClose]);
 
-    const columns = getColumns(groups, selectedOptions, handleSelectChange);
+    const columns = getColumns(groups, selectedOptions, handleSelectChange, t);
 
     return (
         <div>
