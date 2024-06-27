@@ -5,7 +5,7 @@ import {TopologySettingsTable} from "./TopologySettingsTable.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/store.ts";
 import settingsIcon from "../../../../../assets/settingsIconTopology.svg";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 interface ITableModal {
     graphData: { nodes: IUserNode[], edges: IUserEdge[] },
@@ -15,7 +15,7 @@ export function TableModal(props: ITableModal) {
     const [modalState, setModalState] = useState(false);
     const hullsFromSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
     const groups = hullsFromSelector.map((hull) => hull.id);
-    const { t, } = useTranslation();
+    const {t} = useTranslation();
 
     const openModal = () => setModalState(true);
     const closeModal = () => setModalState(false);

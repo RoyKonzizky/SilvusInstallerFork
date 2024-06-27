@@ -9,7 +9,7 @@ import {AppInputs} from "../AppInputs/AppInputs.tsx";
 import {fetchProtectedLogin} from "../../utils/loginUtils.ts";
 import {useSelector} from "react-redux";
 import {RootState} from "../../redux/store.ts";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export function LoginModal(props: ILoginModalProps) {
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ export function LoginModal(props: ILoginModalProps) {
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
-    const { t,  } = useTranslation();
+    const {t} = useTranslation();
 
     const loginInputs: Input[][] = [
         [{type: "text", label: t("username"), value: username, setValue: setUsername}],

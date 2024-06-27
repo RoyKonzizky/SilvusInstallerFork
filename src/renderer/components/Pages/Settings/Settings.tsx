@@ -9,7 +9,7 @@ import {bandwidthValues, frequencyValues, totalTransitPowerValues} from "../../.
 import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
 import PresetsButton from "../../PresetsButton/PresetsButton.tsx";
 import {changePreset} from "../../../utils/presetsUtils.ts";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 // import {getInfoFromTheSilvusDevice} from "../../../scripts/getInfoFromTheSilvusDevice.ts";
 // import {SilvusDataType} from "../../../constants/SilvusDataType.ts";
 
@@ -21,7 +21,7 @@ export function Settings(props: ISettingsProps) {
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
     const [selectedPreset, setSelectedPreset] = useState(useSelector((state: RootState) => state.presets.chosenSpectrum));
     const dispatch = useDispatch();
-    const { t, } = useTranslation();
+    const {t} = useTranslation();
 
     const settingInputs: Input[][] = [
         [

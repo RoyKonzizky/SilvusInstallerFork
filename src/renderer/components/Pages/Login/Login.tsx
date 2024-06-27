@@ -9,7 +9,7 @@ import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {useDispatch} from "react-redux";
 import {setIp} from "../../../redux/IP/IPSlice.ts";
 import {startUp, startUpDataType} from "../../../utils/loginUtils.ts";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import "../../../i18n.ts";
 
 export function Login() {
@@ -22,7 +22,7 @@ export function Login() {
         useState<startUpDataType>({type: "", msg: {ip: "", isProtected: 1}});
     const dispatch = useDispatch();
     const [isProtectedDevice, setIsProtectedDevice] = useState(false);
-    const { t, } = useTranslation();
+    const {t} = useTranslation();
 
     const loginInputs: Input[][] = [
         [{type: "text", label: t("IP Address"), value: ipAddress, setValue: setIpAddress}],
@@ -48,8 +48,8 @@ export function Login() {
                 setErrorModalIsOpen(true);
             }
             if (startUpData.type === "Success") {
-                setIpAddress((startUpData.msg as {ip: string, isProtected: number}).ip);
-                setIsProtectedDevice((startUpData.msg as {ip: string, isProtected: number}).isProtected === 1);
+                setIpAddress((startUpData.msg as { ip: string, isProtected: number }).ip);
+                setIsProtectedDevice((startUpData.msg as { ip: string, isProtected: number }).isProtected === 1);
             }
         }
         callStartup();

@@ -1,8 +1,9 @@
 import {useState} from "react";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
+
 function Microphone() {
     const [volume, setVolume] = useState(50);
-    const { t, } = useTranslation();
+    const {t} = useTranslation();
 
     return (
         <div className="text-3xl h-screen flex flex-col justify-center items-center gap-y-8">

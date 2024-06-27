@@ -3,10 +3,10 @@ import CameraLogo from "../../assets/camera.svg";
 import FilmmakerLogo from "../../assets/filmmaker.svg";
 import GalleryLogo from "../../assets/gallery.svg";
 import {Paths} from "../../constants/Paths.ts";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 function SubsectionsOfRecordingsNavigatorButton() {
-    const { t, } = useTranslation();
+    const {t} = useTranslation();
 
     return (
         <>

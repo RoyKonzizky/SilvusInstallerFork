@@ -2,10 +2,10 @@ import Modal from "react-modal";
 import {IErrorMessageProps} from "./IErrorMessageProps.ts";
 import {Input} from "../AppInputs/InputTypes/Input.ts";
 import {AppInputs} from "../AppInputs/AppInputs.tsx";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 export function ErrorMessage(props: IErrorMessageProps) {
-    const { t,  } = useTranslation();
+    const {t } = useTranslation();
 
     const errorInputs: Input[][] = [
         [{type: "button", label: t('close'), onClick: () => props.setModalIsOpen(false)}]

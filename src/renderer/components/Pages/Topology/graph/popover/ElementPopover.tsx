@@ -1,7 +1,7 @@
 import {Popover} from "antd";
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {Battery} from "./Battery.tsx";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -10,7 +10,7 @@ interface IElementPopoverProps {
 }
 
 export function ElementPopover(props: IElementPopoverProps) {
-    const { t, } = useTranslation();
+    const {t} = useTranslation();
 
     return (
         <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
