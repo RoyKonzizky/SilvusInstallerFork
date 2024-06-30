@@ -1,8 +1,8 @@
 # PowerShell script to start the Vite development server and Electron app
 
 # Path to local Node.js and npm executables
-$nodePath = ".\node_modules\.bin\node.exe"
-$npmPath = ".\node_modules\.bin\npm.cmd"
+$nodePath = ".\local_node\node.exe"
+$npmPath = ".\local_node\npm.cmd"
 
 # Function to check if a process is running
 function Test-Process {
