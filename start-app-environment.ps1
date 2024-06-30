@@ -1,5 +1,8 @@
 # PowerShell script to start the Vite development server and Electron app
 
+# Full path to local npm executable
+$npmPath = ".\node_modules\.bin\npm.cmd"
+
 # Function to check if a process is running
 function Test-Process {
     param (
@@ -13,21 +16,21 @@ function Test-Process {
 Write-Output "Stopping any previous instances of the app..."
 Stop-Process -Name "node" -ErrorAction SilentlyContinue
 
-# Check if the directory exists
-if (-Not (Test-Path "C:\Silvus-win32-x64")) {
-    # Build the app
-    Write-Output "Building the app..."
-    $process = Start-Process "npm" "run package" -NoNewWindow -PassThru -RedirectStandardOutput "building-app-output.log" -RedirectStandardError "building-app-error.log"
-
-    # Wait for app to build
-    Start-Sleep -Seconds 40
-} else {
-    Write-Output "The app has already been built. Skipping build step."
-}
+## Check if the directory exists
+#if (-Not (Test-Path "C:\Silvus-win32-x64")) {
+#    # Build the app
+#    Write-Output "Building the app..."
+#    $process = Start-Process $npmPath "run package" -NoNewWindow -PassThru -RedirectStandardOutput "building-app-output.log" -RedirectStandardError "building-app-error.log"
+#
+#    # Wait for app to build
+#    Start-Sleep -Seconds 40
+#} else {
+#    Write-Output "The app has already been built. Skipping build step."
+#}
 
 # Start the app
 Write-Output "Starting the app..."
-$process = Start-Process "npm" "run dev" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
+$process = Start-Process $npmPath "run dev" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
 
 # Wait for app to start
 Start-Sleep -Seconds 10
