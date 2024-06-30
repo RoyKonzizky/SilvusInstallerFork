@@ -28,14 +28,13 @@ export function TopologyGraph(props: ITopologyGraph) {
             setShowHulls(true);
         }, 3);
         setHullOptions(hullsFromSelector);
-
         return () => clearTimeout(timeoutId);
     }, []);
 
     useEffect(() => {
-        setHullOptions(hullsFromSelector);
+        setHullOptions(hullsFromSelector
+            .filter((value) => value.members.length > 0));
     }, [hullsFromSelector]);
-
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();
@@ -51,12 +50,8 @@ export function TopologyGraph(props: ITopologyGraph) {
     const modes = {
         default: [
             'drag-node', 'drag-canvas', 'zoom-canvas', 'drag-combo',
-            {
-                type: 'click-select', onClick: handleElementClick, selectNode: true, selectEdge: true,
-            },
-            {
-                type: 'click-select',
-            },
+            {type: 'click-select', onClick: handleElementClick, selectNode: true, selectEdge: true,},
+            {type: 'click-select',},
         ]
     };
 
@@ -71,3 +66,5 @@ export function TopologyGraph(props: ITopologyGraph) {
         </Graphin>
     );
 }
+
+// graphRef.graph.updateItem()

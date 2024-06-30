@@ -1,10 +1,10 @@
-import {IUserNode} from "@antv/graphin";
-import {RestNode} from "@antv/graphin/es/typings/type";
-import Select from "react-select";
-import {HullCfg} from "@antv/graphin/lib/components/Hull";
+import binIcon from "../../assets/bin.png";
 import axios from "axios";
 import { Button } from "antd";
-import binIcon from "../../assets/bin.png"
+import {IUserNode} from "@antv/graphin";
+import Select from "react-select";
+import {HullCfg} from "@antv/graphin/lib/components/Hull";
+import {Dispatch, SetStateAction} from "react";
 
 export type selectedOptionsType = { [p: string]: { [p: string]: number } };
 export type handleSelectChangeType = (group: string, nodeId: string, value: number | null) => void;
@@ -19,7 +19,8 @@ export function createDataSource(nodes: IUserNode[]) {
     return nodes.map((node: IUserNode, index: number) => ({key: index, ...node}))
 }
 
-export function convertSelectedOptionsToHulls(groups: string[], nodes: IUserNode[], selectedOptions: selectedOptionsType) {
+export function convertSelectedOptionsToHulls(
+    groups: string[], nodes: IUserNode[], selectedOptions: selectedOptionsType) {
     return groups.map(group => {
         return {
             id: group,
@@ -46,7 +47,28 @@ export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUs
     return selectedOptions;
 }
 
-export function isIUserNode(node: IUserNode | RestNode): node is IUserNode {
+/*
+export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
+    const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
+
+    hullOptions.forEach(hull => {
+        const group = hull.id || '';
+        selectedOptions[group] = {};
+
+        hull.members.forEach(memberId => {
+            const node = nodes.find(node => node.id === memberId);
+            if (node && node.data && node.data.statuses) {
+                const groupIndex = hullOptions.findIndex(h => h.id === group);
+                selectedOptions[group][memberId] = node.data.statuses[groupIndex] || 0;
+            }
+        });
+    });
+
+    return selectedOptions;
+}
+ */
+
+export function isIUserNode(node: IUserNode): node is IUserNode {
     return (node as IUserNode).id !== undefined;
 }
 
@@ -65,8 +87,7 @@ export function renderSelect(record: any, group: string, selectedOptions: select
 }
 
 export function getColumns(groups: string[], selectedOptions: selectedOptionsType,
-                           handleSelectChange: handleSelectChangeType,
-                           handleDeleteGroup: (group: string) => void) {
+                           handleSelectChange: handleSelectChangeType, handleDeleteGroup: (group: string) => void) {
     return [
         {
             title: 'Node Label', dataIndex: 'label', key: 'label',
@@ -97,6 +118,7 @@ export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[
 }
 
 export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
+    // console.log(convertPttDataToServerFormat(hullOptions, nodes));
     try {
         const response = await axios.post(
             'http://localhost:8080/set-ptt-groups', convertPttDataToServerFormat(hullOptions, nodes),
@@ -110,4 +132,39 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
     } catch (error) {
         console.error('Error sending data:', error);
     }
+};
+
+export const handleAddGroup = (groupName: string,
+                               groups: string[], setGroups: Dispatch<SetStateAction<string[]>>) => {
+    if (groups.length < 15) {
+        setGroups((prevGroups) => [...prevGroups, groupName]);
+    }
+};
+
+export const handleDeleteGroup = (groupName: string, groups: string[], setGroups: Dispatch<SetStateAction<string[]>>,
+    setSelectedOptions: Dispatch<SetStateAction<{ [group: string]: { [nodeId: string]: number } }>>) => {
+    if (groups.length > 1) {
+        setGroups((prevGroups) => prevGroups.filter((group) => group !== groupName));
+        setSelectedOptions((prevOptions) => {
+            const { [groupName]: _, ...rest } = prevOptions;
+            return rest;
+        });
+    }
+};
+
+export const handleSelectChange = (group: string, nodeId: string, value: number | null, groups: string[],
+     setSelectedOptions: Dispatch<SetStateAction<{ [group: string]: { [nodeId: string]: number } }>>,
+     setNodes: Dispatch<SetStateAction<IUserNode[]>>,
+                                   selectedOptions: { [group: string]: { [nodeId: string]: number } }) => {
+    const newValue = value ?? 0;
+    setSelectedOptions((prevOptions) =>
+        ({ ...prevOptions, [group]: { ...prevOptions[group], [nodeId]: newValue } }));
+    setNodes((prevNodes) => prevNodes.map((node) => {
+        if (isIUserNode(node) && node.id === nodeId) {
+            const updatedStatuses = groups.map((grp) => selectedOptions[grp]?.[node.id] ?? 0);
+            updatedStatuses[groups.indexOf(group)] = newValue;
+            return { ...node, data: { ...node.data, statuses: updatedStatuses } };
+        }
+        return node;
+    }));
 };

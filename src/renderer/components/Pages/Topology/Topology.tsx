@@ -28,8 +28,7 @@ export function Topology(props: ITopologyProps) {
         if (lastJsonMessage) {
             try {
                 const newData = lastJsonMessage as { type: string, data: any };
-                console.log('Parsed WebSocket message:', newData);
-                console.log('Message type:', newData.type);
+                // console.log('Parsed WebSocket message:', newData);// console.log('Message type:', newData.type);
 
                 if (newData.type === 'net-data') {
                     const { 'device-list': deviceList, 'snr-list': snrList } = newData.data;
