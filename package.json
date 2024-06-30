@@ -8,7 +8,7 @@
     "start": "npm run build && npm run electron:start",
     "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
     "vite": "vite",
-    "build": "concurrently -k \"vite build\" \"npm run electron:build\"",
+    "build": "vite build",
     "preview": "vite preview",
     "electron:dev": "cross-env IS_DEV=true electron .",
     "electron:build": "electron-builder",

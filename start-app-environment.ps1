@@ -15,10 +15,10 @@ Stop-Process -Name "node" -ErrorAction SilentlyContinue
 
 # Build the app
 Write-Output "Building the app..."
-$process = Start-Process "npm" "run build" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
+$process = Start-Process "npm" "run package" -NoNewWindow -PassThru -RedirectStandardOutput "building-app-output.log" -RedirectStandardError "building-app-error.log"
 
 # Wait for app to build
-Start-Sleep -Seconds 10
+Start-Sleep -Seconds 40
 
 # Start the app
 Write-Output "Starting the app..."
