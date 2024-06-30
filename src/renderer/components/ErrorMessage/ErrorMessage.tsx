@@ -5,7 +5,7 @@ import {AppInputs} from "../AppInputs/AppInputs.tsx";
 import {useTranslation} from 'react-i18next';
 
 export function ErrorMessage(props: IErrorMessageProps) {
-    const {t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const errorInputs: Input[][] = [
         [{type: "button", label: t('close'), onClick: () => props.setModalIsOpen(false)}]
@@ -15,7 +15,7 @@ export function ErrorMessage(props: IErrorMessageProps) {
         <Modal isOpen={props.modalIsOpen} shouldCloseOnOverlayClick={false} ariaHideApp={false}
                className={`text-white text-3xl text-center flex justify-center items-center h-screen bg-[#000000]/75`}
         >
-            <div className="bg-black p-4 rounded-xl">
+            <div className={`bg-black p-4 rounded-xl ${i18n.language === 'he' && "justify-end"}`}>
                 {t('error')}: {props.errorMessage}
                 <AppInputs appInputs={errorInputs} className={'w-[160%] mt-5'} isSmaller={false}/>
             </div>
