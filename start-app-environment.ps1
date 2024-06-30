@@ -13,12 +13,17 @@ function Test-Process {
 Write-Output "Stopping any previous instances of the app..."
 Stop-Process -Name "node" -ErrorAction SilentlyContinue
 
-# Build the app
-Write-Output "Building the app..."
-$process = Start-Process "npm" "run package" -NoNewWindow -PassThru -RedirectStandardOutput "building-app-output.log" -RedirectStandardError "building-app-error.log"
+# Check if the directory exists
+if (-Not (Test-Path "C:\Silvus-win32-x64")) {
+    # Build the app
+    Write-Output "Building the app..."
+    $process = Start-Process "npm" "run package" -NoNewWindow -PassThru -RedirectStandardOutput "building-app-output.log" -RedirectStandardError "building-app-error.log"
 
-# Wait for app to build
-Start-Sleep -Seconds 40
+    # Wait for app to build
+    Start-Sleep -Seconds 40
+} else {
+    Write-Output "The app has already been built. Skipping build step."
+}
 
 # Start the app
 Write-Output "Starting the app..."
