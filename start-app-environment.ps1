@@ -34,7 +34,7 @@ Write-Output "Starting the app..."
 $process = Start-Process $npmPath "run dev" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
 
 # Wait for app to start
-Start-Sleep -Seconds 20
+Start-Sleep -Seconds 15
 
 # Check if the app is running
 if (Test-Process -Name $nodePath) {
