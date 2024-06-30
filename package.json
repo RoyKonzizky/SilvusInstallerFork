@@ -5,8 +5,8 @@
   "type": "module",
   "main": "out/main/main.cjs",
   "scripts": {
-    "start": "npm run build && npm run electron:start",
-    "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
+    "start": ".\\local_node\\npm.cmd run build && .\\local_node\\npm.cmd run electron:start",
+    "dev": "concurrently -k \"vite\" \".\\local_node\\npm.cmd run electron:dev\"",
     "vite": "vite",
     "build": "vite build",
     "preview": "vite preview",
