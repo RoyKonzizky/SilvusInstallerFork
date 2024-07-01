@@ -5,6 +5,7 @@ import {TopologySettingsTable} from "./TopologySettingsTable.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/store.ts";
 import settingsIcon from "../../../../../assets/settingsIconTopology.svg";
+import {useTranslation} from 'react-i18next';
 
 interface ITableModal {
     graphData: { nodes: IUserNode[], edges: IUserEdge[] },
@@ -14,6 +15,7 @@ export function TableModal(props: ITableModal) {
     const [modalState, setModalState] = useState(false);
     const hullsFromSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
     const groups = hullsFromSelector.map((hull) => hull.id);
+    const {t} = useTranslation();
 
     const openModal = () => setModalState(true);
     const closeModal = () => setModalState(false);
@@ -21,7 +23,7 @@ export function TableModal(props: ITableModal) {
     return (
         <div>
             <button className={'text-black w-20 h-24 rounded'} onClick={openModal}>
-                <img className={'bg-white rounded-full'} src={settingsIcon} alt={"settings"}/>
+                <img className={'bg-white rounded-full'} src={settingsIcon} alt={t("settings")}/>
             </button>
             <HyperModal isOpen={modalState} requestClose={closeModal}>
                 <TopologySettingsTable resetOnClose={modalState} groups={groups === undefined ? groups : []}

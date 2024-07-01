@@ -7,6 +7,18 @@ import { convertHullsToSelectedOptions, convertSelectedOptionsToHulls, createDat
     handleDeleteGroup, handleSelectChange, sendPttGroups} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { RootState } from "../../../../../redux/store.ts";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
+import {useState, useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+import {Table} from "antd";
+import {IUserNode} from "@antv/graphin";
+import {updateHulls} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {RestNode} from "@antv/graphin/es/typings/type";
+import {
+    createDataSource, getColumns, isIUserNode, convertSelectedOptionsToHulls, convertHullsToSelectedOptions,
+} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {RootState} from "../../../../../redux/store.ts";
+import {GroupAdditionModal} from "./GroupAdditionModal.tsx";
+import {useTranslation} from 'react-i18next';
 
 interface ITopologySettingsTable {
     groups: string[],
@@ -23,7 +35,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [groups, setGroups] =
         useState<string[]>(props.groups.length ? props.groups : Object.keys(initialSelectedOptions));
     const [nodes, setNodes] = useState<IUserNode[]>(props.nodes);
-
+    const {t} = useTranslation();
     useEffect(() => {
         dispatch(updateHulls(convertSelectedOptionsToHulls(groups, nodes, selectedOptions)));
     }, [selectedOptions, groups, nodes, props.resetOnClose]);

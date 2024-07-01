@@ -9,6 +9,7 @@ import {AppInputs} from "../AppInputs/AppInputs.tsx";
 import {fetchProtectedLogin} from "../../utils/loginUtils.ts";
 import {useSelector} from "react-redux";
 import {RootState} from "../../redux/store.ts";
+import {useTranslation} from 'react-i18next';
 
 export function LoginModal(props: ILoginModalProps) {
     const navigate = useNavigate();
@@ -17,22 +18,23 @@ export function LoginModal(props: ILoginModalProps) {
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
+    const {t} = useTranslation();
 
     const loginInputs: Input[][] = [
-        [{type: "text", label: "Username", value: username, setValue: setUsername}],
-        [{type: "text", label: "Password", value: password, setValue: setPassword}],
+        [{type: "text", label: t("username"), value: username, setValue: setUsername}],
+        [{type: "text", label: t("password"), value: password, setValue: setPassword}],
         [{
-            type: "button", label: "Enter", onClick: async () => {
+            type: "button", label: t("enter"), onClick: async () => {
                 const logInSuccessResult = await fetchProtectedLogin({username: username, password: password}); // "Success";
                 if (logInSuccessResult === "Success") {
                     props.setModalIsOpen(false);
                     navigate(Paths.Settings);
                 } else if (logInSuccessResult === "Fail") {
                     setErrorModalIsOpen(true);
-                    setErrorMessage('Your Username or Password is incorrect. Please try again!');
+                    setErrorMessage(t('loginModalErrorMessage'));
                 }
             }
-        }, {type: "button", label: "Return", onClick: async () => props.setModalIsOpen(false)},
+        }, {type: "button", label: t("return"), onClick: async () => props.setModalIsOpen(false)},
         ]
     ];
 
@@ -43,7 +45,7 @@ export function LoginModal(props: ILoginModalProps) {
             >
                 <div
                     className="bg-black p-4 rounded-xl w-[50%] h-[50%] flex flex-col justify-center items-center gap-y-8">
-                    Login into the device in {ipAddress}
+                    {t("loginModalHeader")} {ipAddress}
                     <AppInputs appInputs={loginInputs} className={'w-[160%]'} isSmaller={false}/>
                 </div>
             </Modal>

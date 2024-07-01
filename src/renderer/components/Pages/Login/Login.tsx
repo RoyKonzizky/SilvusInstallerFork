@@ -9,6 +9,8 @@ import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {useDispatch} from "react-redux";
 import {setIp} from "../../../redux/IP/IPSlice.ts";
 import {startUp, startUpDataType} from "../../../utils/loginUtils.ts";
+import {useTranslation} from 'react-i18next';
+import "../../../i18n.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -20,18 +22,19 @@ export function Login() {
         useState<startUpDataType>({type: "", msg: {ip: "", isProtected: 1}});
     const dispatch = useDispatch();
     const [isProtectedDevice, setIsProtectedDevice] = useState(false);
+    const {t} = useTranslation();
 
     const loginInputs: Input[][] = [
-        [{type: "text", label: "IP Address", value: ipAddress, setValue: setIpAddress}],
+        [{type: "text", label: t("IP Address"), value: ipAddress, setValue: setIpAddress}],
         [{
-            type: "button", label: "Enter", onClick: async () => {
+            type: "button", label: t("enter"), onClick: async () => {
                 if (ipAddress !== "" && (isIPv4(ipAddress) || isIPv6(ipAddress))) {
                     dispatch(setIp(ipAddress));
                     if (isProtectedDevice) setLoginModalIsOpen(true);
                     else navigate(Paths.Settings);
                 } else {
                     setErrorModalIsOpen(true);
-                    setErrorMessage('IP is not existed or was inputted incorrectly.');
+                    setErrorMessage(t('loginErrorMessage'));
                 }
             }
         }]
@@ -45,8 +48,8 @@ export function Login() {
                 setErrorModalIsOpen(true);
             }
             if (startUpData.type === "Success") {
-                setIpAddress((startUpData.msg as {ip: string, isProtected: number}).ip);
-                setIsProtectedDevice((startUpData.msg as {ip: string, isProtected: number}).isProtected === 1);
+                setIpAddress((startUpData.msg as { ip: string, isProtected: number }).ip);
+                setIsProtectedDevice((startUpData.msg as { ip: string, isProtected: number }).isProtected === 1);
             }
         }
         callStartup();
