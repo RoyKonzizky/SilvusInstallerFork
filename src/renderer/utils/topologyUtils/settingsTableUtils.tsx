@@ -68,13 +68,8 @@ export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUs
 }
  */
 
-export function isIUserNode(node: IUserNode): node is IUserNode {
-    return (node as IUserNode).id !== undefined;
-}
-
 export function renderSelect(record: any, group: string, selectedOptions: selectedOptionsType,
                              handleSelectChange: handleSelectChangeType) {
-    if (!isIUserNode(record)) return null;
     const nodeId = record.id;
     const value = selectedOptions[group]?.[nodeId] ?? 0;
     return (
@@ -160,7 +155,7 @@ export const handleSelectChange = (group: string, nodeId: string, value: number 
     setSelectedOptions((prevOptions) =>
         ({ ...prevOptions, [group]: { ...prevOptions[group], [nodeId]: newValue } }));
     setNodes((prevNodes) => prevNodes.map((node) => {
-        if (isIUserNode(node) && node.id === nodeId) {
+        if (node.id === nodeId) {
             const updatedStatuses = groups.map((grp) => selectedOptions[grp]?.[node.id] ?? 0);
             updatedStatuses[groups.indexOf(group)] = newValue;
             return { ...node, data: { ...node.data, statuses: updatedStatuses } };
