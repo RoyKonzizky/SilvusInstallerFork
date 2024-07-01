@@ -8,7 +8,7 @@ import {ErrorMessage} from "../../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {useDispatch} from "react-redux";
 import {setIp} from "../../../redux/IP/IPSlice.ts";
-import {startUp, startUpDataType} from "../../../utils/loginUtils.ts";
+import {startUp} from "../../../utils/loginUtils.ts";
 import {useTranslation} from 'react-i18next';
 import "../../../i18n.ts";
 
@@ -18,8 +18,6 @@ export function Login() {
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [startUpData, setStartUpData] =
-        useState<startUpDataType>({type: "", msg: {ip: "", isProtected: 1}});
     const dispatch = useDispatch();
     const [isProtectedDevice, setIsProtectedDevice] = useState(false);
     const {t} = useTranslation();
@@ -42,7 +40,7 @@ export function Login() {
 
     useEffect(() => {
         const callStartup = async () => {
-            setStartUpData(await startUp());
+            const startUpData = await startUp();
             if (startUpData.type === "Fail") {
                 setErrorMessage(startUpData.msg as string);
                 setErrorModalIsOpen(true);
@@ -53,7 +51,7 @@ export function Login() {
             }
         }
         callStartup();
-    }, [startUpData])
+    }, [])
 
     return (
         <>

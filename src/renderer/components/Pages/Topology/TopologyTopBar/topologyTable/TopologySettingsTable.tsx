@@ -1,20 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { Table } from "antd";
-import { IUserNode } from "@antv/graphin";
-import { updateHulls } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import { convertHullsToSelectedOptions, convertSelectedOptionsToHulls, createDataSource, getColumns, handleAddGroup,
-    handleDeleteGroup, handleSelectChange, sendPttGroups} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
-import { RootState } from "../../../../../redux/store.ts";
-import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Table} from "antd";
 import {IUserNode} from "@antv/graphin";
 import {updateHulls} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {RestNode} from "@antv/graphin/es/typings/type";
-import {
-    createDataSource, getColumns, isIUserNode, convertSelectedOptionsToHulls, convertHullsToSelectedOptions,
+import {convertHullsToSelectedOptions, convertSelectedOptionsToHulls, createDataSource, getColumns,
+    handleAddGroup, handleDeleteGroup, handleSelectChange, sendPttGroups
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import {RootState} from "../../../../../redux/store.ts";
 import {GroupAdditionModal} from "./GroupAdditionModal.tsx";
@@ -84,10 +74,11 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             <GroupAdditionModal groups={groups} nodes={nodes} selectedOptions={selectedOptions}
                                 onAdd={(groupName) => handleAddGroup(groupName, groups, setGroups)} />
             <Table className={'bottom-0'}
-                   columns={getColumns(groups, selectedOptions, (group, nodeId, value) =>
-                           handleSelectChange(group, nodeId, value, groups, setSelectedOptions, setNodes, selectedOptions),
+                   columns={
+                getColumns(groups, selectedOptions, (group, nodeId, value)=>
+                        handleSelectChange(group, nodeId, value, groups, setSelectedOptions, setNodes, selectedOptions),
                        (groupName) =>
-                           handleDeleteGroup(groupName, groups, setGroups, setSelectedOptions))}
+                           handleDeleteGroup(groupName, groups, setGroups, setSelectedOptions), t)}
                    dataSource={createDataSource(nodes)} />
         </div>
     );

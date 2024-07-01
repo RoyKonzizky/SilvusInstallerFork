@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-export type startUpDataType = {type: string, msg: string | {ip: string, isProtected: number}};
-
 export const fetchProtectedLogin = async (loginUser: { password: string; username: string }) => {
     try {
         const response = await axios.post('http://localhost:8080/log-in', loginUser);

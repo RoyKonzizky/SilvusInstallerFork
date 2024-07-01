@@ -83,8 +83,8 @@ export function renderSelect(record: any, group: string, selectedOptions: select
 }
 
 export function getColumns(groups: string[], selectedOptions: selectedOptionsType,
-                           handleSelectChange: handleSelectChangeType, handleDeleteGroup: (group: string) => void) {
-                           handleSelectChange: handleSelectChangeType, t: TFunction<"translation", undefined>) {
+                           handleSelectChange: handleSelectChangeType,
+                           handleDeleteGroup: (group: string) => void, t: TFunction<"translation", undefined>) {
     return [
         {
             title: t('Node Label'), dataIndex: 'label', key: 'label',
