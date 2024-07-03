@@ -15,7 +15,7 @@ interface ITopologySettingsTable {
     nodes: IUserNode[],
     resetOnClose: boolean,
 }
-
+//TODO: add the nodes to the redux
 export function TopologySettingsTable(props: ITopologySettingsTable) {
     const dispatch = useDispatch();
     const hullOptions = useSelector((state: RootState) => state.topologyGroups.hullOptions);

@@ -8,9 +8,10 @@ import {ErrorMessage} from "../../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {useDispatch} from "react-redux";
 import {setIp} from "../../../redux/IP/IPSlice.ts";
-import {startUp} from "../../../utils/loginUtils.ts";
 import {useTranslation} from 'react-i18next';
 import "../../../i18n.ts";
+import {startUp} from "../../../utils/loginUtils.ts";
+import {Button} from "antd";
 
 export function Login() {
     const navigate = useNavigate();
@@ -21,6 +22,18 @@ export function Login() {
     const dispatch = useDispatch();
     const [isProtectedDevice, setIsProtectedDevice] = useState(false);
     const {t} = useTranslation();
+
+    const callStartup = async () => {
+        const startUpData = await startUp();
+        if (startUpData.type === "Fail") {
+            setErrorMessage(startUpData.msg as string);
+            setErrorModalIsOpen(true);
+        }
+        if (startUpData.type === "Success") {
+            setIpAddress((startUpData.msg as { ip: string, isProtected: number }).ip);
+            setIsProtectedDevice((startUpData.msg as { ip: string, isProtected: number }).isProtected === 1);
+        }
+    }
 
     const loginInputs: Input[][] = [
         [{type: "text", label: t("IP Address"), value: ipAddress, setValue: setIpAddress}],
@@ -35,21 +48,13 @@ export function Login() {
                     setErrorMessage(t('loginErrorMessage'));
                 }
             }
-        }]
+        }],
+        [{
+            type: "button", label: t("refresh"), onClick: callStartup
+        }],
     ];
 
     useEffect(() => {
-        const callStartup = async () => {
-            const startUpData = await startUp();
-            if (startUpData.type === "Fail") {
-                setErrorMessage(startUpData.msg as string);
-                setErrorModalIsOpen(true);
-            }
-            if (startUpData.type === "Success") {
-                setIpAddress((startUpData.msg as { ip: string, isProtected: number }).ip);
-                setIsProtectedDevice((startUpData.msg as { ip: string, isProtected: number }).isProtected === 1);
-            }
-        }
         callStartup();
     }, [])
 

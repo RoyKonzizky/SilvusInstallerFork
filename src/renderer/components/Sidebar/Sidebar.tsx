@@ -1,3 +1,5 @@
+// import RecordingsLogo from "../../assets/recordings.svg";
+// import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
 import {useEffect} from 'react';
 import {useDispatch} from "react-redux";
 import {interactExpandingAndCollapsingButton} from "../../redux/Collapsing/collapsingSlice.ts";
@@ -7,11 +9,10 @@ import SettingsLogo from '../../assets/settings.svg';
 import TopologyLogo from '../../assets/topology.svg';
 import DashboardLogo from "../../assets/dashboard.svg";
 import LogoutLogo from "../../assets/logout.svg";
-// import RecordingsLogo from "../../assets/recordings.svg";
-// import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
 import {Paths} from "../../constants/Paths.ts";
 import '../../i18n.ts';
 import { useTranslation } from 'react-i18next';
+import {logout} from "../../utils/loginUtils.ts";
 
 export function Sidebar() {
     const dispatch = useDispatch();
@@ -24,6 +25,10 @@ export function Sidebar() {
     }, []);
 
     if (window.location.pathname === Paths.Main) return null;
+
+    const callLogOut = async () => {
+        await logout();
+    }
 
     return (
         <>
@@ -45,7 +50,8 @@ export function Sidebar() {
                     {/*/>*/}
                 </div>
                 <div className='mt-[20vh]'>
-                    <NavigatorButton href={Paths.Main} isSubsection={false} text={t('exit')} file={LogoutLogo}/>
+                    <NavigatorButton onClick={callLogOut} href={Paths.Main} isSubsection={false} text={t('exit')}
+                                     file={LogoutLogo}/>
                 </div>
             </div>
         </>
