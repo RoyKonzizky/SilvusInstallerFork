@@ -37,5 +37,7 @@
   "mediumConnection": "חיבור בינוני: בין 20 ל-30",
   "goodConnection": "חיבור טוב: יותר מ-30",
   "Node Label": "תווית",
-  "refresh": "רענן"
+  "refresh": "רענן",
+  "changeLabel": "שנה שם",
+  "newLabel": "שם חדש"
 }

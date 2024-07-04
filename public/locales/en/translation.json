@@ -37,5 +37,7 @@
   "mediumConnection": "Medium Connection: between 20db to 30db",
   "goodConnection": "Good Connection: more than 30db",
   "Node Label": "Node Label",
-  "refresh": "refresh"
+  "refresh": "refresh",
+  "changeLabel": "Change label",
+  "newLabel": "New label"
 }
