@@ -1,20 +1,15 @@
 import {useState} from 'react';
 import HyperModal from "react-hyper-modal";
-import {IUserEdge, IUserNode} from "@antv/graphin";
 import {TopologySettingsTable} from "./TopologySettingsTable.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../../../redux/store.ts";
 import settingsIcon from "../../../../../assets/settingsIconTopology.svg";
 import {useTranslation} from 'react-i18next';
 
-interface ITableModal {
-    graphData: { nodes: IUserNode[], edges: IUserEdge[] },
-}
-
-export function TableModal(props: ITableModal) {
+export function TableModal() {
     const [modalState, setModalState] = useState(false);
-    const hullsFromSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
-    const groups = hullsFromSelector.map((hull) => hull.id);
+    const selector = useSelector((state: RootState) => state.topologyGroups);
+    const groups = selector.hullOptions.map((hull) => hull.id);
     const {t} = useTranslation();
 
     const openModal = () => setModalState(true);
@@ -27,7 +22,7 @@ export function TableModal(props: ITableModal) {
             </button>
             <HyperModal isOpen={modalState} requestClose={closeModal}>
                 <TopologySettingsTable resetOnClose={modalState} groups={groups === undefined ? groups : []}
-                                       nodes={props.graphData.nodes}/>
+                                       nodes={selector.nodes}/>
             </HyperModal>
         </div>
     );

@@ -1,7 +1,11 @@
-import {Popover} from "antd";
-import {IUserEdge, IUserNode} from "@antv/graphin";
-import {Battery} from "./Battery.tsx";
-import {useTranslation} from 'react-i18next';
+import { Popover } from "antd";
+import { IUserEdge, IUserNode } from "@antv/graphin";
+import { Battery } from "./Battery.tsx";
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../../redux/store.ts";
+import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {ChangeEvent, useState} from "react";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -10,7 +14,23 @@ interface IElementPopoverProps {
 }
 
 export function ElementPopover(props: IElementPopoverProps) {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const selector = useSelector((state: RootState) => state.topologyGroups);
+    const [label, setLabel] =
+        useState(props.selectedElement?.style?.label?.value);
+
+    const handleLabelChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setLabel(e.target.value);
+        const newLabel = e.target.value;
+        const newNodes = selector.nodes.map(node => {
+            if (node.id === props.selectedElement?.id) {
+                return {...node, style: {...node.style, label: {...node.style?.label, value: newLabel,},},};
+            }
+            return node;
+        });
+        dispatch(updateNodes(newNodes));
+    };
 
     return (
         <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
@@ -19,7 +39,6 @@ export function ElementPopover(props: IElementPopoverProps) {
                      height: '75px', position: 'absolute',
                      top: (!isNaN(props.position.y)) ? props.position.y : 100,
                      left: (!isNaN(props.position.x)) ? props.position.x : 0,
-                     // transform: 'translate(-50%, -100%)'
                  }}
                  content={
                      <div>
@@ -27,13 +46,14 @@ export function ElementPopover(props: IElementPopoverProps) {
                              <div>
                                  <p className={"text-xl"}>{`${t('id')}: ${props.selectedElement?.id}`}</p>
                                  <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
+                                 <input onChange={handleLabelChange} value={label}/>
                              </div>
                              :
                              <p>{`SNR = ${props.selectedElement?.data}`}</p>
                          }
-                         <button
+                         <button onClick={props.onClose}
                              className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +
-                                 'focus:outline-none z-50 flex justify-center absolute top-2 right-2 round'} onClick={props.onClose}>X
+                                 'focus:outline-none z-50 flex justify-center absolute top-2 right-2 round'}>X
                          </button>
                      </div>
                  }

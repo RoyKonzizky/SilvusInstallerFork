@@ -15,7 +15,7 @@ interface ITopologySettingsTable {
     nodes: IUserNode[],
     resetOnClose: boolean,
 }
-//TODO: add the nodes to the redux
+
 export function TopologySettingsTable(props: ITopologySettingsTable) {
     const dispatch = useDispatch();
     const hullOptions = useSelector((state: RootState) => state.topologyGroups.hullOptions);
@@ -26,6 +26,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         useState<string[]>(props.groups.length ? props.groups : Object.keys(initialSelectedOptions));
     const [nodes, setNodes] = useState<IUserNode[]>(props.nodes);
     const {t} = useTranslation();
+
     useEffect(() => {
         dispatch(updateHulls(convertSelectedOptionsToHulls(groups, nodes, selectedOptions)));
     }, [selectedOptions, groups, nodes, props.resetOnClose]);

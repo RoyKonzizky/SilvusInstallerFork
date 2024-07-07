@@ -6,6 +6,9 @@ import {createEdgesFromData, createNodesFromData} from "../../../utils/topologyU
 import {batteriesType, devicesType, snrsType} from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
 import {useTranslation} from 'react-i18next';
+import {useDispatch, useSelector} from "react-redux";
+import {updateEdges, updateNodes} from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {RootState} from "../../../redux/store.ts";
 
 export function Topology(props: ITopologyProps) {
     const [devices, setDevices] =
@@ -25,12 +28,15 @@ export function Topology(props: ITopologyProps) {
         }
     );
     const {t} = useTranslation();
+    const dispatch = useDispatch();
+    const selector = useSelector((state: RootState) => state.topologyGroups);
 
     useEffect(() => {
         if (lastJsonMessage) {
             try {
                 const newData = lastJsonMessage as { type: string, data: any };
-                // console.log('Parsed WebSocket message:', newData);// console.log('Message type:', newData.type);
+                console.log('Parsed WebSocket message:', newData);
+                console.log('Message type:', newData.type);
 
                 if (newData.type === 'net-data') {
                     const { 'device-list': deviceList, 'snr-list': snrList } = newData.data;
@@ -49,9 +55,14 @@ export function Topology(props: ITopologyProps) {
 
     useEffect(() => {
         if (devices && batteries && snrsData) {
+            const nodes = createNodesFromData(devices, batteries);
+            const edges = createEdgesFromData(snrsData);
             try {
-                setGraphData({nodes: createNodesFromData(devices, batteries),
-                    edges: createEdgesFromData(snrsData)});
+                dispatch(updateEdges(edges));
+                if (selector.nodes != graphData?.nodes){
+                    dispatch(updateNodes(nodes));
+                }
+                setGraphData({nodes: selector.nodes, edges: selector.edges});
             } catch (error) {
                 console.error('Error in loading data:', error);
             }
@@ -61,7 +72,7 @@ export function Topology(props: ITopologyProps) {
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 
                 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
-            {graphData ? (<TopologyGraph graphData={graphData}/>) : <h1 className={"h-24 w-36"}>{t('loading')}</h1>}
+            {graphData ? (<TopologyGraph/>) : <h1 className={"h-24 w-36"}>{t('loading')}</h1>}
         </div>
     );
 }
