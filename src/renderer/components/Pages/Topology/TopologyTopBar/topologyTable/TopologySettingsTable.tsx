@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../../redux/store';
 import { IUserNode } from '@antv/graphin';
 import { HullCfg } from '@antv/graphin/lib/components/Hull';
-import { Button, Input, Modal } from 'antd';
-import { useTranslation } from 'react-i18next';
-import {updateHulls, updateNodes} from '../../../../../redux/TopologyGroups/topologyGroupsSlice.ts';
+import { Button, Input, Modal, Table, Select } from 'antd';
+import { updateHulls, updateNodes } from '../../../../../redux/TopologyGroups/topologyGroupsSlice.ts';
 import axios from "axios";
 
 interface ITopologySettings {
     isModalOpen: boolean,
 }
+
+const { Option } = Select;
 
 export function TopologySettingsTable(props: ITopologySettings) {
     const dispatch = useDispatch();
@@ -19,13 +20,12 @@ export function TopologySettingsTable(props: ITopologySettings) {
     const [hulls, setHulls] = useState<HullCfg[]>([]);
     const [groups, setGroups] = useState<string[]>([]);
     const [modalState, setModalState] = useState(false);
-    const { t } = useTranslation();
     const [newGroup, setNewGroup] = useState<string>('');
 
     const deviceTalkStatus = [
-        { statusValue: 0, statusName: 'not in group' },
-        { statusValue: 2, statusName: 'listens' },
-        { statusValue: 1, statusName: 'listens and talks' },
+        { statusValue: 0, statusMessage: 'not in group' },
+        { statusValue: 2, statusMessage: 'listens' },
+        { statusValue: 1, statusMessage: 'listens and talks' },
     ];
 
     const openModal = () => setModalState(true);
@@ -70,7 +70,7 @@ export function TopologySettingsTable(props: ITopologySettings) {
             return { id: group, members };
         });
         setHulls(newHulls);
-        dispatch(updateHulls(hulls));
+        dispatch(updateHulls(newHulls));
     };
 
     const handleSelectChange = (id: string, groupIndex: number, value: string) => {
@@ -85,6 +85,9 @@ export function TopologySettingsTable(props: ITopologySettings) {
         setNodes(newNodes);
         updateHullsOnChange(newNodes, groups);
         dispatch(updateNodes(newNodes));
+
+        // Send updated groups to the server immediately
+        sendPttGroups(hulls, newNodes);
     };
 
     const handleDeleteGroup = (groupIndex: number) => {
@@ -116,16 +119,15 @@ export function TopologySettingsTable(props: ITopologySettings) {
             closeModal();
         }
     };
+
     function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
         const num_groups = hulls.length;
         const ips = nodes.map(node => node.style?.label?.value) as string[];
         const statuses = nodes.map(node => node.data.statuses);
-        // console.log(statuses);
-        return {ips, num_groups, statuses};
+        return { ips, num_groups, statuses };
     }
 
     const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
-        // console.log(convertPttDataToServerFormat(hullOptions, nodes));
         try {
             const response = await axios.post(
                 'http://localhost:8080/set-ptt-groups', convertPttDataToServerFormat(hullOptions, nodes),
@@ -140,49 +142,56 @@ export function TopologySettingsTable(props: ITopologySettings) {
             console.error('Error sending data:', error);
         }
     };
+
+    const columns = [
+        {
+            title: 'Label',
+            dataIndex: 'label',
+            key: 'label',
+        },
+        ...groups.map((group, groupIndex) => ({
+            title: (
+                <div>
+                    {group}
+                    {groups.length > 1 && group !== 'Group 1' && (
+                        <Button onClick={() => handleDeleteGroup(groupIndex)} type="link" className="text-red-500 ml-2">Delete</Button>
+                    )}
+                </div>
+            ),
+            dataIndex: `group-${groupIndex}`,
+            key: `group-${groupIndex}`,
+            render: (_: any, record: any) => (
+                <Select
+                    value={record[`group-${groupIndex}`] || ''}
+                    onChange={(value) => handleSelectChange(record.key, groupIndex, value)}
+                    className="w-full"
+                >
+                    {deviceTalkStatus.map(status => (
+                        <Option key={status.statusValue} value={status.statusValue}>
+                            {status.statusMessage}
+                        </Option>
+                    ))}
+                </Select>
+            ),
+        })),
+    ];
+
+    const dataSource = nodes.map(node => ({
+        key: node.id,
+        label: node.style?.label?.value,
+        ...groups.reduce((acc, _, groupIndex) => ({
+            ...acc,
+            [`group-${groupIndex}`]: node.data.statuses[groupIndex] || '',
+        }), {}),
+    }));
+
     return (
-        <div>
+        <div className="p-4">
             <Button onClick={openModal}>Add Group</Button>
-            <Modal title={t('Add New Group')} open={modalState} onOk={addGroup} onCancel={closeModal}>
+            <Modal title={'Add New Group'} open={modalState} onOk={addGroup} onCancel={closeModal}>
                 <Input value={newGroup} placeholder="Enter group name" onChange={(e) => setNewGroup(e.target.value)} />
             </Modal>
-
-            <table className="border-1">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    {groups.map((group, index) => (
-                        <th key={index}>
-                            {group}
-                            {groups.length > 1 && group !== 'Group 1' && (
-                                <Button onClick={() => handleDeleteGroup(index)} type="link">Delete</Button>
-                            )}
-                        </th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody>
-                {nodes.map(node => (
-                    <tr key={node.id}>
-                        <td>{node.name}</td>
-                        {groups.map((_, groupIndex) => (
-                            <td key={groupIndex}>
-                                <select
-                                    value={node.data.statuses[groupIndex] || ''}
-                                    onChange={(e) => handleSelectChange(node.id, groupIndex, e.target.value)}
-                                >
-                                    {deviceTalkStatus.map(status => (
-                                        <option key={status.statusValue} value={status.statusValue}>
-                                            {status.statusName}
-                                        </option>
-                                    ))}
-                                </select>
-                            </td>
-                        ))}
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <Table columns={columns} dataSource={dataSource} bordered />
         </div>
     );
 }
