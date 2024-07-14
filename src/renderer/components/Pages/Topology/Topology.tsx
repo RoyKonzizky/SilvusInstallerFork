@@ -35,8 +35,7 @@ export function Topology(props: ITopologyProps) {
         if (lastJsonMessage) {
             try {
                 const newData = lastJsonMessage as { type: string, data: any };
-                console.log('Parsed WebSocket message:', newData);
-                console.log('Message type:', newData.type);
+                // console.log('Parsed WebSocket message:', newData); // console.log('Message type:', newData.type);
 
                 if (newData.type === 'net-data') {
                     const { 'device-list': deviceList, 'snr-list': snrList } = newData.data;
@@ -59,9 +58,7 @@ export function Topology(props: ITopologyProps) {
             const edges = createEdgesFromData(snrsData);
             try {
                 dispatch(updateEdges(edges));
-                if (selector.nodes != graphData?.nodes){
-                    dispatch(updateNodes(nodes));
-                }
+                dispatch(updateNodes(nodes));
                 setGraphData({nodes: selector.nodes, edges: selector.edges});
             } catch (error) {
                 console.error('Error in loading data:', error);

@@ -13,9 +13,11 @@ export function TopologyGraph() {
         useState<IUserNode | IUserEdge | null>(null);
     const [popoverPosition, setPopoverPosition] =
         useState<{ x: number, y: number }>({x: 0, y: 0});
-    const selector = useSelector((state: RootState) => state.topologyGroups);
-    const [hullOptions, setHullOptions] =
-        useState<HullCfg[]>(selector.hullOptions ?? []);
+    const hullsSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
+    const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
+    const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
+    const [hulls, setHulls] =
+        useState<HullCfg[]>(hullsSelector ?? []);
     const graphRef = useRef<any>(null);
     const [showHulls, setShowHulls] = useState(false);
 
@@ -23,13 +25,22 @@ export function TopologyGraph() {
         const timeoutId = setTimeout(() => {
             setShowHulls(true);
         }, 3);
-        setHullOptions(selector.hullOptions);
+        setHulls(hullsSelector);
         return () => clearTimeout(timeoutId);
-    }, []);
+    }, [hulls]);
 
     useEffect(() => {
-        setHullOptions(selector.hullOptions.filter((value) => value.members.length > 0));
-    }, [selector.hullOptions]);
+        setShowHulls(false);
+        const timeoutId = setTimeout(() => {
+            setShowHulls(true);
+        }, 3);
+        setHulls(hullsSelector);
+        return () => clearTimeout(timeoutId);
+    }, [hullsSelector])
+
+    useEffect(() => {
+        setHulls(hullsSelector.filter((value) => value.members.length > 0));
+    }, [hullsSelector]);
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();
@@ -51,12 +62,12 @@ export function TopologyGraph() {
     };
 
     return (
-        <Graphin ref={graphRef} modes={modes} data={{nodes: selector.nodes, edges: selector.edges}} style={graphStyle}>
+        <Graphin ref={graphRef} modes={modes} data={{nodes: nodesSelector, edges: edgesSelector}} style={graphStyle}>
             {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
                                                  position={popoverPosition} selectedElement={selectedElement}/>)}
-            {showHulls && (hullOptions.length > 0 &&
-                    hullOptions.every(hull => hull.members && hull.members.length > 0)) &&
-                (<Hull options={hullOptions}/>)}
+            {showHulls && (hulls.length > 0 &&
+                    hulls.every(hull => hull.members && hull.members.length > 0)) &&
+                (<Hull options={hulls}/>)}
             <TopologyTopBar/>
         </Graphin>
     );

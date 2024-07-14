@@ -3,36 +3,51 @@ import {useDispatch, useSelector} from "react-redux";
 import {Table} from "antd";
 import {IUserNode} from "@antv/graphin";
 import {updateHulls} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {convertHullsToSelectedOptions, convertSelectedOptionsToHulls, createDataSource, getColumns,
-    handleAddGroup, handleDeleteGroup, handleSelectChange, sendPttGroups
+import {
+    convertHullsToSelectedOptions,
+    convertSelectedOptionsToHulls,
+    createDataSource,
+    getColumns,
+    handleAddGroup,
+    handleDeleteGroup,
+    handleSelectChange,
+    sendPttGroups
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import {RootState} from "../../../../../redux/store.ts";
 import {GroupAdditionModal} from "./GroupAdditionModal.tsx";
 import {useTranslation} from 'react-i18next';
+import {HullCfg} from "@antv/graphin/lib/components/Hull";
 
 interface ITopologySettingsTable {
-    groups: string[],
-    nodes: IUserNode[],
     resetOnClose: boolean,
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
     const dispatch = useDispatch();
-    const hullOptions = useSelector((state: RootState) => state.topologyGroups.hullOptions);
-    const initialSelectedOptions = convertHullsToSelectedOptions(hullOptions, props.nodes);
-    const [selectedOptions, setSelectedOptions] =
-        useState<{ [group: string]: { [nodeId: string]: number } }>(initialSelectedOptions);
-    const [groups, setGroups] =
-        useState<string[]>(props.groups.length ? props.groups : Object.keys(initialSelectedOptions));
-    const [nodes, setNodes] = useState<IUserNode[]>(props.nodes);
-    const {t} = useTranslation();
+    const hullsSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
+    const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
+    const initialSelectedOptions = convertHullsToSelectedOptions(hullsSelector, nodesSelector);
+    const [selectedOptions, setSelectedOptions] = useState<{ [group: string]: { [nodeId: string]: number } }>(initialSelectedOptions);
+    const [nodes, setNodes] = useState<IUserNode[]>(nodesSelector);
+    const [hulls, setHulls] = useState<HullCfg[]>(hullsSelector);
+    const initialGroups = hulls.length > 0 ? hulls.map(hull => hull.id) : [];
+    const filteredGroups = initialGroups.filter(group => typeof group === 'string') as string[];
+    const [groups, setGroups] = useState<string[]>(filteredGroups);
+    const [dataSource, setDataSource] = useState(createDataSource(nodes));
+    const { t } = useTranslation();
+    const [columns, setColumns] = useState(getColumns(groups, selectedOptions, (group, nodeId, value) =>
+            handleSelectChange(group, nodeId, value, groups, setSelectedOptions, setNodes, selectedOptions),
+        (groupName) =>
+            handleDeleteGroup(groupName, groups, setGroups, setSelectedOptions), t));
 
     useEffect(() => {
-        dispatch(updateHulls(convertSelectedOptionsToHulls(groups, nodes, selectedOptions)));
-    }, [selectedOptions, groups, nodes, props.resetOnClose]);
+        setHulls(convertSelectedOptionsToHulls(groups, nodes, selectedOptions));
+        setDataSource(createDataSource(nodes));
+        dispatch(updateHulls(hulls));
+    }, [nodes]);
 
     useEffect(() => {
-        sendPttGroups(hullOptions, nodes);
+        sendPttGroups(hulls, nodes);
     }, [props.resetOnClose]);
 
     useEffect(() => {
@@ -67,20 +82,32 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 }));
             }
         }
-    }, [hullOptions, groups, nodes, selectedOptions]);
+    }, [hulls, groups, nodes, selectedOptions]);
 
+    useEffect(() => {
+        setNodes(nodesSelector);
+
+        setHulls((prevHulls) => {
+            return prevHulls.map(hull => {
+                const updatedMembers = hull.members
+                    .filter(memberId => nodes.find(node => node.id === memberId));
+                return {...hull, members: updatedMembers};
+            });
+        });
+
+        setSelectedOptions(convertHullsToSelectedOptions(hulls, nodes));
+
+        setColumns(getColumns(groups, selectedOptions, (group, nodeId, value) =>
+                handleSelectChange(group, nodeId, value, groups, setSelectedOptions, setNodes, selectedOptions),
+            (groupName) =>
+                handleDeleteGroup(groupName, groups, setGroups, setSelectedOptions), t));
+    }, [nodesSelector]);
 
     return (
         <div>
             <GroupAdditionModal groups={groups} nodes={nodes} selectedOptions={selectedOptions}
                                 onAdd={(groupName) => handleAddGroup(groupName, groups, setGroups)} />
-            <Table className={'bottom-0'}
-                   columns={
-                getColumns(groups, selectedOptions, (group, nodeId, value)=>
-                        handleSelectChange(group, nodeId, value, groups, setSelectedOptions, setNodes, selectedOptions),
-                       (groupName) =>
-                           handleDeleteGroup(groupName, groups, setGroups, setSelectedOptions), t)}
-                   dataSource={createDataSource(nodes)} />
+            <Table className={'bottom-0'} columns={columns} dataSource={dataSource} />
         </div>
     );
 }
