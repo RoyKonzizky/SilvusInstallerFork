@@ -48,27 +48,6 @@ export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUs
     return selectedOptions;
 }
 
-/*
-export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
-    const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
-
-    hullOptions.forEach(hull => {
-        const group = hull.id || '';
-        selectedOptions[group] = {};
-
-        hull.members.forEach(memberId => {
-            const node = nodes.find(node => node.id === memberId);
-            if (node && node.data && node.data.statuses) {
-                const groupIndex = hullOptions.findIndex(h => h.id === group);
-                selectedOptions[group][memberId] = node.data.statuses[groupIndex] || 0;
-            }
-        });
-    });
-
-    return selectedOptions;
-}
- */
-
 export function renderSelect(record: any, group: string, selectedOptions: selectedOptionsType,
                              handleSelectChange: handleSelectChangeType) {
     const nodeId = record.id;

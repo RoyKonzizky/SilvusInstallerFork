@@ -22,25 +22,13 @@ export function TopologyGraph() {
     const [showHulls, setShowHulls] = useState(false);
 
     useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            setShowHulls(true);
-        }, 3);
-        setHulls(hullsSelector);
-        return () => clearTimeout(timeoutId);
-    }, [hulls]);
-
-    useEffect(() => {
         setShowHulls(false);
         const timeoutId = setTimeout(() => {
             setShowHulls(true);
         }, 3);
-        setHulls(hullsSelector);
+        setHulls(hullsSelector.filter((value) => value.members.length > 0));
         return () => clearTimeout(timeoutId);
     }, [hullsSelector])
-
-    useEffect(() => {
-        setHulls(hullsSelector.filter((value) => value.members.length > 0));
-    }, [hullsSelector]);
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();
