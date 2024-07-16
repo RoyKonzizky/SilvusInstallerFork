@@ -3,8 +3,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {Table} from "antd";
 import {IUserNode} from "@antv/graphin";
 import {updateHulls} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {convertHullsToSelectedOptions, convertSelectedOptionsToHulls, createDataSource, getColumns, handleAddGroup,
-    handleDeleteGroup, handleSelectChange, sendPttGroups} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {assignNodesIfNotInGroup, convertHullsToSelectedOptions, convertSelectedOptionsToHulls, createDataSource, getColumns,
+    handleAddGroup, handleDeleteGroup, handleSelectChange, sendPttGroups
+} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import {RootState} from "../../../../../redux/store.ts";
 import {GroupAdditionModal} from "./GroupAdditionModal.tsx";
 import {useTranslation} from 'react-i18next';
@@ -18,22 +19,25 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const dispatch = useDispatch();
     const hullsSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
     const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
-    const [selectedOptions, setSelectedOptions] =
-        useState<{ [group: string]: { [nodeId: string]: number } }>(convertHullsToSelectedOptions(hullsSelector, nodesSelector));
+    const initialSelectedOptions = convertHullsToSelectedOptions(hullsSelector, nodesSelector);
+    const [selectedOptions, setSelectedOptions] = useState<{ [group: string]: { [nodeId: string]: number } }>(initialSelectedOptions);
     const [nodes, setNodes] = useState<IUserNode[]>(nodesSelector);
     const [hulls, setHulls] = useState<HullCfg[]>(hullsSelector);
-    const filteredGroups = (hulls.length > 0 ? hulls.map(hull => hull.id) : [])
-        .filter(group => typeof group === 'string') as string[];
+    const initialGroups = hulls.length > 0 ? hulls.map(hull => hull.id) : [];
+    const filteredGroups = initialGroups.filter(group => typeof group === 'string') as string[];
     const [groups, setGroups] = useState<string[]>(filteredGroups);
     const [dataSource, setDataSource] = useState(createDataSource(nodes));
     const { t } = useTranslation();
-    const [columns, setColumns] = useState<any>();
+    const [columns, setColumns] = useState(getColumns(groups, selectedOptions, (group, nodeId, value) =>
+            handleSelectChange(group, nodeId, value, groups, setSelectedOptions, setNodes, selectedOptions),
+        (groupName) =>
+            handleDeleteGroup(groupName, groups, setGroups, setSelectedOptions), t));
 
     useEffect(() => {
         setHulls(convertSelectedOptionsToHulls(groups, nodes, selectedOptions));
         setDataSource(createDataSource(nodes));
         dispatch(updateHulls(hulls));
-    }, [nodes]);
+    }, [nodes, selectedOptions]);
 
     useEffect(() => {
         sendPttGroups(hulls, nodes);
@@ -47,34 +51,12 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [groups, selectedOptions]);
 
     useEffect(() => {
-        for (let i = 0; i < nodes.length; i++) {
-            let nodeAssigned = false;
-
-            for (const group of groups) {
-                if (selectedOptions[group]?.[nodes[i].id] === 1) {
-                    nodeAssigned = true;
-                    break;
-                }
-            }
-
-            if (!nodeAssigned) {
-                setSelectedOptions((prevOptions) => ({
-                    ...prevOptions, [groups[0]]: { ...prevOptions[groups[0]], [nodes[i].id]: 1 }
-                }));
-                setNodes((prevNodes) => prevNodes.map((node) => {
-                    if (node.id === nodes[i].id) {
-                        const updatedStatuses = groups.map((grp) => selectedOptions[grp]?.[node.id] ?? 0);
-                        updatedStatuses[0] = 1;
-                        return { ...node, data: { ...node.data, statuses: updatedStatuses } };
-                    }
-                    return node;
-                }));
-            }
-        }
-    }, [hulls, groups,/*, nodes, selectedOptions*/]);
+        assignNodesIfNotInGroup(nodes, selectedOptions, groups, setSelectedOptions, setNodes);
+    }, [hulls, groups, nodes, selectedOptions]);
 
     useEffect(() => {
         setNodes(nodesSelector);
+
         setHulls((prevHulls) => {
             return prevHulls.map(hull => {
                 const updatedMembers = hull.members
@@ -82,7 +64,9 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 return {...hull, members: updatedMembers};
             });
         });
-        // setSelectedOptions(convertHullsToSelectedOptions(hulls, nodes));
+
+        setSelectedOptions(convertHullsToSelectedOptions(hulls, nodes));
+
         setColumns(getColumns(groups, selectedOptions, (group, nodeId, value) =>
                 handleSelectChange(group, nodeId, value, groups, setSelectedOptions, setNodes, selectedOptions),
             (groupName) =>

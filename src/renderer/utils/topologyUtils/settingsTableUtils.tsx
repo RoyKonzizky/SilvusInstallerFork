@@ -39,14 +39,37 @@ export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUs
         selectedOptions[group] = {};
 
         hull.members.forEach(memberId => {
-            if (nodes.some(node => node.id === memberId)) {
-                selectedOptions[group][memberId] = 1;
+            const node = nodes.find(node => node.id === memberId);
+            if (node && node.data && node.data.statuses) {
+                const groupIndex = hullOptions.findIndex(h => h.id === group);
+                selectedOptions[group][memberId] = node.data.statuses[groupIndex] || 0;
             }
         });
     });
 
     return selectedOptions;
 }
+
+/*
+export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
+    const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
+
+    hullOptions.forEach(hull => {
+        const group = hull.id || '';
+        selectedOptions[group] = {};
+
+        hull.members.forEach(memberId => {
+            const node = nodes.find(node => node.id === memberId);
+            if (node && node.data && node.data.statuses) {
+                const groupIndex = hullOptions.findIndex(h => h.id === group);
+                selectedOptions[group][memberId] = node.data.statuses[groupIndex] || 0;
+            }
+        });
+    });
+
+    return selectedOptions;
+}
+ */
 
 export function renderSelect(record: any, group: string, selectedOptions: selectedOptionsType,
                              handleSelectChange: handleSelectChangeType) {
@@ -94,7 +117,7 @@ export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[
 }
 
 export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
-    // console.log(convertPttDataToServerFormat(hullOptions, nodes));
+    console.log(convertPttDataToServerFormat(hullOptions, nodes));
     try {
         const response = await axios.post(
             'http://localhost:8080/set-ptt-groups', convertPttDataToServerFormat(hullOptions, nodes),
@@ -118,7 +141,7 @@ export const handleAddGroup = (groupName: string,
 };
 
 export const handleDeleteGroup = (groupName: string, groups: string[], setGroups: Dispatch<SetStateAction<string[]>>,
-    setSelectedOptions: Dispatch<SetStateAction<{ [group: string]: { [nodeId: string]: number } }>>) => {
+                                  setSelectedOptions: Dispatch<SetStateAction<{ [group: string]: { [nodeId: string]: number } }>>) => {
     if (groups.length > 1) {
         setGroups((prevGroups) => prevGroups.filter((group) => group !== groupName));
         setSelectedOptions((prevOptions) => {
@@ -129,8 +152,8 @@ export const handleDeleteGroup = (groupName: string, groups: string[], setGroups
 };
 
 export const handleSelectChange = (group: string, nodeId: string, value: number | null, groups: string[],
-     setSelectedOptions: Dispatch<SetStateAction<{ [group: string]: { [nodeId: string]: number } }>>,
-     setNodes: Dispatch<SetStateAction<IUserNode[]>>,
+                                   setSelectedOptions: Dispatch<SetStateAction<selectedOptionsType>>,
+                                   setNodes: Dispatch<SetStateAction<IUserNode[]>>,
                                    selectedOptions: { [group: string]: { [nodeId: string]: number } }) => {
     const newValue = value ?? 0;
     setSelectedOptions((prevOptions) =>
@@ -144,3 +167,32 @@ export const handleSelectChange = (group: string, nodeId: string, value: number 
         return node;
     }));
 };
+
+export const assignNodesIfNotInGroup = (nodes: IUserNode[], selectedOptions: selectedOptionsType, groups: string[],
+                                        setSelectedOptions:  Dispatch<SetStateAction<selectedOptionsType>>,
+                                        setNodes: Dispatch<SetStateAction<IUserNode[]>>) => {
+    for (let i = 0; i < nodes.length; i++) {
+        let nodeAssigned = false;
+
+        for (const group of groups) {
+            if (selectedOptions[group]?.[nodes[i].id] === 1) {
+                nodeAssigned = true;
+                break;
+            }
+        }
+
+        if (!nodeAssigned) {
+            setSelectedOptions((prevOptions) => ({
+                ...prevOptions, [groups[0]]: { ...prevOptions[groups[0]], [nodes[i].id]: 1 }
+            }));
+            setNodes((prevNodes) => prevNodes.map((node) => {
+                if (node.id === nodes[i].id) {
+                    const updatedStatuses = groups.map((grp) => selectedOptions[grp]?.[node.id] ?? 0);
+                    updatedStatuses[0] = 1;
+                    return { ...node, data: { ...node.data, statuses: updatedStatuses } };
+                }
+                return node;
+            }));
+        }
+    }
+}
