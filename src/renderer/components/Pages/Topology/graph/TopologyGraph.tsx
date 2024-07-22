@@ -16,18 +16,19 @@ export function TopologyGraph() {
     const hullsSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
     const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
     const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
-    const [hulls, setHulls] =
-        useState<HullCfg[]>(hullsSelector ?? []);
+    const [hulls, setHulls] = useState<HullCfg[]>([]);
     const graphRef = useRef<any>(null);
     const [showHulls, setShowHulls] = useState(false);
 
     useEffect(() => {
+        const filteredHulls = hullsSelector.filter((value) => value.members.length > 0);
+
         const timeoutId = setTimeout(() => {
             setShowHulls(true);
         }, 3);
-        setHulls(hullsSelector);
+        setHulls(filteredHulls);
         return () => clearTimeout(timeoutId);
-    }, [hulls]);
+    }, [hullsSelector]);
 
     useEffect(() => {
         setShowHulls(false);
@@ -65,12 +66,8 @@ export function TopologyGraph() {
         <Graphin ref={graphRef} modes={modes} data={{nodes: nodesSelector, edges: edgesSelector}} style={graphStyle}>
             {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
                                                  position={popoverPosition} selectedElement={selectedElement}/>)}
-            {showHulls && (hulls.length > 0 &&
-                    hulls.every(hull => hull.members && hull.members.length > 0)) &&
-                (<Hull options={hulls}/>)}
-            <TopologyTopBar/>
+            {showHulls && hulls.length > 0 && (<Hull options={hulls} />)}
+            <TopologyTopBar />
         </Graphin>
     );
 }
-
-// graphRef.graph.updateItem()
