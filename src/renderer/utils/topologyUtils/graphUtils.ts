@@ -29,7 +29,8 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
             },
             data: {
                 battery: batteries[i] ? batteries[i].percent.toString() : 'N/A',
-                statuses: [1]
+                statuses: [1],
+                ip: devices[i].ip,
             },
         };
     }

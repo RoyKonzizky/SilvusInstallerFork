@@ -54,12 +54,29 @@ export function Topology(props: ITopologyProps) {
 
     useEffect(() => {
         if (devices && batteries && snrsData) {
-            const nodes = createNodesFromData(devices, batteries);
-            const edges = createEdgesFromData(snrsData);
             try {
+                const nodes = createNodesFromData(devices, batteries);
+                const edges = createEdgesFromData(snrsData);
+
+                const updatedNodes = nodes.map(newNode => {
+                    const existingNode = selector.nodes.find(node => node.id === newNode.id);
+                    if (existingNode) {
+                        return {
+                            ...existingNode,
+                            data: {
+                                ...existingNode.data,
+                                battery: newNode.data.battery
+                            }
+                        };
+                    }
+                    return newNode;
+                });
+
                 dispatch(updateEdges(edges));
-                dispatch(updateNodes(nodes));
-                setGraphData({nodes: selector.nodes, edges: selector.edges});
+                dispatch(updateNodes(updatedNodes));
+                // dispatch(updateNodes(nodes));
+
+                setGraphData({ nodes: selector.nodes, edges: selector.edges });
             } catch (error) {
                 console.error('Error in loading data:', error);
             }

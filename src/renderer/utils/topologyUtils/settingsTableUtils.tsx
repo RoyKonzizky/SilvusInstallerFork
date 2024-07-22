@@ -31,24 +31,23 @@ export function convertSelectedOptionsToHulls(
     });
 }
 
-export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
-    const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
+// export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
+//     const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
+//
+//     hullOptions.forEach(hull => {
+//         const group = hull.id || '';
+//         selectedOptions[group] = {};
+//
+//         hull.members.forEach(memberId => {
+//             if (nodes.some(node => node.id === memberId)) {
+//                 selectedOptions[group][memberId] = 1;
+//             }
+//         });
+//     });
+//
+//     return selectedOptions;
+// }
 
-    hullOptions.forEach(hull => {
-        const group = hull.id || '';
-        selectedOptions[group] = {};
-
-        hull.members.forEach(memberId => {
-            if (nodes.some(node => node.id === memberId)) {
-                selectedOptions[group][memberId] = 1;
-            }
-        });
-    });
-
-    return selectedOptions;
-}
-
-/*
 export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
     const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
 
@@ -67,7 +66,7 @@ export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUs
 
     return selectedOptions;
 }
- */
+
 
 export function renderSelect(record: any, group: string, selectedOptions: selectedOptionsType,
                              handleSelectChange: handleSelectChangeType) {
@@ -108,7 +107,7 @@ export function getColumns(groups: string[], selectedOptions: selectedOptionsTyp
 
 export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
     const num_groups = hulls.length;
-    const ips = nodes.map(node => node.style?.label?.value) as string[];
+    const ips = nodes.map(node => node.data.ip) as string[];
     const statuses = nodes.map(node => node.data.statuses);
     // console.log(statuses);
     return {ips, num_groups, statuses};
