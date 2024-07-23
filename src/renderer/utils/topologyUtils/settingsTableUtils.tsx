@@ -1,115 +1,100 @@
-import binIcon from "../../assets/bin.png";
+import { Select } from "antd";
+import { IUserNode } from "@antv/graphin";
+import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
-import { Button } from "antd";
-import {IUserNode} from "@antv/graphin";
-import Select from "react-select";
-import {HullCfg} from "@antv/graphin/lib/components/Hull";
-import {Dispatch, SetStateAction} from "react";
-import {TFunction} from "i18next";
 
-export type selectedOptionsType = { [p: string]: { [p: string]: number } };
-export type handleSelectChangeType = (group: string, nodeId: string, value: number | null) => void;
+const { Option } = Select;
 
 export const deviceTalkStatus = [
-    {value: 0, label: "לא בקבוצה"},
-    {value: 2, label: "מקשיב"},
-    {value: 1, label: "מדבר ומקשיב"},
+    { value: 0, label: "לא בקבוצה" },
+    { value: 2, label: "מקשיב" },
+    { value: 1, label: "מדבר ומקשיב" },
 ];
 
-export function createDataSource(nodes: IUserNode[]) {
-    return nodes.map((node: IUserNode, index: number) => ({key: index, ...node}))
-}
-
-export function convertSelectedOptionsToHulls(
-    groups: string[], nodes: IUserNode[], selectedOptions: selectedOptionsType) {
-    return groups.map(group => {
+export function createDataSource(nodes: IUserNode[], groups: string[]) {
+    return nodes.map((node: IUserNode) => {
+        const groupStatuses = groups.reduce((acc, group, groupIndex) => {
+            acc[group] = node.data.statuses[groupIndex];
+            return acc;
+        }, {} as Record<string, number>);
         return {
-            id: group,
-            members: nodes.filter(node => selectedOptions[group]?.[node.id] > 0)
-                .map(node => node.id)
+            key: node.id,
+            label: node.style?.label?.value,
+            ...groupStatuses,
         };
     });
 }
 
-// export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
-//     const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
-//
-//     hullOptions.forEach(hull => {
-//         const group = hull.id || '';
-//         selectedOptions[group] = {};
-//
-//         hull.members.forEach(memberId => {
-//             if (nodes.some(node => node.id === memberId)) {
-//                 selectedOptions[group][memberId] = 1;
-//             }
-//         });
-//     });
-//
-//     return selectedOptions;
-// }
+export function createColumns(groups: string[], handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void) {
+    const columns = [
+        { title: 'Node Label', dataIndex: 'label', key: 'label' },
+        ...groups.map((group, groupIndex) => ({
+            title: group, dataIndex: group, key: group,
+            render: (status: number, record: any) => (
+                <Select value={status}
+                        onChange={(value: number) => handleStatusChange(record.key, groupIndex, value)}
+                        style={{ width: '100%' }}
+                >
+                    {deviceTalkStatus.map(statusOption => (
+                        <Option key={statusOption.value} value={statusOption.value}>
+                            {statusOption.label}
+                        </Option>
+                    ))}
+                </Select>
+            )
+        })),
+    ];
 
-export function convertHullsToSelectedOptions(hullOptions: HullCfg[], nodes: IUserNode[]) {
-    const selectedOptions: { [group: string]: { [nodeId: string]: number } } = {};
+    return columns;
+}
 
-    hullOptions.forEach(hull => {
-        const group = hull.id || '';
-        selectedOptions[group] = {};
+export function createGroups(hulls: HullCfg[]) {
+    const initialGroups = hulls.length > 0 ? hulls.map(hull => hull.id) : [];
+    const filteredGroups = initialGroups.filter(group => typeof group === 'string') as string[];
+    return filteredGroups;
+}
 
-        hull.members.forEach(memberId => {
-            const node = nodes.find(node => node.id === memberId);
-            if (node && node.data && node.data.statuses) {
-                const groupIndex = hullOptions.findIndex(h => h.id === group);
-                selectedOptions[group][memberId] = node.data.statuses[groupIndex] || 0;
+export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupIndex: number, status: number, dispatch: any, updateNodes: any) {
+    const updatedNodes = nodes.map(node => {
+        if (node.id === nodeId) {
+            const updatedStatuses = [...node.data.statuses];
+            updatedStatuses[groupIndex] = status;
+            return { ...node, data: { ...node.data, statuses: updatedStatuses } };
+        }
+        return node;
+    });
+    dispatch(updateNodes(updatedNodes));
+    return updatedNodes;
+}
+
+export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullCfg[] {
+    const updatedHulls = hulls.map(hull => ({
+        ...hull,
+        members: new Set<string>()
+    }));
+
+    nodes.forEach(node => {
+        const statuses = node.data.statuses;
+
+        statuses.forEach((status, index) => {
+            if (status > 0) {
+                updatedHulls[index].members.add(node.id);
             }
         });
     });
 
-    return selectedOptions;
+    return updatedHulls.map(hull => ({
+        ...hull,
+        members: Array.from(hull.members)
+    }));
 }
 
-
-export function renderSelect(record: any, group: string, selectedOptions: selectedOptionsType,
-                             handleSelectChange: handleSelectChangeType) {
-    const nodeId = record.id;
-    const value = selectedOptions[group]?.[nodeId] ?? 0;
-    return (
-        <Select options={deviceTalkStatus} placeholder={"סטטוס דיבור"} isClearable
-                value={deviceTalkStatus.find(option => option.value === value) || null}
-                onChange={(option) =>
-                    handleSelectChange(group, nodeId, option ? option.value : null)}
-        />
-    );
-}
-
-export function getColumns(groups: string[], selectedOptions: selectedOptionsType,
-                           handleSelectChange: handleSelectChangeType,
-                           handleDeleteGroup: (group: string) => void, t: TFunction<"translation", undefined>) {
-    return [
-        {
-            title: t('Node Label'), dataIndex: 'label', key: 'label',
-            render: (_: string, record: any) => <span>{record.style.label.value}</span>,
-        },
-        ...groups.map(group => ({
-            title: (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    {group}
-                    <Button type="link" onClick={() => handleDeleteGroup(group)}>
-                        <img className={"w-6 h-6"} src={binIcon} alt={"Delete"}/>
-                    </Button>
-                </div>
-            ),
-            dataIndex: group,
-            key: group,
-            render: (_: string, record: any) => renderSelect(record, group, selectedOptions, handleSelectChange),
-        })),
-    ];
-}
 
 export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
     const num_groups = hulls.length;
     const ips = nodes.map(node => node.data.ip) as string[];
     const statuses = nodes.map(node => node.data.statuses);
-    // console.log(statuses);
+    console.log(statuses);
     return {ips, num_groups, statuses};
 }
 
@@ -130,37 +115,3 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
     }
 };
 
-export const handleAddGroup = (groupName: string,
-                               groups: string[], setGroups: Dispatch<SetStateAction<string[]>>) => {
-    if (groups.length < 15) {
-        setGroups((prevGroups) => [...prevGroups, groupName]);
-    }
-};
-
-export const handleDeleteGroup = (groupName: string, groups: string[], setGroups: Dispatch<SetStateAction<string[]>>,
-    setSelectedOptions: Dispatch<SetStateAction<{ [group: string]: { [nodeId: string]: number } }>>) => {
-    if (groups.length > 1) {
-        setGroups((prevGroups) => prevGroups.filter((group) => group !== groupName));
-        setSelectedOptions((prevOptions) => {
-            const { [groupName]: _, ...rest } = prevOptions;
-            return rest;
-        });
-    }
-};
-
-export const handleSelectChange = (group: string, nodeId: string, value: number | null, groups: string[],
-     setSelectedOptions: Dispatch<SetStateAction<{ [group: string]: { [nodeId: string]: number } }>>,
-     setNodes: Dispatch<SetStateAction<IUserNode[]>>,
-                                   selectedOptions: { [group: string]: { [nodeId: string]: number } }) => {
-    const newValue = value ?? 0;
-    setSelectedOptions((prevOptions) =>
-        ({ ...prevOptions, [group]: { ...prevOptions[group], [nodeId]: newValue } }));
-    setNodes((prevNodes) => prevNodes.map((node) => {
-        if (node.id === nodeId) {
-            const updatedStatuses = groups.map((grp) => selectedOptions[grp]?.[node.id] ?? 0);
-            updatedStatuses[groups.indexOf(group)] = newValue;
-            return { ...node, data: { ...node.data, statuses: updatedStatuses } };
-        }
-        return node;
-    }));
-};
