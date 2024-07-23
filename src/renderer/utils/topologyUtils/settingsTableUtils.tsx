@@ -144,6 +144,31 @@ export function handleDeleteGroup(groupToDelete: string, groups: string[], nodes
 
 }
 
+export function checkIfUnassignedToGroup(nodes: IUserNode[]): IUserNode[] {
+    return nodes.map(node => {
+        const statuses = node.data.statuses;
+        let isAssigned = false;
+
+        for (let i = 0; i < statuses.length; i++) {
+            if (statuses[i] === 1) {
+                isAssigned = true;
+                break;
+            }
+        }
+
+        const updatedStatuses = isAssigned ? statuses : [1, ...statuses.slice(1)];
+
+        return {
+            ...node,
+            data: {
+                ...node.data,
+                statuses: updatedStatuses
+            }
+        };
+    });
+}
+
+
 export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullCfg[] {
     const updatedHulls = hulls.map(hull => ({
         ...hull,

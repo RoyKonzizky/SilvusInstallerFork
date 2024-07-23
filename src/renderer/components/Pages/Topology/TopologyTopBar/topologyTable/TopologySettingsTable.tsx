@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, sendPttGroups,
-    createGroups} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+    createGroups,} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 
 interface ITopologySettingsTable {
@@ -26,6 +26,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 setNodes(updatedNodes);
             }
         ));
+
     useEffect(() => {
         setNodes(nodesSelector);
     }, [nodesSelector]);
