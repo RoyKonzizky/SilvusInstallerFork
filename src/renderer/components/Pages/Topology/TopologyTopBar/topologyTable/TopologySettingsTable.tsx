@@ -2,14 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Table } from "antd";
-import {updateHulls, updateNodes} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {
-    convertNodesToHulls,
-    createColumns,
-    createDataSource,
-    createGroups,
-    handleStatusChange
-} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {convertNodesToHulls, createColumns, createDataSource, createGroups, handleAddGroup, handleStatusChange,
+    sendPttGroups} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 
 interface ITopologySettingsTable {
     resetOnClose: boolean,
@@ -27,8 +23,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         useState(createColumns(groups, (nodeId: string, groupIndex: number, status: number) => {
             const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
             setNodes(updatedNodes);
-    }));
-
+        }));
     useEffect(() => {
         setNodes(nodesSelector);
     }, [nodesSelector]);
@@ -51,15 +46,23 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
             setNodes(updatedNodes);
         }));
-    }, [groups, nodes]);
+    }, [groups]);
 
     useEffect(() => {
-        setHulls(convertNodesToHulls(nodes, hulls));
-        dispatch(updateHulls(hulls));
+        const newHulls = convertNodesToHulls(nodes, hulls);
+        setHulls(newHulls);
+        dispatch(updateHulls(newHulls));
     }, [nodes]);
+
+    useEffect(() => {
+        if (!props.resetOnClose) sendPttGroups(hulls, nodes);
+    }, [props.resetOnClose]);
 
     return (
         <>
+            <GroupAdditionModal groups={groups} nodes={nodes} onAdd={(groupName) =>
+                handleAddGroup(groupName, groups, setGroups, nodes, setNodes, hulls,
+                    setHulls, dispatch, updateNodes, updateHulls)} />
             <Table dataSource={dataSource} columns={columns} rowKey="key" className={'bottom-0'} />
         </>
     );

@@ -2,6 +2,7 @@ import { Select } from "antd";
 import { IUserNode } from "@antv/graphin";
 import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
+import {Dispatch, SetStateAction} from "react";
 
 const { Option } = Select;
 
@@ -25,7 +26,8 @@ export function createDataSource(nodes: IUserNode[], groups: string[]) {
     });
 }
 
-export function createColumns(groups: string[], handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void) {
+export function createColumns(groups: string[],
+                              handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void) {
     const columns = [
         { title: 'Node Label', dataIndex: 'label', key: 'label' },
         ...groups.map((group, groupIndex) => ({
@@ -54,7 +56,8 @@ export function createGroups(hulls: HullCfg[]) {
     return filteredGroups;
 }
 
-export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupIndex: number, status: number, dispatch: any, updateNodes: any) {
+export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupIndex: number, status: number,
+                                   dispatch: any, updateNodes: any) {
     const updatedNodes = nodes.map(node => {
         if (node.id === nodeId) {
             const updatedStatuses = [...node.data.statuses];
@@ -67,6 +70,31 @@ export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupInde
     return updatedNodes;
 }
 
+export function handleAddGroup(newGroup: string, groups: string[], setGroups: Dispatch<SetStateAction<string[]>>,
+                               nodes: IUserNode[], setNodes: Dispatch<SetStateAction<IUserNode[]>>,
+                               hulls: HullCfg[], setHulls: Dispatch<SetStateAction<HullCfg[]>>,
+                               dispatch: any, updateNodes: any, updateHulls: any) {
+    if (groups.length < 15) {
+        const newGroups = [...groups, newGroup];
+        setGroups(newGroups);
+
+        const updatedNodes = nodes.map(node => ({
+            ...node,
+            data: {
+                ...node.data,
+                statuses: [...node.data.statuses, 0]
+            }
+        }));
+        setNodes(updatedNodes);
+        dispatch(updateNodes(updatedNodes));
+
+        const newHull = { id: newGroup, members: [] };
+        const updatedHulls = [...hulls, newHull];
+        setHulls(updatedHulls);
+        dispatch(updateHulls(updatedHulls));
+    }
+}
+
 export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullCfg[] {
     const updatedHulls = hulls.map(hull => ({
         ...hull,
@@ -76,7 +104,7 @@ export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullC
     nodes.forEach(node => {
         const statuses = node.data.statuses;
 
-        statuses.forEach((status, index) => {
+        statuses.forEach((status: number, index: number) => {
             if (status > 0) {
                 updatedHulls[index].members.add(node.id);
             }

@@ -4,7 +4,6 @@ import {IUserNode} from "@antv/graphin";
 import {useTranslation} from 'react-i18next';
 
 interface IGroupAdditionModal {
-    selectedOptions: { [group: string]: { [nodeId: string]: number } };
     groups: string[];
     nodes: IUserNode[];
     onAdd: (groupName: string) => void;
