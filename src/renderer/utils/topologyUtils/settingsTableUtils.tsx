@@ -1,8 +1,10 @@
-import { Select } from "antd";
+import binIcon from "../../assets/bin.png";
+import { Button, Select } from "antd";
 import { IUserNode } from "@antv/graphin";
 import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
-import {Dispatch, SetStateAction} from "react";
+import { Dispatch, SetStateAction } from "react";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 const { Option } = Select;
 
@@ -26,16 +28,34 @@ export function createDataSource(nodes: IUserNode[], groups: string[]) {
     });
 }
 
-export function createColumns(groups: string[],
+export function createGroups(hulls: HullCfg[]) {
+    const initialGroups = hulls.length > 0 ? hulls.map(hull => hull.id) : [];
+    const filteredGroups = initialGroups.filter(group => typeof group === 'string') as string[];
+    return filteredGroups;
+}
+
+export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullCfg[], dispatch: any,
+                              updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
+                              updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
                               handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void) {
     const columns = [
         { title: 'Node Label', dataIndex: 'label', key: 'label' },
         ...groups.map((group, groupIndex) => ({
-            title: group, dataIndex: group, key: group,
+            title: (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {group}
+                    <Button type="link" onClick={() =>
+                        handleDeleteGroup(group, groups, nodes, hulls, dispatch, updateNodes, updateHulls)}>
+                        <img className={"w-6 h-6"} src={binIcon} alt={"Delete"} />
+                    </Button>
+                </div>
+            ),
+            dataIndex: group, key: group,
             render: (status: number, record: any) => (
-                <Select value={status}
-                        onChange={(value: number) => handleStatusChange(record.key, groupIndex, value)}
-                        style={{ width: '100%' }}
+                <Select
+                    value={status}
+                    onChange={(value: number) => handleStatusChange(record.key, groupIndex, value)}
+                    style={{ width: '100%' }}
                 >
                     {deviceTalkStatus.map(statusOption => (
                         <Option key={statusOption.value} value={statusOption.value}>
@@ -50,14 +70,9 @@ export function createColumns(groups: string[],
     return columns;
 }
 
-export function createGroups(hulls: HullCfg[]) {
-    const initialGroups = hulls.length > 0 ? hulls.map(hull => hull.id) : [];
-    const filteredGroups = initialGroups.filter(group => typeof group === 'string') as string[];
-    return filteredGroups;
-}
-
 export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupIndex: number, status: number,
-                                   dispatch: any, updateNodes: any) {
+                                   dispatch: any,
+                                   updateNodes:  ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">) {
     const updatedNodes = nodes.map(node => {
         if (node.id === nodeId) {
             const updatedStatuses = [...node.data.statuses];
@@ -73,7 +88,9 @@ export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupInde
 export function handleAddGroup(newGroup: string, groups: string[], setGroups: Dispatch<SetStateAction<string[]>>,
                                nodes: IUserNode[], setNodes: Dispatch<SetStateAction<IUserNode[]>>,
                                hulls: HullCfg[], setHulls: Dispatch<SetStateAction<HullCfg[]>>,
-                               dispatch: any, updateNodes: any, updateHulls: any) {
+                               dispatch: any,
+                               updateNodes:  ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
+                               updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">) {
     if (groups.length < 15) {
         const newGroups = [...groups, newGroup];
         setGroups(newGroups);
@@ -93,6 +110,38 @@ export function handleAddGroup(newGroup: string, groups: string[], setGroups: Di
         setHulls(updatedHulls);
         dispatch(updateHulls(updatedHulls));
     }
+}
+
+export function handleDeleteGroup(groupToDelete: string, groups: string[], nodes: IUserNode[], hulls: HullCfg[],
+                                  dispatch: any,
+                                  updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
+                                  updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">) {
+    if (groups.length > 1) {
+        const groupIndex = groups.indexOf(groupToDelete);
+        if (groupIndex === -1) {
+            return;
+        }
+
+        const updatedGroups = groups.filter(group => group !== groupToDelete);
+
+        const updatedNodes = nodes.map(node => {
+            const updatedStatuses = node.data.statuses.filter((_: number, index: number) => index !== groupIndex);
+            return {
+                ...node,
+                data: {
+                    ...node.data,
+                    statuses: updatedStatuses
+                }
+            };
+        });
+        dispatch(updateNodes(updatedNodes));
+
+        const updatedHulls = hulls.filter(hull => hull.id !== groupToDelete);
+        dispatch(updateHulls(updatedHulls));
+
+        return updatedGroups;
+    }
+
 }
 
 export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullCfg[] {
@@ -117,7 +166,6 @@ export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullC
     }));
 }
 
-
 export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
     const num_groups = hulls.length;
     const ips = nodes.map(node => node.data.ip) as string[];
@@ -127,7 +175,6 @@ export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[
 }
 
 export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
-    // console.log(convertPttDataToServerFormat(hullOptions, nodes));
     try {
         const response = await axios.post(
             'http://localhost:8080/set-ptt-groups', convertPttDataToServerFormat(hullOptions, nodes),
@@ -142,4 +189,3 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
         console.error('Error sending data:', error);
     }
 };
-

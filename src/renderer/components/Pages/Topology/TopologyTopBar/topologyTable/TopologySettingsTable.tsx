@@ -3,8 +3,8 @@ import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {convertNodesToHulls, createColumns, createDataSource, createGroups, handleAddGroup, handleStatusChange,
-    sendPttGroups} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, sendPttGroups,
+    createGroups} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 
 interface ITopologySettingsTable {
@@ -20,10 +20,12 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [groups, setGroups] = useState<string[]>([]);
     const [dataSource, setDataSource] = useState<any[]>(createDataSource(nodes, groups));
     const [columns, setColumns] =
-        useState(createColumns(groups, (nodeId: string, groupIndex: number, status: number) => {
-            const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
-            setNodes(updatedNodes);
-        }));
+        useState(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
+            (nodeId: string, groupIndex: number, status: number) => {
+                const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
+                setNodes(updatedNodes);
+            }
+        ));
     useEffect(() => {
         setNodes(nodesSelector);
     }, [nodesSelector]);
@@ -42,10 +44,12 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [nodes, groups]);
 
     useEffect(() => {
-        setColumns(createColumns(groups, (nodeId: string, groupIndex: number, status: number) => {
-            const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
-            setNodes(updatedNodes);
-        }));
+        setColumns(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
+            (nodeId: string, groupIndex: number, status: number) => {
+                const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
+                setNodes(updatedNodes);
+            },
+        ));
     }, [groups]);
 
     useEffect(() => {
