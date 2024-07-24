@@ -44,9 +44,11 @@ export function ElementPopover(props: IElementPopoverProps) {
                      <div>
                          {props.selectedElement?.type === 'graphin-circle' ?
                              <div>
-                                 <input className={"text-xl"} onChange={handleLabelChange} value={label}/>
+                                 <input className={"text-xl"} onChange={handleLabelChange} value={label || ''} />
                                  <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
                                  <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
+                                 <p>{`${t('cameraMainStreamLink')}: ${props.selectedElement.data.camLinks.mainStreamLink || 'N/A'}`}</p>
+                                 <p>{`${t('cameraSubStreamLink')}: ${props.selectedElement.data.camLinks.subStreamLink || 'N/A'}`}</p>
                              </div>
                              :
                              <p>{`SNR = ${props.selectedElement?.data}`}</p>
