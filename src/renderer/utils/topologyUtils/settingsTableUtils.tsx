@@ -195,6 +195,7 @@ export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullC
 export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
     const num_groups = hulls.length;
     const ips = nodes.map(node => node.data.ip) as string[];
+    const names = nodes.map(node => node.style?.label?.value) as string[];
     const statuses = nodes.map(node => node.data.statuses);
     console.log(statuses);
     return {ips, num_groups, statuses};
