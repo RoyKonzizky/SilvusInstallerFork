@@ -37,7 +37,7 @@ export function TopologyGraph() {
         }, 3);
         setHulls(hullsSelector);
         return () => clearTimeout(timeoutId);
-    }, [hullsSelector])
+    }, [hullsSelector]);
 
     useEffect(() => {
         setHulls(hullsSelector.filter((value) => value.members.length > 0));
@@ -63,7 +63,8 @@ export function TopologyGraph() {
     };
 
     return (
-        <Graphin ref={graphRef} modes={modes} data={{nodes: nodesSelector, edges: edgesSelector}} style={graphStyle}>
+        <Graphin ref={graphRef} modes={modes} data={{ nodes: nodesSelector, edges: edgesSelector }} style={graphStyle}
+                 layout={{ name: 'dagre', options: { } }}>
             {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
                                                  position={popoverPosition} selectedElement={selectedElement}/>)}
             {showHulls && hulls.length > 0 && (<Hull options={hulls} />)}
