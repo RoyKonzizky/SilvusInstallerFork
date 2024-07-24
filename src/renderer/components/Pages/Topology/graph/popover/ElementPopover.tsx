@@ -44,9 +44,9 @@ export function ElementPopover(props: IElementPopoverProps) {
                      <div>
                          {props.selectedElement?.type === 'graphin-circle' ?
                              <div>
-                                 <p className={"text-xl"}>{`${t('id')}: ${props.selectedElement?.id}`}</p>
+                                 <input className={"text-xl"} onChange={handleLabelChange} value={label}/>
                                  <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
-                                 <input onChange={handleLabelChange} value={label}/>
+                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
                              </div>
                              :
                              <p>{`SNR = ${props.selectedElement?.data}`}</p>
