@@ -19,10 +19,11 @@ export function Sidebar() {
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
+        i18n.changeLanguage('he'); // 'he' is a default language
         if ((performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming).type === "reload") {
             window.location.href = "/";
         }
-    }, []);
+    }, [i18n]);
 
     if (window.location.pathname === Paths.Main) return null;
 
@@ -39,7 +40,7 @@ export function Sidebar() {
                 <NavigatorButton href="" isSubsection={false} text={i18n.language === 'he' ? 'עב' : 'EN'}
                                  onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'he' : 'en')}/>
                 <NavigatorButton href={Paths.Dashboard} isSubsection={false} text={t('dashboard')} file={DashboardLogo}/>
-                <div className='mt-[5vh]'>
+                <div className='mt-[4vh]'>
                     <NavigatorButton href={Paths.Settings} isSubsection={false} text={t('settings')} file={SettingsLogo}/>
                     <NavigatorButton href={Paths.Topology} isSubsection={false} text={t('topology')} file={TopologyLogo}/>
                     {/*<NavigatorButton*/}
@@ -49,7 +50,7 @@ export function Sidebar() {
                     {/*    subsections={<SubsectionsOfRecordingsNavigatorButton/>}*/}
                     {/*/>*/}
                 </div>
-                <div className='mt-[20vh]'>
+                <div className='mt-[4vh]'>
                     <NavigatorButton onClick={callLogOut} href={Paths.Main} isSubsection={false} text={t('exit')}
                                      file={LogoutLogo}/>
                 </div>
