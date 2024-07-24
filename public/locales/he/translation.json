@@ -36,6 +36,8 @@
   "badConnection": "חיבור רע: פחות מ-20",
   "mediumConnection": "חיבור בינוני: בין 20 ל-30",
   "goodConnection": "חיבור טוב: יותר מ-30",
-  "Node Label": "תווית",
-  "refresh": "רענן"
+  "NodeLabel": "תווית",
+  "refresh": "רענן",
+  "cameraMainStreamLink": "לינק לשידור ראשי",
+  "cameraSubStreamLink": "לינק לשידור משני"
 }
