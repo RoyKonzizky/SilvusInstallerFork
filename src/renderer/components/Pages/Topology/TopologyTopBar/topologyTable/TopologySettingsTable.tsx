@@ -3,8 +3,16 @@ import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, sendPttGroups,
-    createGroups,} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {
+    convertNodesToHulls,
+    createColumns,
+    createDataSource,
+    handleAddGroup,
+    handleStatusChange,
+    sendPttGroups,
+    createGroups,
+    checkIfUnassignedToGroup,
+} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 
 interface ITopologySettingsTable {
@@ -17,8 +25,8 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
     const [nodes, setNodes] = useState(nodesSelector);
     const [hulls, setHulls] = useState(hullsSelector);
-    const [groups, setGroups] = useState<string[]>([]);
-    const [dataSource, setDataSource] = useState<any[]>(createDataSource(nodes, groups));
+    const [groups, setGroups] = useState<string[]>(createGroups(hullsSelector));
+    const [dataSource, setDataSource] = useState<any[]>(createDataSource(nodesSelector, groups));
     const [columns, setColumns] =
         useState(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
             (nodeId: string, groupIndex: number, status: number) => {
@@ -41,6 +49,11 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [hulls]);
 
     useEffect(() => {
+        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes, groups));
+        dispatch(updateNodes(nodes));
+    }, [groups]);
+
+    useEffect(() => {
         setDataSource(createDataSource(nodes, groups));
     }, [nodes, groups]);
 
@@ -51,7 +64,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 setNodes(updatedNodes);
             },
         ));
-    }, [groups]);
+    }, [groups, nodes, hulls]);
 
     useEffect(() => {
         const newHulls = convertNodesToHulls(nodes, hulls);

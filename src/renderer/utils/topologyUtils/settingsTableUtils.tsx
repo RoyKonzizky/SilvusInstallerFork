@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import binIcon from "../../assets/bin.png";
 import { Button, Select } from "antd";
 import { IUserNode } from "@antv/graphin";
@@ -144,19 +146,19 @@ export function handleDeleteGroup(groupToDelete: string, groups: string[], nodes
 
 }
 
-export function checkIfUnassignedToGroup(nodes: IUserNode[]): IUserNode[] {
+export function checkIfUnassignedToGroup(nodes: IUserNode[], groups: string[]) {
+    const groupCount = groups.length;
+
     return nodes.map(node => {
         const statuses = node.data.statuses;
-        let isAssigned = false;
+        const isAssigned = statuses.includes(1);
 
-        for (let i = 0; i < statuses.length; i++) {
-            if (statuses[i] === 1) {
-                isAssigned = true;
-                break;
-            }
+        const updatedStatuses = Array.from({ length: groupCount }, (_, index) =>
+            statuses[index] || 0);
+
+        if (!isAssigned && groupCount > 0) {
+            updatedStatuses[0] = 1;
         }
-
-        const updatedStatuses = isAssigned ? statuses : [1, ...statuses.slice(1)];
 
         return {
             ...node,
@@ -167,7 +169,6 @@ export function checkIfUnassignedToGroup(nodes: IUserNode[]): IUserNode[] {
         };
     });
 }
-
 
 export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullCfg[] {
     const updatedHulls = hulls.map(hull => ({
