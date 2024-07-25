@@ -1,0 +1,1 @@
+export type serverResponseIpDataType = { ip: string, isProtected: number };

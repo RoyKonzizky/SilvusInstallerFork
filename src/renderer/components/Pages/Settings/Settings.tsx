@@ -6,7 +6,7 @@ import {ISettingsProps} from "./ISettingsProps.ts";
 import {updateTheSettingsState} from "../../../redux/Settings/settlingsSlice.ts";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {bandwidthValues, frequencyValues, totalTransitPowerValues} from "../../../constants/SilvusDropDownValues.ts";
-import {fetchBasicSettingsData} from "../../../utils/settingsUtils.ts";
+import {fetchBasicSettingsData, setBasicSettingsData} from "../../../utils/settingsUtils.ts";
 import PresetsButton from "../../PresetsButton/PresetsButton.tsx";
 import {changePreset} from "../../../utils/presetsUtils.ts";
 import {useTranslation} from 'react-i18next';
@@ -21,7 +21,7 @@ export function Settings(props: ISettingsProps) {
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
     const [selectedPreset, setSelectedPreset] = useState(useSelector((state: RootState) => state.presets.chosenSpectrum));
     const dispatch = useDispatch();
-    const {t} = useTranslation();
+    const {t, i18n} = useTranslation();
 
     const settingInputs: Input[][] = [
         [
@@ -33,11 +33,17 @@ export function Settings(props: ISettingsProps) {
         ], [
             {
                 type: "button", label: t("save"),
-                onClick: () => dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
+                onClick: async () => {
+                    await setBasicSettingsData(false, parseFloat(frequency), bandwidth + " MHz", networkId, parseFloat(totalTransitPower));
+                    dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
+                }
             },
             {
                 type: "button", label: t("saveNetwork"),
-                onClick: () => dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
+                onClick: async () => {
+                    await setBasicSettingsData(true, parseFloat(frequency), bandwidth + " MHz", networkId, parseFloat(totalTransitPower));
+                    dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}));
+                }
             }
         ]
     ];
@@ -46,10 +52,10 @@ export function Settings(props: ISettingsProps) {
         const loadData = async () => {
             const basicSettingsResponse = await fetchBasicSettingsData();
             // option from the server API/Docker:
-            setFrequency(basicSettingsResponse.frequency);
-            setBandwidth(basicSettingsResponse.bw);
+            setFrequency(basicSettingsResponse.frequency as string);
+            setBandwidth(basicSettingsResponse.bw as string);
             setNetworkId(basicSettingsResponse.net_id);
-            setTotalTransitPower(basicSettingsResponse.power_dBm);
+            setTotalTransitPower(basicSettingsResponse.power_dBm as string);
             // option from the Silvus:
             // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
             // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
@@ -66,7 +72,7 @@ export function Settings(props: ISettingsProps) {
     return (
         <>
             <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
-                <AppInputs appInputs={settingInputs} className={props.isSmaller ? 'flex-col' : 'w-[130%]'} isSmaller={props.isSmaller} />
+                <AppInputs appInputs={settingInputs} className={props.isSmaller ? 'flex-col' : `mr-[15%} ${i18n.language === 'en' ? 'w-[105%]' : 'w-[120%]'}`} isSmaller={props.isSmaller} />
             </div>
             <PresetsButton selectedPreset={selectedPreset} setSelectedPreset={setSelectedPreset}/>
         </>

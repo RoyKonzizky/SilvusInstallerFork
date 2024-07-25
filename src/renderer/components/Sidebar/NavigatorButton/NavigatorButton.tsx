@@ -29,7 +29,7 @@ function NavigatorButton(props: INavigatorButtonProps) {
                     setPressed(res ? res : false);
                 }
             }}
-            className={`flex mt-5 mb-5 rounded-xl cursor-pointer ${props.isSubsection
+            className={`flex mt-3 mb-3 rounded-xl cursor-pointer ${props.isSubsection
                 ? `${hrefCheck() ? 'bg-[#7A7A7A]' : `${isPressed && props.file ? 'bg-[#7A7A7A]' : 'bg-gray-600'}`} text-white text-xl p-2`
                 : `${hrefCheck() ? 'bg-gray-600' : `${isPressed && props.file ? 'bg-gray-600' : 'bg-[#7A7A7A]'}`} text-black text-3xl p-3`}`}
         >
