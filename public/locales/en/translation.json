@@ -37,5 +37,8 @@
   "mediumConnection": "Medium Connection: between 20db to 30db",
   "goodConnection": "Good Connection: more than 30db",
   "Node Label": "Node Label",
-  "refresh": "refresh"
+  "NodeLabel": "Node Label",
+  "refresh": "refresh",
+  "cameraMainStreamLink": "Camera main stream link",
+  "cameraSubStreamLink": "Camera sun stream link"
 }

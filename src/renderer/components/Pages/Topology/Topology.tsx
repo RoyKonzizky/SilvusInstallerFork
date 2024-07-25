@@ -2,8 +2,8 @@ import {useEffect, useState} from 'react';
 import {ITopologyProps} from "./ITopologyProps";
 import {TopologyGraph} from "./graph/TopologyGraph";
 import {IUserEdge, IUserNode} from "@antv/graphin";
-import {createEdgesFromData, createNodesFromData} from "../../../utils/topologyUtils/graphUtils.ts";
-import {batteriesType, devicesType, snrsType} from "../../../constants/types/devicesDataTypes.ts";
+import {createEdgesFromData, createNodesFromData, getCameras} from "../../../utils/topologyUtils/graphUtils.ts";
+import {batteriesType, camsType, devicesType, snrsType} from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from "react-redux";
@@ -17,6 +17,7 @@ export function Topology(props: ITopologyProps) {
         useState<batteriesType | null>(null);
     const [snrsData, setSnrsData] =
         useState<snrsType | null>(null);
+    const [cameras, setCameras] = useState<camsType | null>(null);
     const [graphData, setGraphData] =
         useState<{ nodes: IUserNode[], edges: IUserEdge[] } | null>(null);
     const ws_url = "ws://localhost:8080/ws";
@@ -55,11 +56,12 @@ export function Topology(props: ITopologyProps) {
     useEffect(() => {
         if (devices && batteries && snrsData) {
             try {
-                const nodes = createNodesFromData(devices, batteries);
+                const nodes = createNodesFromData(devices, batteries, cameras!);
                 const edges = createEdgesFromData(snrsData);
 
                 const updatedNodes = nodes.map(newNode => {
-                    const existingNode = selector.nodes.find(node => node.id === newNode.id);
+                    const existingNode = selector.nodes
+                        .find((node: IUserNode) => node.id === newNode.id);
                     if (existingNode) {
                         return {
                             ...existingNode,
@@ -82,6 +84,19 @@ export function Topology(props: ITopologyProps) {
             }
         }
     }, [devices, batteries, snrsData]);
+
+    useEffect(() => {
+        const loadCamerasData = async () => {
+            try {
+                const camerasData = await getCameras();
+                setCameras(camerasData);
+            } catch (error) {
+                console.error("Error in receiving cameras", error);
+            }
+        };
+
+        loadCamerasData();
+    }, [devices]);
 
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 

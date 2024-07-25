@@ -196,13 +196,13 @@ export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[
     const num_groups = hulls.length;
     const ips = nodes.map(node => node.data.ip) as string[];
     const statuses = nodes.map(node => node.data.statuses);
-    console.log(statuses);
+    // console.log(statuses);
     return {ips, num_groups, statuses};
 }
 
 export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
     try {
-        const response = await axios.post(
+        await axios.post(
             'http://localhost:8080/set-ptt-groups', convertPttDataToServerFormat(hullOptions, nodes),
             {
                 headers: {
@@ -210,7 +210,7 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
                 },
             }
         );
-        console.log('Response received:', response.data);
+        // console.log('Response received:', response.data);
     } catch (error) {
         console.error('Error sending data:', error);
     }
