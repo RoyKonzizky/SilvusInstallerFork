@@ -3,15 +3,14 @@ import {Input} from "../../AppInputs/InputTypes/Input.ts";
 import {Paths} from "../../../constants/Paths.ts";
 import {useNavigate} from "react-router-dom";
 import {LoginModal} from "../../LoginModal/LoginModal.tsx";
-import {isIPv4, isIPv6} from "../../../scripts/ipScripts.ts";
 import {ErrorMessage} from "../../ErrorMessage/ErrorMessage.tsx";
 import {AppInputs} from "../../AppInputs/AppInputs.tsx";
 import {useDispatch} from "react-redux";
 import {setIp} from "../../../redux/IP/IPSlice.ts";
 import {useTranslation} from 'react-i18next';
 import "../../../i18n.ts";
-import {startUp} from "../../../utils/loginUtils.ts";
-import {Button} from "antd";
+import {netData, startUp} from "../../../utils/loginUtils.ts";
+import {serverResponseIpDataType} from "../../../constants/types/serverResponseDataType.ts";
 
 export function Login() {
     const navigate = useNavigate();
@@ -30,8 +29,8 @@ export function Login() {
             setErrorModalIsOpen(true);
         }
         if (startUpData.type === "Success") {
-            setIpAddress((startUpData.msg as { ip: string, isProtected: number }).ip);
-            setIsProtectedDevice((startUpData.msg as { ip: string, isProtected: number }).isProtected === 1);
+            setIpAddress((startUpData.msg as serverResponseIpDataType).ip);
+            setIsProtectedDevice((startUpData.msg as serverResponseIpDataType).isProtected === 1);
         }
     }
 
@@ -39,7 +38,8 @@ export function Login() {
         [{type: "text", label: t("IP Address"), value: ipAddress, setValue: setIpAddress}],
         [{
             type: "button", label: t("enter"), onClick: async () => {
-                if (ipAddress !== "" && (isIPv4(ipAddress) || isIPv6(ipAddress))) {
+                const settingRadioIpData = await netData();
+                if (settingRadioIpData.data["device-list"].some((device: { ip: string; id: number }) => device.ip === ipAddress)) {
                     dispatch(setIp(ipAddress));
                     if (isProtectedDevice) setLoginModalIsOpen(true);
                     else navigate(Paths.Settings);
@@ -48,10 +48,7 @@ export function Login() {
                     setErrorMessage(t('loginErrorMessage'));
                 }
             }
-        }],
-        [{
-            type: "button", label: t("refresh"), onClick: callStartup
-        }],
+        }, {type: "button", label: t("refresh"), onClick: callStartup}],
     ];
 
     useEffect(() => {

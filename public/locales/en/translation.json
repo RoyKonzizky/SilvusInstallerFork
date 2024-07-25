@@ -36,6 +36,7 @@
   "badConnection": "Bad Connection: less than 20db",
   "mediumConnection": "Medium Connection: between 20db to 30db",
   "goodConnection": "Good Connection: more than 30db",
+  "Node Label": "Node Label",
   "NodeLabel": "Node Label",
   "refresh": "refresh",
   "cameraMainStreamLink": "Camera main stream link",
