@@ -3,20 +3,13 @@ import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {
-    convertNodesToHulls,
-    createColumns,
-    createDataSource,
-    handleAddGroup,
-    handleStatusChange,
-    sendPttGroups,
-    createGroups,
-    checkIfUnassignedToGroup,
-} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, sendPttGroups,
+    createGroups, checkIfUnassignedToGroup,} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 
 interface ITopologySettingsTable {
     resetOnClose: boolean,
+    isSmaller: boolean,
 }
 
 export function TopologySettingsTable(props: ITopologySettingsTable) {
@@ -80,7 +73,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         <>
             <GroupAdditionModal groups={groups} nodes={nodes} onAdd={(groupName) =>
                 handleAddGroup(groupName, groups, setGroups, nodes, setNodes, hulls,
-                    setHulls, dispatch, updateNodes, updateHulls)} />
+                    setHulls, dispatch, updateNodes, updateHulls)} isSmall={props.isSmaller}/>
             <Table dataSource={dataSource} columns={columns} rowKey="key" className={'bottom-0'} />
         </>
     );

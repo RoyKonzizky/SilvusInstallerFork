@@ -4,9 +4,10 @@ import {IUserNode} from "@antv/graphin";
 import {useTranslation} from 'react-i18next';
 
 interface IGroupAdditionModal {
-    groups: string[];
-    nodes: IUserNode[];
-    onAdd: (groupName: string) => void;
+    groups: string[],
+    nodes: IUserNode[],
+    onAdd: (groupName: string) => void,
+    isSmall: boolean,
 }
 
 export function GroupAdditionModal(props: IGroupAdditionModal) {
@@ -27,7 +28,8 @@ export function GroupAdditionModal(props: IGroupAdditionModal) {
 
     return (
         <div>
-            <Button className={'text-black h-14 w-20 m-5 rounded-xl'} onClick={openModal}>
+            <Button className={props.isSmall ? 'text-black h-14 w-20 m-5 rounded-xl mr-[55vh]' :
+                'text-black h-14 w-20 m-5 rounded-xl'} onClick={openModal}>
                 {t("AddGroup")}
             </Button>
             <Modal closable={true} centered={true} open={modalState} onCancel={closeModal} title={t("AddGroup")}

@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
+import {sendNames} from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -31,6 +32,10 @@ export function ElementPopover(props: IElementPopoverProps) {
         });
         dispatch(updateNodes(newNodes));
     };
+
+    useEffect(() => {
+        sendNames(props.selectedElement?.id, props.selectedElement?.style?.label?.value as string);
+    }, [label])
 
     return (
         <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
