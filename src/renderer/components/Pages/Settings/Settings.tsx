@@ -34,14 +34,14 @@ export function Settings(props: ISettingsProps) {
             {
                 type: "button", label: t("save"),
                 onClick: async () => {
-                    await setBasicSettingsData(false, parseFloat(frequency), bandwidth + " MHz", networkId, parseFloat(totalTransitPower));
+                    await setBasicSettingsData(false, parseFloat(frequency), bandwidth + " MHz", networkId, totalTransitPower);
                     dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}))
                 }
             },
             {
                 type: "button", label: t("saveNetwork"),
                 onClick: async () => {
-                    await setBasicSettingsData(true, parseFloat(frequency), bandwidth + " MHz", networkId, parseFloat(totalTransitPower));
+                    await setBasicSettingsData(true, parseFloat(frequency), bandwidth + " MHz", networkId, totalTransitPower);
                     dispatch(updateTheSettingsState({frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower}));
                 }
             }
@@ -55,7 +55,7 @@ export function Settings(props: ISettingsProps) {
             setFrequency(basicSettingsResponse.frequency as string);
             setBandwidth(basicSettingsResponse.bw as string);
             setNetworkId(basicSettingsResponse.net_id);
-            setTotalTransitPower(basicSettingsResponse.power_dBm as string);
+            setTotalTransitPower(basicSettingsResponse.power_dBm == 'enable_max' ? 'Enable Max Power' : basicSettingsResponse.power_dBm);
             // option from the Silvus:
             // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Frequency, ipAddress, setFrequency);
             // getInfoFromTheSilvusDevice(dispatch, SilvusDataType.Bandwidth, ipAddress, setBandwidth);
@@ -72,7 +72,7 @@ export function Settings(props: ISettingsProps) {
     return (
         <>
             <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
-                <AppInputs appInputs={settingInputs} className={props.isSmaller ? 'flex-col' : `mr-[15%} ${i18n.language === 'en' ? 'w-[105%]' : 'w-[120%]'}`} isSmaller={props.isSmaller} />
+                <AppInputs appInputs={settingInputs} className={props.isSmaller ? 'flex-col' : `mr-[10%] ${i18n.language === 'en' ? 'w-[90%]' : 'w-[100%]'}`} isSmaller={props.isSmaller} />
             </div>
             <PresetsButton selectedPreset={selectedPreset} setSelectedPreset={setSelectedPreset}/>
         </>
