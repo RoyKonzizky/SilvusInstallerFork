@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { Input } from "../../AppInputs/InputTypes/Input.ts";
 import { RootState } from "../../../redux/store.ts";
@@ -11,16 +11,59 @@ import PresetsImage from "../../../assets/presets.svg";
 import { useTranslation } from 'react-i18next';
 import BottomCircle from "../../PresetsButton/BottomCircle/BottomCircle.tsx";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export function Settings(props: ISettingsProps) {
+    const isMounted = useRef(false);
+
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency));
     const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth));
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
     const [totalTransitPower, setTotalTransitPower] = useState(useSelector((state: RootState) => state.settings.totalTransitPower));
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
-    
+
     const dispatch = useDispatch();
     const { t, i18n } = useTranslation();
+
+    useEffect(() => {
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    const saveSettings = async (isNetworkSave: boolean) => {
+        if (isNetworkSave) {
+            const confirmed = confirm("?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך");
+            if (!confirmed) {
+                return;
+            }
+        }
+
+        try {
+            const response = await setBasicSettingsData(
+                isNetworkSave,
+                parseFloat(frequency),
+                bandwidth + " MHz",
+                networkId,
+                totalTransitPower
+            );
+
+            if (isMounted.current && response[0] === "Success") {
+                dispatch(updateTheSettingsState({
+                    frequency: frequency,
+                    bandwidth: bandwidth,
+                    networkId: networkId,
+                    totalTransitPower: totalTransitPower
+                }));
+                toast.success("ההגדרות נשמרו בהצלחה!");
+            } else {
+                toast.error("שגיאה בעת שמירת ההגדרות. הפעולה בוטלה");
+            }
+        } catch (e) {
+            toast.error("שגיאה בעת שמירת ההגדרות. הפעולה בוטלה");
+        }
+    }
 
     const settingInputs: Input[][] = [
         [
@@ -30,20 +73,8 @@ export function Settings(props: ISettingsProps) {
             { type: "text", label: t('networkId'), value: networkId, setValue: setNetworkId },
             { type: "text", label: t('totalTransitPower'), value: totalTransitPower, setValue: setTotalTransitPower, values: totalTransitPowerValues }
         ], [
-            {
-                type: "button", label: t("save"),
-                onClick: async () => {
-                    await setBasicSettingsData(false, parseFloat(frequency), bandwidth + " MHz", networkId, totalTransitPower);
-                    dispatch(updateTheSettingsState({ frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower }))
-                }
-            },
-            {
-                type: "button", label: t("saveNetwork"),
-                onClick: async () => {
-                    await setBasicSettingsData(true, parseFloat(frequency), bandwidth + " MHz", networkId, totalTransitPower);
-                    dispatch(updateTheSettingsState({ frequency: frequency, bandwidth: bandwidth, networkId: networkId, totalTransitPower: totalTransitPower }));
-                }
-            }
+            { type: "button", label: t("save"), onClick: () => saveSettings(false) },
+            { type: "button", label: t("saveNetwork"), onClick: () => saveSettings(true) }
         ]
     ];
 
