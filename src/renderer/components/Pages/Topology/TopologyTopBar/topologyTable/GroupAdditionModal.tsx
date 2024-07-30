@@ -27,7 +27,7 @@ export function GroupAdditionModal(props: IGroupAdditionModal) {
 
     return (
         <div>
-            <Button className={'text-black h-14 w-20 m-5 rounded-xl'} onClick={openModal}>
+            <Button className={'text-black h-14 w-40 m-5 rounded-xl float-left'} onClick={openModal}>
                 {t("AddGroup")}
             </Button>
             <Modal closable={true} centered={true} open={modalState} onCancel={closeModal} title={t("AddGroup")}

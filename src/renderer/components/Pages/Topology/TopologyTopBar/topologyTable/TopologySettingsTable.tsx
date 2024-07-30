@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {
     convertNodesToHulls,
@@ -9,13 +9,15 @@ import {
     createDataSource,
     handleAddGroup,
     handleStatusChange,
-    sendPttGroups,
     createGroups,
     checkIfUnassignedToGroup,
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
+import { t } from "i18next";
+import { HullCfg, IUserNode } from "@antv/graphin";
 
 interface ITopologySettingsTable {
+    onSave: (hullOptions: HullCfg[], nodes: IUserNode[]) => void,
     resetOnClose: boolean,
 }
 
@@ -72,16 +74,18 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         dispatch(updateHulls(newHulls));
     }, [nodes]);
 
-    useEffect(() => {
-        if (!props.resetOnClose) sendPttGroups(hulls, nodes);
-    }, [props.resetOnClose]);
-
     return (
         <>
             <GroupAdditionModal groups={groups} nodes={nodes} onAdd={(groupName) =>
                 handleAddGroup(groupName, groups, setGroups, nodes, setNodes, hulls,
                     setHulls, dispatch, updateNodes, updateHulls)} />
             <Table dataSource={dataSource} columns={columns} rowKey="key" className={'bottom-0'} />
+            <Button
+                onClick={() => props.onSave(hulls, nodes)}
+                className={'text-black h-14 w-40 m-5 rounded-xl'}
+            >
+                {t("Apply")}
+            </Button>
         </>
     );
 }

@@ -32,6 +32,7 @@
   "add": "Add",
   "cancel": "Cancel",
   "AddGroup": "Add Group",
+  "Apply": "Apply Settings",
   "InsertGroupName": "Insert group name",
   "badConnection": "Bad Connection: less than 20db",
   "mediumConnection": "Medium Connection: between 20db to 30db",
