@@ -79,4 +79,3 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
     }
     return edges;
 }
-
