@@ -1,10 +1,10 @@
 import axios from "axios";
 
-export const sendNames = async (nodeId: number, nodeName: string) => {
+export const sendNames = async (nodeId: string, nodeName: string) => {
     try {
         const response = await axios.post(
-            'http://localhost:8080/set-ptt-groups',
-            {id: nodeId, name: nodeName},
+            'http://localhost:8080/set-label',
+            {id: Number(nodeId), label: nodeName},
             {
                 headers: {
                     'Content-Type': 'application/json',

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, useState} from "react";
 import {sendNames} from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
 
 interface IElementPopoverProps {
@@ -20,6 +20,7 @@ export function ElementPopover(props: IElementPopoverProps) {
     const selector = useSelector((state: RootState) => state.topologyGroups);
     const [label, setLabel] =
         useState(props.selectedElement?.style?.label?.value);
+    const [isClicked, setIsClicked] = useState(false);
 
     const handleLabelChange = (e: ChangeEvent<HTMLInputElement>) => {
         setLabel(e.target.value);
@@ -33,9 +34,16 @@ export function ElementPopover(props: IElementPopoverProps) {
         dispatch(updateNodes(newNodes));
     };
 
-    useEffect(() => {
-        sendNames(props.selectedElement?.id, props.selectedElement?.style?.label?.value as string);
-    }, [label])
+
+    const handleButtonClick = () => {
+        setIsClicked(true);
+        sendNames(
+            props.selectedElement?.id as string,
+            props.selectedElement?.style?.label?.value as string
+        );
+
+        setTimeout(() => setIsClicked(false), 200);
+    };
 
     return (
         <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
@@ -49,7 +57,14 @@ export function ElementPopover(props: IElementPopoverProps) {
                      <div>
                          {props.selectedElement?.type === 'graphin-circle' ?
                              <div>
-                                 <input className={"text-xl"} onChange={handleLabelChange} value={label || ''} />
+                                 <div className={'flex flex-row items-center'}>
+                                     <input className={"text-xl w-48"} onChange={handleLabelChange} value={label || ''}/>
+                                     <button onClick={handleButtonClick}
+                                         className={`bg-gray-900 w-9 h-9 text-white font-bold py-2 px-4 rounded-full ${
+                                             isClicked ? 'opacity-50' : 'opacity-100'
+                                         } focus:outline-none z-50 flex justify-center items-center ml-2`}>V
+                                     </button>
+                                 </div>
                                  <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
                                  <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
                                  <p>{`${t('cameraMainStreamLink')}: ${props.selectedElement.data.camLinks.mainStreamLink || 'N/A'}`}</p>
