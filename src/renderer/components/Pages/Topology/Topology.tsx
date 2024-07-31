@@ -88,7 +88,7 @@ export function Topology(props: ITopologyProps) {
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 
                 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
-            {graphData ? (<TopologyGraph isSmaller={props.isSmaller}/>) : <h1 className={"h-24 w-36"}>{t('loading')}</h1>}
+            {graphData ? (<TopologyGraph />) : <h1 className={"h-24 w-36"}>{t('loading')}</h1>}
         </div>
     );
 }

@@ -8,11 +8,7 @@ import {HullCfg} from "@antv/graphin/lib/components/Hull";
 import {graphStyle} from "../../../../utils/topologyUtils/graphUtils.ts";
 import {TopologyTopBar} from "../TopologyTopBar/TopologyTopBar.tsx";
 
-interface ITopologyGraph {
-    isSmaller: boolean,
-}
-
-export function TopologyGraph(props: ITopologyGraph) {
+export function TopologyGraph() {
     const [selectedElement, setSelectedElement] =
         useState<IUserNode | IUserEdge | null>(null);
     const [popoverPosition, setPopoverPosition] =
@@ -72,7 +68,7 @@ export function TopologyGraph(props: ITopologyGraph) {
             {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
                                                  position={popoverPosition} selectedElement={selectedElement}/>)}
             {showHulls && hulls.length > 0 && (<Hull options={hulls} />)}
-            <TopologyTopBar isSmaller={props.isSmaller} />
+            <TopologyTopBar />
         </Graphin>
     );
 }
