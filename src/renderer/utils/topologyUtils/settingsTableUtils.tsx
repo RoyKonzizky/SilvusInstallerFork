@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import binIcon from "../../assets/bin.png";
-import { Button, Select } from "antd";
-import { IUserNode } from "@antv/graphin";
-import { HullCfg } from "@antv/graphin/lib/components/Hull";
+import {Button, Select} from "antd";
+import {IUserNode} from "@antv/graphin";
+import {HullCfg} from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
-import { Dispatch, SetStateAction } from "react";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import {Dispatch, SetStateAction} from "react";
+import {ActionCreatorWithPayload} from "@reduxjs/toolkit";
 
 const { Option } = Select;
 
@@ -146,50 +146,60 @@ export function handleDeleteGroup(groupToDelete: string, groups: string[], nodes
 
 }
 
-export function checkIfUnassignedToGroup(nodes: IUserNode[], groups: string[]) {
-    const groupCount = groups.length;
-
+export function checkIfUnassignedToGroup(nodes: IUserNode[]): IUserNode[] {
     return nodes.map(node => {
-        const statuses = node.data.statuses;
-        const isAssigned = statuses.includes(1);
+        const newStatuses = [...node.data.statuses];
 
-        const updatedStatuses = Array.from({ length: groupCount }, (_, index) =>
-            statuses[index] || 0);
-
-        if (!isAssigned && groupCount > 0) {
-            updatedStatuses[0] = 1;
+        if (!newStatuses.includes(1)) {
+            newStatuses[0] = 1;
         }
 
         return {
             ...node,
             data: {
                 ...node.data,
-                statuses: updatedStatuses
-            }
+                statuses: newStatuses,
+            },
         };
     });
 }
 
 export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullCfg[] {
-    const updatedHulls = hulls.map(hull => ({
-        ...hull,
-        members: new Set<string>()
-    }));
+    const longestStatusesLength = findLongestStatusesLength(nodes);
+    const newHulls: HullCfg[] = [];
 
+    // Initialize newHulls with either existing hulls or new ones
+    for (let i = 0; i < longestStatusesLength; i++) {
+        if (hulls[i]) {
+            newHulls[i] = { id: hulls[i].id, members: [...hulls[i].members] };
+        } else {
+            newHulls[i] = { id: `hull${i}`, members: [] };
+        }
+    }
+
+    // Populate newHulls with node ids based on statuses
     nodes.forEach(node => {
-        const statuses = node.data.statuses;
-
-        statuses.forEach((status: number, index: number) => {
-            if (status > 0) {
-                updatedHulls[index].members.add(node.id);
+        node.data.statuses.forEach((statusPtt: number, index: number) => {
+            if (statusPtt > 0 && newHulls[index]) {
+                newHulls[index].members.push(node.id);
             }
         });
     });
 
-    return updatedHulls.map(hull => ({
-        ...hull,
-        members: Array.from(hull.members)
-    }));
+    return newHulls;
+}
+
+
+export function findLongestStatusesLength(nodes: IUserNode[]): number {
+    let maxLength = 0;
+
+    nodes.forEach(node => {
+        if (node.data.statuses.length > maxLength) {
+            maxLength = node.data.statuses.length;
+        }
+    });
+
+    return maxLength;
 }
 
 export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
