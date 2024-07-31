@@ -34,7 +34,7 @@ export function Settings(props: ISettingsProps) {
 
     const saveSettings = async (isNetworkSave: boolean) => {
         if (isNetworkSave) {
-            const confirmed = confirm("?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך");
+            const confirmed = confirm(t("networkSaveConfirmation"));
             if (!confirmed) {
                 return;
             }
@@ -56,12 +56,12 @@ export function Settings(props: ISettingsProps) {
                     networkId: networkId,
                     totalTransitPower: totalTransitPower
                 }));
-                toast.success("ההגדרות נשמרו בהצלחה!");
+                toast.success(t("saveSettingsSuccessMsg"));
             } else {
-                toast.error("שגיאה בעת שמירת ההגדרות. הפעולה בוטלה");
+                toast.error(t("saveSettingsFailureMsg"));
             }
         } catch (e) {
-            toast.error("שגיאה בעת שמירת ההגדרות. הפעולה בוטלה");
+            toast.error(t("saveSettingsFailureMsg"));
         }
     }
 

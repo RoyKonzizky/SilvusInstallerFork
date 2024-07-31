@@ -13,6 +13,7 @@ import { Login } from "./components/Pages/Login/Login.tsx";
 import './index.css';
 import { Flip, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from 'react-i18next';
 
 const router = createBrowserRouter([
     {
@@ -45,8 +46,10 @@ const router = createBrowserRouter([
     }
 ]);
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
+function App() {
+    const { i18n } = useTranslation();
+
+    return (
         <Provider store={store}>
             <div className="text-center text-3xl bg-black text-white h-screen w-screen">
                 <RouterProvider router={router} />
@@ -57,7 +60,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 hideProgressBar={true}
                 newestOnTop={false}
                 closeOnClick={false}
-                rtl={true}
+                rtl={i18n.language === 'he'}
                 pauseOnFocusLoss
                 draggable={false}
                 pauseOnHover={false}
@@ -65,5 +68,11 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 transition={Flip}
             />
         </Provider>
+    );
+}
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <React.StrictMode>
+        <App />
     </React.StrictMode>,
 )

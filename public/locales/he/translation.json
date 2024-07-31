@@ -38,5 +38,8 @@
   "mediumConnection": "חיבור בינוני: בין 20 ל-30",
   "goodConnection": "חיבור טוב: יותר מ-30",
   "Node Label": "תווית",
-  "refresh": "רענן"
+  "refresh": "רענן",
+  "saveSettingsSuccessMsg": "ההגדרות נשמרו בהצלחה!",
+  "saveSettingsFailureMsg": "שגיאה בעת שמירת ההגדרות. הפעולה בוטלה",
+  "networkSaveConfirmation": "?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך"
 }
