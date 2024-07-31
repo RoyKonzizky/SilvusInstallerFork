@@ -59,7 +59,8 @@ export function Topology(props: ITopologyProps) {
                 const edges = createEdgesFromData(snrsData);
 
                 const updatedNodes = nodes.map(newNode => {
-                    const existingNode = selector.nodes.find(node => node.id === newNode.id);
+                    const existingNode = selector.nodes
+                        .find((node: IUserNode) => node.id === newNode.id);
                     if (existingNode) {
                         return {
                             ...existingNode,
@@ -83,10 +84,11 @@ export function Topology(props: ITopologyProps) {
         }
     }, [devices, batteries, snrsData]);
 
+
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 
                 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
-            {graphData ? (<TopologyGraph/>) : <h1 className={"h-24 w-36"}>{t('loading')}</h1>}
+            {graphData ? (<TopologyGraph isSmaller={props.isSmaller}/>) : <h1 className={"h-24 w-36"}>{t('loading')}</h1>}
         </div>
     );
 }

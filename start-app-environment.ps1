@@ -3,7 +3,7 @@ $localNodeDir = ".\local_node"
 $localPythonDir = ".\local_python"
 $npmPath = "$localNodeDir\npm.cmd"
 $pythonPath = "$localPythonDir\python.exe"
-$pythonServer = "..\svAppPy39-main"
+$pythonServer = "..\svApp"
 $localPythonPackages = ".\local_python_packages"
 $npcapPackage = ".\npcap-1.79.exe"
 

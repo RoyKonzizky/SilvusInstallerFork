@@ -37,8 +37,11 @@
   "badConnection": "חיבור רע: פחות מ-20",
   "mediumConnection": "חיבור בינוני: בין 20 ל-30",
   "goodConnection": "חיבור טוב: יותר מ-30",
-  "Node Label": "תווית",
+  "NodeLabel": "תווית",
   "refresh": "רענן",
+  "cameraMainStreamLink": "לינק לשידור ראשי",
+  "cameraSubStreamLink": "לינק לשידור משני"
+  "Node Label": "תווית",
   "saveSettingsSuccessMsg": "ההגדרות נשמרו בהצלחה!",
   "saveSettingsFailureMsg": "שגיאה בעת שמירת ההגדרות. הפעולה בוטלה",
   "networkSaveConfirmation": "?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך"

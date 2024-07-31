@@ -51,7 +51,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [hulls]);
 
     useEffect(() => {
-        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes, groups));
+        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes));
         dispatch(updateNodes(nodes));
     }, [groups]);
 
