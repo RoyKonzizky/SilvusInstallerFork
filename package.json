@@ -13,7 +13,7 @@
     "electron:dev": "cross-env IS_DEV=true electron .",
     "electron:build": "electron-builder",
     "electron:package": "electron-forge package",
-    "package": "electron-packager . Silvus --platform=win32 --arch=x64 --out=C:\\\\ --overwrite"
+    "package": "electron-packager . Silvus --platform=win32 --arch=x64 --out=.\\dist --overwrite"
   },
   "dependencies": {
     "@antv/graphin": "^2.7.27",
@@ -23,7 +23,6 @@
     "axios": "^1.7.2",
     "child_process": "^1.0.2",
     "electron-builder": "^24.13.3",
-    "electron-packager": "^17.1.2",
     "i18next": "^23.11.5",
     "i18next-browser-languagedetector": "^8.0.0",
     "i18next-http-backend": "^2.5.2",
@@ -51,6 +50,7 @@
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "electron": "^31.3.0",
+    "electron-packager": "^17.1.2",
     "electron-vite": "^2.2.0",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",

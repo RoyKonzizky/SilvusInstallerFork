@@ -3,10 +3,9 @@ $localNodeDir = ".\local_node"
 $localPythonDir = ".\local_python"
 $npmPath = "$localNodeDir\npm.cmd"
 $pythonPath = "$localPythonDir\python.exe"
-$pythonServer = "..\svAppPy39-main"
+$pythonServer = "..\svApp"
 $localPythonPackages = ".\local_python_packages"
 $npcapPackage = ".\npcap-1.79.exe"
-$electronBinariesPath = ".\node_modules\electron\dist"  # Path to Electron binaries in node_modules
 
 # Function to check if a process is running
 function Test-Process {
@@ -18,22 +17,27 @@ function Test-Process {
 }
 
 # Add local Node.js and Python binaries to the PATH
-$env:PATH = "$electronBinariesPath;$localNodeDir;$localPythonDir;$env:PATH"
-
-# Check if Electron binaries path exists and is accessible
-if (-Not (Test-Path $electronBinariesPath)) {
-    Write-Output "The specified Electron binaries path does not exist or is not accessible: $electronBinariesPath"
-    exit 1
-}
+$env:PATH = "$localNodeDir;$localPythonDir;$env:PATH"
 
 # Stop any previous instances of the app
 Write-Output "Stopping any previous instances of the app..."
 Stop-Process -Name "node" -ErrorAction SilentlyContinue
 
+# Set up npcap if it doesn't exist
+if (-Not (Test-Path "C:\Program Files\Npcap")) {
+    Write-Output "Setting up npcap environment..."
+    $process = Start-Process $npcapPackage -Wait -PassThru
+    $process.WaitForExit()
+    if ($process.ExitCode -ne 0) {
+        Write-Output "Failed to install Npcap."
+        exit 1
+    }
+}
+
 # Set up Python virtual environment if it doesn't exist
 if (-Not (Test-Path "$pythonServer\venv")) {
     Write-Output "Setting up Python virtual environment..."
-    $process = Start-Process -FilePath $pythonPath -ArgumentList "-m venv $pythonServer\venv" -NoNewWindow -Wait -PassThru
+    $process = Start-Process -FilePath $pythonPath -ArgumentList "-m venv $pythonServer\venv" -NoNewWindow -Wait -PassThru -RedirectStandardOutput "venv-output.log" -RedirectStandardError "venv-error.log"
     $process.WaitForExit()
     if ($process.ExitCode -ne 0) {
         Write-Output "Failed to set up Python virtual environment."
@@ -46,7 +50,7 @@ Write-Output "Activating Python virtual environment and installing requirements 
 & "$pythonServer\venv\Scripts\activate"
 
 # Install setuptools and wheel first
-$process = Start-Process "$pythonServer\venv\Scripts\pip.exe" -ArgumentList "install --no-index --find-links=$localPythonPackages setuptools wheel" -NoNewWindow -Wait -PassThru
+$process = Start-Process "$pythonServer\venv\Scripts\pip.exe" -ArgumentList "install --no-index --find-links=$localPythonPackages setuptools wheel" -NoNewWindow -Wait -PassThru -RedirectStandardOutput "first-pip-output.log" -RedirectStandardError "first-pip-error.log"
 $process.WaitForExit()
 if ($process.ExitCode -ne 0) {
     Write-Output "Failed to install setuptools and wheel."
@@ -54,22 +58,11 @@ if ($process.ExitCode -ne 0) {
 }
 
 # Install the rest of the requirements
-$process = Start-Process "$pythonServer\venv\Scripts\pip.exe" -ArgumentList "install --no-index --find-links=$localPythonPackages -r $pythonServer\requirements.txt" -NoNewWindow -Wait -PassThru
+$process = Start-Process "$pythonServer\venv\Scripts\pip.exe" -ArgumentList "install --no-index --find-links=$localPythonPackages -r $pythonServer\requirements.txt" -NoNewWindow -Wait -PassThru -RedirectStandardOutput "second-pip-output.log" -RedirectStandardError "second-pip-error.log"
 $process.WaitForExit()
 if ($process.ExitCode -ne 0) {
     Write-Output "Failed to install Python requirements from local directory."
     exit 1
-}
-
-# Check if the directory exists
-if (-Not (Test-Path "C:\Silvus-win32-x64")) {
-    # Build the app
-    Write-Output "Building the app..."
-    $electronPath = Resolve-Path "$electronBinariesPath\electron.exe"
-    $process = Start-Process $npmPath -ArgumentList "run package -- --electron=$electronPath" -NoNewWindow -Wait -PassThru -RedirectStandardOutput "building-app-output.log" -RedirectStandardError "building-app-error.log"
-    Start-Sleep -Seconds 40
-} else {
-    Write-Output "The app has already been built. Skipping build step."
 }
 
 # Start the app

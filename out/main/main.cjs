@@ -34,9 +34,9 @@ async function handleFileOpen() {
 
 function startPythonServer() {
   const projectRoot = path.resolve(__dirname, "../..");
-  const svAppDir = path.join(projectRoot, "../svAppPy39-main");
+  const svAppDir = path.join(projectRoot, "../svApp");
   const pythonPath = path.join(svAppDir, "venv", "Scripts", "python.exe");
-  const scriptPath = path.join(svAppDir, "main.py");
+  const scriptPath = path.join(svAppDir, "app", "main.py");
   const env = { ...process.env };
 
   env.PATH = `../../local_python/python.exe:${env.PATH}`;

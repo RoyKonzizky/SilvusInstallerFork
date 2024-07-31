@@ -11,7 +11,7 @@ export const fetchBasicSettingsData = async () => {
     }
 };
 
-export const setBasicSettingsData = async (isSaveNetwork: boolean, frequency: number, bandwidth: string, networkId: string, totalTransitPower: number) => {
+export const setBasicSettingsData = async (isSaveNetwork: boolean, frequency: number, bandwidth: string, networkId: string, totalTransitPower: string) => {
     try {
         const response = await axios.post('http://localhost:8080/basic-settings', {
             set_net_flag: isSaveNetwork ? 1 : 0,
