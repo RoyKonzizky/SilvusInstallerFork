@@ -1,6 +1,5 @@
 import {IUserEdge, IUserNode} from "@antv/graphin";
-import {batteriesType, camsType, devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
-import axios from "axios";
+import {batteriesType, devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
 
 export const graphStyle = {
     background: "black",
@@ -9,12 +8,10 @@ export const graphStyle = {
     color: "white"
 };
 
-export function createNodesFromData(devices: devicesType, batteries: batteriesType, cams: camsType) {
+export function createNodesFromData(devices: devicesType, batteries: batteriesType) {
     const nodes: IUserNode[] = [];
     for (let i = 0; i < devices.length; i++) {
         const color = '#1fb639';
-
-        const camStreams = connectCamToDevice(devices[i].ip.toString(), cams);
 
         nodes[i] = {
             id: devices[i].id.toString(),
@@ -32,11 +29,11 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
             },
             data: {
                 battery: batteries[i] ? batteries[i].percent.toString() : 'N/A',
-                statuses: [1],
+                statuses: devices[i].status,
                 ip: devices[i].ip,
                 camLinks: {
-                    mainStreamLink: camStreams?.mainStreamLink,
-                    subStreamLink: camStreams?.subStreamLink,
+                    mainStreamLink: 'N/A',
+                    subStreamLink: 'N/A',
                 },
             },
         };
@@ -83,40 +80,3 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
     return edges;
 }
 
-export const getCameras = async () => {
-    try {
-        const response = await axios.get('http://localhost:8080/get-camera-links');
-        // console.log('Response received:', response.data);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching Radio IP data:', error);
-        return null;
-    }
-};
-
-export type CamStreams = {
-    mainStreamLink?: string;
-    subStreamLink?: string;
-};
-
-export function connectCamToDevice(deviceIp: string, cams: camsType): CamStreams {
-    const matchedCam = cams.data.find(cam =>
-        cam.camera.connected_to === deviceIp);
-
-    if (matchedCam) {
-        return {
-            mainStreamLink: matchedCam.camera.main_stream.uri,
-            subStreamLink: matchedCam.camera.sub_stream.uri,
-        };
-    } else {
-        return {};
-    }
-}
-
-export const loadCamerasData = async () => {
-    try {
-        return await getCameras();
-    } catch (error) {
-        console.error("Error in receiving cameras", error);
-    }
-};
