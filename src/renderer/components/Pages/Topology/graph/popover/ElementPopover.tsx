@@ -1,4 +1,4 @@
-import { Popover } from "antd";
+import {Button, Popover} from "antd";
 import { IUserEdge, IUserNode } from "@antv/graphin";
 import { Battery } from "./Battery.tsx";
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,6 @@ export function ElementPopover(props: IElementPopoverProps) {
     const selector = useSelector((state: RootState) => state.topologyGroups);
     const [label, setLabel] =
         useState(props.selectedElement?.style?.label?.value);
-    const [isClicked, setIsClicked] = useState(false);
 
     const handleLabelChange = (e: ChangeEvent<HTMLInputElement>) => {
         setLabel(e.target.value);
@@ -34,15 +33,11 @@ export function ElementPopover(props: IElementPopoverProps) {
         dispatch(updateNodes(newNodes));
     };
 
-
     const handleButtonClick = () => {
-        setIsClicked(true);
         sendNames(
             props.selectedElement?.id as string,
             props.selectedElement?.style?.label?.value as string
         );
-
-        setTimeout(() => setIsClicked(false), 200);
     };
 
     return (
@@ -57,13 +52,9 @@ export function ElementPopover(props: IElementPopoverProps) {
                      <div>
                          {props.selectedElement?.type === 'graphin-circle' ?
                              <div>
-                                 <div className={'flex flex-row items-center'}>
-                                     <input className={"text-xl w-48"} onChange={handleLabelChange} value={label || ''}/>
-                                     <button onClick={handleButtonClick}
-                                         className={`bg-gray-900 w-9 h-9 text-white font-bold py-2 px-4 rounded-full ${
-                                             isClicked ? 'opacity-50' : 'opacity-100'
-                                         } focus:outline-none z-50 flex justify-center items-center ml-2`}>V
-                                     </button>
+                                 <div className={'flex flex-row items-center focus:outline-none'}>
+                                     <input className={"text-xl w-48 bg-white "} onChange={handleLabelChange} value={label || ''}/>
+                                     <Button onClick={handleButtonClick}>V</Button>
                                  </div>
                                  <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
                                  <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
