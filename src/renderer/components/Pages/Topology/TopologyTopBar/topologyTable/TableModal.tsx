@@ -12,7 +12,7 @@ export function TableModal() {
 
     return (
         <div>
-            <button className={'text-black w-20 h-16 rounded'} onClick={() => setModalState(true)}>
+            <button className={'text-black h-14 w-14 rounded'} onClick={() => setModalState(true)}>
                 <img className={'bg-white rounded-full'} src={settingsIcon} alt={t("settings")} />
             </button>
             <HyperModal isOpen={modalState} requestClose={() => setModalState(false)}>

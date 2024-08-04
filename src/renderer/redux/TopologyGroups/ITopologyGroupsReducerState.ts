@@ -5,4 +5,5 @@ export interface ITopologyGroupsReducerState {
     nodes: IUserNode[],
     edges: IUserEdge[],
     hullOptions: HullCfg[],
+    graphLayout: string
 }
