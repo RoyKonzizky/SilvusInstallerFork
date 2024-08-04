@@ -26,9 +26,7 @@ const router = createBrowserRouter([
     },
     {
         path: Paths.Topology,
-        element: <><Sidebar />
-        {/* <Topology isSmaller={false} /> */}
-        </>,
+        element: <><Sidebar /><Topology isSmaller={false} /></>,
     },
     {
         path: Paths.Camera,
@@ -55,7 +53,6 @@ function App() {
         <Provider store={store}>
             <div className="text-center text-3xl bg-black text-white h-screen w-screen">
                 <RouterProvider router={router} />
-                <Topology isSmaller={false} />
             </div>
             <ToastContainer
                 position={"bottom-center"}

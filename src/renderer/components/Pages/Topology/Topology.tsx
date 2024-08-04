@@ -6,7 +6,7 @@ import { batteriesType, devicesType, snrsType } from "../../../constants/types/d
 import useWebSocket from "react-use-websocket";
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
-import { updateEdges, updateNodes, setGraphData } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import { updateEdges, updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import { RootState } from "../../../redux/store.ts";
 
 export function Topology(props: ITopologyProps) {
@@ -17,8 +17,10 @@ export function Topology(props: ITopologyProps) {
     const { lastJsonMessage } = useWebSocket(
         ws_url, {
         share: true,
-        shouldReconnect: () => true, onError: (error) => console.error('WebSocket error:', error),
-        onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
+        shouldReconnect: () => true,
+        onError: (error) => console.error('WebSocket error:', error),
+        onOpen: () => console.log('WebSocket connected'),
+        onClose: () => console.log('WebSocket disconnected')
     }
     );
     const { t } = useTranslation();
@@ -47,10 +49,11 @@ export function Topology(props: ITopologyProps) {
     useEffect(() => {
         if (devices && batteries && snrsData) {
             try {
-                const nodes = createNodesFromData(devices, batteries);
+                const newNodes = createNodesFromData(devices, batteries);
                 const edges = createEdgesFromData(snrsData);
 
-                const updatedNodes = nodes.map(newNode => {
+                const updatedNodes = newNodes.map(newNode => {
+                    // sync server data with existing nodes in redux:
                     const existingNode = nodes.find(node => node.id === newNode.id);
                     if (existingNode) {
                         return {
@@ -58,7 +61,9 @@ export function Topology(props: ITopologyProps) {
                             data: {
                                 ...existingNode.data,
                                 battery: newNode.data.battery
-                            }
+                            },
+                            x: existingNode.x,
+                            y: existingNode.y
                         };
                     }
                     return newNode;
@@ -66,7 +71,6 @@ export function Topology(props: ITopologyProps) {
 
                 dispatch(updateEdges(edges));
                 dispatch(updateNodes(updatedNodes));
-                dispatch(setGraphData({ nodes: updatedNodes, edges }));
             } catch (error) {
                 console.error('Error in loading data:', error);
             }
@@ -77,8 +81,7 @@ export function Topology(props: ITopologyProps) {
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' :
             'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {
-                nodes.length > 0 && edges.length > 0 ?
-                    <TopologyGraph />
+                nodes?.length > 0 ? <TopologyGraph />
                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
             }
         </div>

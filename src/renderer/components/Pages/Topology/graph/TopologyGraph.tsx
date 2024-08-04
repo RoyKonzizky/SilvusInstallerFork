@@ -1,21 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Graphin, { IUserEdge, IUserNode } from "@antv/graphin";
-import Hull from "@antv/graphin/es/components/Hull";
 import { ElementPopover } from "./popover/ElementPopover.tsx";
 import { RootState } from "../../../../redux/store.ts";
-import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import { graphStyle } from "../../../../utils/topologyUtils/graphUtils.ts";
 import { TopologyTopBar } from "../TopologyTopBar/TopologyTopBar.tsx";
+import { updateNodePositions } from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 
 export function TopologyGraph() {
+    const dispatch = useDispatch();
     const [selectedElement, setSelectedElement] = useState<IUserNode | IUserEdge | null>(null);
     const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-    const hullsSelector = useSelector((state: RootState) => state.topologyGroups.hullOptions);
     const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
     const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
     const graphLayoutTypeSelector = useSelector((state: RootState) => state.topologyGroups.graphLayout);
-    const [hulls, setHulls] = useState<HullCfg[]>([]);
     const [graphLayout, setGraphLayout] = useState<any>({ name: 'dagre', options: {} });
     const graphRef = useRef<any>(null);
 
@@ -27,53 +25,29 @@ export function TopologyGraph() {
     //     edgeStrength: 0.1,
     // };
 
-    // useEffect(() => {
-    //     const graph = graphRef.current?.graph;
-    //     if (graph) {
-    //         const handleNodePositionChange = () => {
-    //             const updatedNodes = graph.getNodes().map((node: any) => {
-    //                 const model = node.getModel();
-    //                 return {
-    //                     id: model.id,
-    //                     x: model.x,
-    //                     y: model.y,
-    //                 };
-    //             });
-    //             dispatch(updateNodePositions(updatedNodes));
-    //         };
-
-    //         graph.on('node:dragend', handleNodePositionChange);
-
-    //         return () => {
-    //             graph.off('node:dragend', handleNodePositionChange);
-    //         };
-    //     }
-    // }, [dispatch]);
-
-    const [showHulls, setShowHulls] = useState(false);
-
     useEffect(() => {
-        const filteredHulls = hullsSelector.filter((value) => value.members.length > 0);
+        const graph = graphRef.current?.graph;
+        if (graph) {
+            const handleNodePositionChange = () => {
+                const updatedNodes = graph.getNodes().map((node: any) => {
+                    const model = node.getModel();
+                    const canvasPosition = graph.getCanvasByPoint(model.x, model.y);
+                    return {
+                        id: model.id,
+                        x: canvasPosition.x,
+                        y: canvasPosition.y
+                    };
+                });
+                dispatch(updateNodePositions(updatedNodes));
+            };
 
-        const timeoutId = setTimeout(() => {
-            setShowHulls(true);
-        }, 3);
-        setHulls(filteredHulls);
-        return () => clearTimeout(timeoutId);
-    }, [hullsSelector]);
+            graph.on('node:dragend', handleNodePositionChange);
 
-    useEffect(() => {
-        setShowHulls(false);
-        const timeoutId = setTimeout(() => {
-            setShowHulls(true);
-        }, 3);
-        setHulls(hullsSelector);
-        return () => clearTimeout(timeoutId);
-    }, [hullsSelector]);
-
-    useEffect(() => {
-        setHulls(hullsSelector.filter((value) => value.members.length > 0));
-    }, [hullsSelector]);
+            return () => {
+                graph.off('node:dragend', handleNodePositionChange);
+            };
+        }
+    }, []);
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();
@@ -122,7 +96,6 @@ export function TopologyGraph() {
                     onClose={() => setSelectedElement(null)}
                 />
             }
-            {showHulls && hulls.length > 0 && <Hull options={hulls} />}
             <TopologyTopBar />
         </Graphin>
     );
