@@ -1,5 +1,5 @@
 {
-  "name": "LIZI",
+  "name": "Lizi",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,7 +13,7 @@
     "electron:dev": "cross-env IS_DEV=true electron .",
     "electron:build": "electron-builder",
     "electron:package": "electron-forge package",
-    "package": "electron-packager . Silvus --platform=win32 --arch=x64 --out=.\\dist --overwrite"
+    "package": "electron-packager . Lizi --platform=win32 --arch=x64 --out=.\\local_app_build --overwrite"
   },
   "dependencies": {
     "@antv/graphin": "^2.7.27",
@@ -62,8 +62,8 @@
     "vite": "^4.3.2"
   },
   "build": {
-    "appId": "com.silvus.id",
-    "productName": "Silvus",
+    "appId": "com.lizi.id",
+    "productName": "Lizi",
     "directories": {
       "output": "dist"
     },
@@ -74,7 +74,7 @@
       "preload.js",
       "package.json",
       "start-app-environment.ps1",
-      "Silvus.bat"
+      "Lizi.bat"
     ],
     "win": {
       "target": "nsis"

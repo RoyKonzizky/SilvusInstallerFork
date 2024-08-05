@@ -1,6 +1,5 @@
 "use strict";
 const electron = require("electron");
-const os = require("os");
 const path = require("path");
 const { spawn } = require("child_process");
 
@@ -36,7 +35,10 @@ function startPythonServer() {
   const projectRoot = path.resolve(__dirname, "../..");
   const svAppDir = path.join(projectRoot, "../svApp");
   const pythonPath = path.join(svAppDir, "venv", "Scripts", "python.exe");
+  // To Run with real Silvus
   const scriptPath = path.join(svAppDir, "app", "main.py");
+  // To run in the demo Server
+  // const scriptPath = path.join(svAppDir, "server-demo", "main.py");
   const env = { ...process.env };
 
   env.PATH = `../../local_python/python.exe:${env.PATH}`;
@@ -65,13 +67,15 @@ function stopPythonServer() {
 
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    width: 800,
-    height: 600,
+    fullscreen: true,
+    icon: path.join(__dirname, '../../public/Lizi.ico'),
     webPreferences: {
       preload: path__namespace.join(__dirname, "../preload/preload.cjs"),
       webSecurity: false
     }
   });
+
+  electron.Menu.setApplicationMenu(null);
 
   mainWindow.loadURL("http://localhost:5173");
 
