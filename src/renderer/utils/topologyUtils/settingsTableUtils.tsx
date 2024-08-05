@@ -168,7 +168,6 @@ export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullC
     const longestStatusesLength = findLongestStatusesLength(nodes);
     const newHulls: HullCfg[] = [];
 
-    // Initialize newHulls with either existing hulls or new ones
     for (let i = 0; i < longestStatusesLength; i++) {
         if (hulls[i]) {
             newHulls[i] = { id: hulls[i].id, members: [...hulls[i].members] };
@@ -177,7 +176,6 @@ export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullC
         }
     }
 
-    // Populate newHulls with node ids based on statuses
     nodes.forEach(node => {
         node.data.statuses.forEach((statusPtt: number, index: number) => {
             if (statusPtt > 0 && newHulls[index]) {
@@ -225,3 +223,21 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
         console.error('Error sending data:', error);
     }
 };
+
+export function padStatuses(nodes: IUserNode[]): IUserNode[] {
+    const maxLength = Math.max(...nodes.map(node => node.data.statuses.length));
+
+    return nodes.map(node => {
+        const paddedStatuses = [...node.data.statuses];
+        while (paddedStatuses.length < maxLength) {
+            paddedStatuses.push(0);
+        }
+        return {
+            ...node,
+            data: {
+                ...node.data,
+                statuses: paddedStatuses,
+            },
+        };
+    });
+}
