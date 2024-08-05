@@ -18,7 +18,6 @@ export function TopologyGraph() {
     const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
     const [hulls, setHulls] = useState<HullCfg[]>([]);
     const graphRef = useRef<any>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setHulls(hullsSelector.filter((value) => value.members.length > 0));
@@ -79,14 +78,12 @@ export function TopologyGraph() {
     };
 
     return (
-        <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
-            <Graphin ref={graphRef} modes={modes} data={{ nodes: nodesSelector, edges: edgesSelector }} style={graphStyle}
-                     layout={{ name: 'dagre', options: { } }}>
-                {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
-                                                     position={popoverPosition} selectedElement={selectedElement}/>)}
-                <Hull options={hulls} />
-                <TopologyTopBar />
-            </Graphin>
-        </div>
+        <Graphin ref={graphRef} modes={modes} data={{ nodes: nodesSelector, edges: edgesSelector }} style={graphStyle}
+                 layout={{ name: 'dagre', options: { } }}>
+            {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
+                                                 position={popoverPosition} selectedElement={selectedElement}/>)}
+            <Hull options={hulls} />
+            <TopologyTopBar />
+        </Graphin>
     );
 }
