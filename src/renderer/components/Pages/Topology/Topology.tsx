@@ -53,10 +53,10 @@ export function Topology(props: ITopologyProps) {
     }, [lastJsonMessage]);
 
     useEffect(() => {
-        if (devices && batteries && snrsData) {
+        if (devices) {
             try {
-                const nodes = createNodesFromData(devices, batteries);
-                const edges = createEdgesFromData(snrsData);
+                const nodes = createNodesFromData(devices, batteries!);
+                const edges = createEdgesFromData(snrsData!);
 
                 const updatedNodes = nodes.map(newNode => {
                     const existingNode = selector.nodes

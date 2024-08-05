@@ -1,12 +1,12 @@
-import {useEffect, useRef, useState} from "react";
-import {useSelector} from "react-redux";
-import Graphin, {IUserEdge, IUserNode} from "@antv/graphin";
-import Hull from "@antv/graphin/es/components/Hull";
-import {ElementPopover} from "./popover/ElementPopover.tsx";
-import {RootState} from "../../../../redux/store.ts";
-import {HullCfg} from "@antv/graphin/lib/components/Hull";
-import {graphStyle} from "../../../../utils/topologyUtils/graphUtils.ts";
-import {TopologyTopBar} from "../TopologyTopBar/TopologyTopBar.tsx";
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import Graphin, { IUserEdge, IUserNode } from '@antv/graphin';
+import Hull from '@antv/graphin/es/components/Hull';
+import { ElementPopover } from './popover/ElementPopover.tsx';
+import { RootState } from '../../../../redux/store.ts';
+import { HullCfg } from '@antv/graphin/lib/components/Hull';
+import { graphStyle } from '../../../../utils/topologyUtils/graphUtils.ts';
+import { TopologyTopBar } from '../TopologyTopBar/TopologyTopBar.tsx';
 
 export function TopologyGraph() {
     const [selectedElement, setSelectedElement] =
@@ -18,26 +18,7 @@ export function TopologyGraph() {
     const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
     const [hulls, setHulls] = useState<HullCfg[]>([]);
     const graphRef = useRef<any>(null);
-    const [showHulls, setShowHulls] = useState(false);
-
-    useEffect(() => {
-        const filteredHulls = hullsSelector.filter((value) => value.members.length > 0);
-
-        const timeoutId = setTimeout(() => {
-            setShowHulls(true);
-        }, 3);
-        setHulls(filteredHulls);
-        return () => clearTimeout(timeoutId);
-    }, [hullsSelector]);
-
-    useEffect(() => {
-        setShowHulls(false);
-        const timeoutId = setTimeout(() => {
-            setShowHulls(true);
-        }, 3);
-        setHulls(hullsSelector);
-        return () => clearTimeout(timeoutId);
-    }, [hullsSelector]);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setHulls(hullsSelector.filter((value) => value.members.length > 0));
@@ -54,6 +35,41 @@ export function TopologyGraph() {
         }
     };
 
+    useEffect(() => {
+        const graph = graphRef.current?.graph;
+        if (graph) {
+            graph.on('node:click', handleElementClick);
+
+            graph.on('node:touchstart', (event: any) => {
+                const model = event.item.getModel();
+                console.log('Touched node ID:', model.id);
+                handleElementClick(event);
+            });
+
+            // // Alternatively, handling touch events on canvas
+            // graph.on('canvas:touchstart', (event) => {
+            //     const { x, y } = event;
+            //     const point = graph.getPointByClient(x, y);
+            //     const nodes = graph.getNodes();
+            //
+            //     nodes.forEach((node) => {
+            //         const model = node.getModel();
+            //         if (model.x === point.x && model.y === point.y) {
+            //             console.log('Touched node ID:', model.id);
+            //         }
+            //     });
+            // });
+        }
+
+        return () => {
+            if (graph) {
+                graph.off('node:click', handleElementClick);
+                graph.off('node:touchstart');
+                // graph.off('canvas:touchstart');
+            }
+        };
+    }, []);
+
     const modes = {
         default: [
             'drag-node', 'drag-canvas', 'zoom-canvas', 'drag-combo',
@@ -63,12 +79,14 @@ export function TopologyGraph() {
     };
 
     return (
-        <Graphin ref={graphRef} modes={modes} data={{ nodes: nodesSelector, edges: edgesSelector }} style={graphStyle}
-                 layout={{ name: 'dagre', options: { } }}>
-            {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
-                                                 position={popoverPosition} selectedElement={selectedElement}/>)}
-            {showHulls && hulls.length > 0 && (<Hull options={hulls} />)}
-            <TopologyTopBar />
-        </Graphin>
+        <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+            <Graphin ref={graphRef} modes={modes} data={{ nodes: nodesSelector, edges: edgesSelector }} style={graphStyle}
+                     layout={{ name: 'dagre', options: { } }}>
+                {selectedElement && (<ElementPopover onClose={() => setSelectedElement(null)}
+                                                     position={popoverPosition} selectedElement={selectedElement}/>)}
+                <Hull options={hulls} />
+                <TopologyTopBar />
+            </Graphin>
+        </div>
     );
 }
