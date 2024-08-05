@@ -39,7 +39,7 @@ export function Login() {
         [{
             type: "button", label: t("enter"), onClick: async () => {
                 const settingRadioIpData = await netData();
-                if (settingRadioIpData.data["device-list"].some((device: { ip: string; id: number }) => device.ip === ipAddress)) {
+                if (settingRadioIpData.data["device_list"].some((device: { ip: string; id: number }) => device.ip === ipAddress)) {
                     dispatch(setIp(ipAddress));
                     if (isProtectedDevice) setLoginModalIsOpen(true);
                     else navigate(Paths.Settings);
