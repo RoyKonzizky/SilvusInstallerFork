@@ -44,7 +44,7 @@ export function Settings(props: ISettingsProps) {
             const response = await setBasicSettingsData(
                 isNetworkSave,
                 parseFloat(frequency),
-                bandwidth + " MHz",
+                bandwidth.toString(),
                 networkId,
                 totalTransitPower
             );
