@@ -67,7 +67,7 @@ function stopPythonServer() {
 
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    fullscreen: true,
+    // fullscreen: true,
     icon: path.join(__dirname, '../../public/Lizi.ico'),
     webPreferences: {
       preload: path__namespace.join(__dirname, "../preload/preload.cjs"),
