@@ -26,7 +26,7 @@ export function GetCamerasButton() {
 
     return(
         <button onClick={loadCamerasData}>
-            <img className={'w-9 h-9 rounded'} src={camsRefresh} alt={'refresh cameras'}/>
+            <img className={'w-10 h-10 rounded-full ml-7'} src={camsRefresh} alt={'refresh cameras'}/>
         </button>
     );
 }
