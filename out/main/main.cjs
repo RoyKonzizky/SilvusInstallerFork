@@ -35,10 +35,7 @@ function startPythonServer() {
   const projectRoot = path.resolve(__dirname, "../..");
   const svAppDir = path.join(projectRoot, "../svApp");
   const pythonPath = path.join(svAppDir, "venv", "Scripts", "python.exe");
-  // To Run with real Silvus
   const scriptPath = path.join(svAppDir, "app", "main.py");
-  // To run in the demo Server
-  // const scriptPath = path.join(svAppDir, "server-demo", "main.py");
   const env = { ...process.env };
 
   env.PATH = `../../local_python/python.exe:${env.PATH}`;
