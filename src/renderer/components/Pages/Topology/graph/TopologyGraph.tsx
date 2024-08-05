@@ -13,17 +13,10 @@ export function TopologyGraph() {
     const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
     const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
-    const graphLayoutTypeSelector = useSelector((state: RootState) => state.topologyGroups.graphLayout);
-    const [graphLayout, setGraphLayout] = useState<any>({ name: 'dagre', options: {} });
     const graphRef = useRef<any>(null);
-
-    // const layout = graphLayoutType === "dagre" ? { name: 'dagre', options: {} } : {
-    //     type: graphLayoutType, // You can try other layouts like 'force', 'grid', 'circular', 'concentric'
-    //     preventOverlap: true,
-    //     linkDistance: 150,
-    //     nodeStrength: -30,
-    //     edgeStrength: 0.1,
-    // };
+    // const graphLayoutTypeSelector = useSelector((state: RootState) => state.topologyGroups.graphLayout);
+    // const [graphKey, setGraphKey] = useState(0);
+    // const [graphLayout, setGraphLayout] = useState<any>({ name: 'dagre', options: {} });
 
     useEffect(() => {
         const graph = graphRef.current?.graph;
@@ -60,18 +53,19 @@ export function TopologyGraph() {
         }
     };
 
-    useEffect(() => {
-        const layout = graphLayoutTypeSelector === "dagre" ?
-            { name: 'dagre', options: {} }
-            : {
-                type: graphLayoutTypeSelector, // 'force', 'grid', 'circular', 'concentric'
-                preventOverlap: true,
-                linkDistance: 150,
-                nodeStrength: -30,
-                edgeStrength: 0.1,
-            };
-        setGraphLayout(layout);
-    }, [graphLayoutTypeSelector]);
+    // useEffect(() => {
+    //     const layout = graphLayoutTypeSelector === "dagre" ?
+    //         { name: 'dagre', options: {} }
+    //         : {
+    //             type: graphLayoutTypeSelector, // 'force', 'grid', 'circular', 'concentric'
+    //             preventOverlap: true,
+    //             linkDistance: 150,
+    //             nodeStrength: -30,
+    //             edgeStrength: 0.1,
+    //         };
+    //     setGraphLayout(layout);
+    //     setGraphKey(prevKey => prevKey + 1);
+    // }, [graphLayoutTypeSelector]);
 
     const modes = {
         default: [
@@ -83,11 +77,12 @@ export function TopologyGraph() {
 
     return (
         <Graphin
+            // key={graphKey}
             ref={graphRef}
             modes={modes}
             data={{ nodes: nodesSelector, edges: edgesSelector }}
             style={graphStyle}
-            layout={graphLayout}
+            layout={{ name: 'dagre', options: {} }/*graphLayout*/}
         >
             {selectedElement &&
                 <ElementPopover

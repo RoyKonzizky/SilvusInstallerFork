@@ -3,12 +3,14 @@ import { Modal } from "antd";
 import { useTranslation } from 'react-i18next';
 import TopologyLogo from '../../../../assets/topology.svg';
 import { Select } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setGraphLayoutType } from "../../../../redux/TopologyGroups/topologyGroupsSlice";
+import { RootState } from "../../../../redux/store.ts";
 
 const TopologyLayoutModal = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dispatch = useDispatch();
+    const graphLayoutTypeSelector = useSelector((state: RootState) => state.topologyGroups.graphLayout);
     const { t, i18n } = useTranslation();
 
     return (
@@ -29,7 +31,7 @@ const TopologyLayoutModal = () => {
                 <div className="p-4 bg-white rounded flex justify-center items-center h-full" dir="rtl">
                     <Select
                         style={{ width: "60%" }}
-                        defaultValue={'dagre'}
+                        defaultValue={graphLayoutTypeSelector}
                         options={[
                             { value: 'dagre', label: <span>{t('dragOptionLabel')}</span> },
                             { value: 'grid', label: <span>{t('gridOptionLabel')}</span> },

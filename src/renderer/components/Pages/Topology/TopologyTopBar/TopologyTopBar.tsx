@@ -1,6 +1,6 @@
 import { TableModal } from "./topologyTable/TableModal.tsx";
 import { LegendSnr } from "./LegendSnr.tsx";
-import TopologyLayoutModal from "./TopologyLayoutModal.tsx";
+// import TopologyLayoutModal from "./TopologyLayoutModal.tsx";
 
 export function TopologyTopBar() {
     return (
