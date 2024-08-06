@@ -27,11 +27,7 @@ export function Topology(props: ITopologyProps) {
 
     useEffect(() => {
         if (lastJsonMessage) {
-            const {
-                type,
-                data,
-                has_changed
-            } = lastJsonMessage as { type: string; data: any; has_changed: boolean };
+            const {type, data, has_changed} = lastJsonMessage as { type: string; data: any; has_changed: boolean };
 
             try {
                 if (type === 'net_data') {

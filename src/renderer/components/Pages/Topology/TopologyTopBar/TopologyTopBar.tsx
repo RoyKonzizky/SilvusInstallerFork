@@ -5,7 +5,7 @@ import {GetCamerasButton} from "./GetCamerasButton.tsx";
 
 export function TopologyTopBar() {
     return (
-        <div className={'flex flex-col absolute top-10 left-10 z-50'}>
+        <div className={'flex flex-col absolute top-0 z-50'}>
             <TableModal />
             {/* <TopologyLayoutModal /> */}
             <LegendSnr />

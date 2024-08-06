@@ -41,35 +41,39 @@ export function ElementPopover(props: IElementPopoverProps) {
     };
 
     return (
-        <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
-                 getPopupContainer={trigger => trigger.parentElement!}
-                 overlayStyle={{
-                     height: '75px', position: 'absolute',
-                     top: (!isNaN(props.position.y)) ? props.position.y : 100,
-                     left: (!isNaN(props.position.x)) ? props.position.x : 0,
-                 }}
-                 content={
-                     <div>
-                         {props.selectedElement?.type === 'graphin-circle' ?
-                             <div>
-                                 <div className={'flex flex-row items-center focus:outline-none'}>
-                                     <input className={"text-xl w-48 bg-white "} onChange={handleLabelChange} value={label || ''}/>
-                                     <Button onClick={handleButtonClick}>V</Button>
+        props.selectedElement?.type === 'graphin-circle' ?
+            <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
+                     getPopupContainer={trigger => trigger.parentElement!}
+                     overlayStyle={{
+                         height: '75px', position: 'absolute',
+                         top: (!isNaN(props.position.y)) ? props.position.y : 100,
+                         left: (!isNaN(props.position.x)) ? props.position.x : 0,
+                     }}
+                     content={
+                         <div>
+                             {props.selectedElement?.type === 'graphin-circle' ?
+                                 <div>
+                                     <div className={'flex flex-row items-center focus:outline-none'}>
+                                         <input className={"text-xl w-48 bg-white "} onChange={handleLabelChange}
+                                                value={label || ''}/>
+                                         <Button onClick={handleButtonClick}>V</Button>
+                                     </div>
+                                     <Battery voltage={Math.round(props.selectedElement?.data.battery)}/>
+                                     <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
+                                     <p>{`${t('cameraMainStreamLink')}: ${props.selectedElement.data.camLinks.mainStreamLink || 'N/A'}`}</p>
+                                     <p>{`${t('cameraSubStreamLink')}: ${props.selectedElement.data.camLinks.subStreamLink || 'N/A'}`}</p>
                                  </div>
-                                 <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
-                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
-                                 <p>{`${t('cameraMainStreamLink')}: ${props.selectedElement.data.camLinks.mainStreamLink || 'N/A'}`}</p>
-                                 <p>{`${t('cameraSubStreamLink')}: ${props.selectedElement.data.camLinks.subStreamLink || 'N/A'}`}</p>
-                             </div>
-                             :
-                             <p>{`SNR = ${props.selectedElement?.data}`}</p>
-                         }
-                         <button onClick={props.onClose}
-                             className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +
-                                 'focus:outline-none z-50 flex justify-center absolute top-2 right-2 round'}>X
-                         </button>
-                     </div>
-                 }
-        />
+                                 :
+                                 <p>{`SNR = ${props.selectedElement?.data}`}</p>
+                             }
+                             <button onClick={props.onClose}
+                                     className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +
+                                         'focus:outline-none z-50 flex justify-center absolute top-2 right-2 round'}>X
+                             </button>
+                         </div>
+                     }
+            />
+            :
+            null
     );
 }
