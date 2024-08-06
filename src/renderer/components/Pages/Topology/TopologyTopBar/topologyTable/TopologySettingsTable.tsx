@@ -4,13 +4,8 @@ import { useEffect, useState } from "react";
 import { Button, Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {
-    convertNodesToHulls,
-    createColumns,
-    createDataSource,
-    handleAddGroup,
-    handleStatusChange,
-    createGroups,
-    checkIfUnassignedToGroup,
+    convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, createGroups,
+    checkIfUnassignedToGroup, padStatuses,
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
@@ -38,7 +33,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         ));
 
     useEffect(() => {
-        setNodes(nodesSelector);
+        setNodes(padStatuses(nodesSelector));
     }, [nodesSelector]);
 
     useEffect(() => {
@@ -51,7 +46,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [hulls]);
 
     useEffect(() => {
-        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes, groups));
+        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes));
         dispatch(updateNodes(nodes));
     }, [groups]);
 

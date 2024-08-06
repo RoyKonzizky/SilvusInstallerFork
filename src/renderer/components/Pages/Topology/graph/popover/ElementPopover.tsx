@@ -1,4 +1,4 @@
-import { Popover } from "antd";
+import {Button, Popover} from "antd";
 import { IUserEdge, IUserNode } from "@antv/graphin";
 import { Battery } from "./Battery.tsx";
 import { useTranslation } from 'react-i18next';
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {ChangeEvent, useState} from "react";
+import {sendNames} from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -32,6 +33,13 @@ export function ElementPopover(props: IElementPopoverProps) {
         dispatch(updateNodes(newNodes));
     };
 
+    const handleButtonClick = () => {
+        sendNames(
+            props.selectedElement?.id as string,
+            props.selectedElement?.style?.label?.value as string
+        );
+    };
+
     return (
         <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
                  getPopupContainer={trigger => trigger.parentElement!}
@@ -44,9 +52,14 @@ export function ElementPopover(props: IElementPopoverProps) {
                      <div>
                          {props.selectedElement?.type === 'graphin-circle' ?
                              <div>
-                                 <input className={"text-xl"} onChange={handleLabelChange} value={label}/>
+                                 <div className={'flex flex-row items-center focus:outline-none'}>
+                                     <input className={"text-xl w-48 bg-white "} onChange={handleLabelChange} value={label || ''}/>
+                                     <Button onClick={handleButtonClick}>V</Button>
+                                 </div>
                                  <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
                                  <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
+                                 <p>{`${t('cameraMainStreamLink')}: ${props.selectedElement.data.camLinks.mainStreamLink || 'N/A'}`}</p>
+                                 <p>{`${t('cameraSubStreamLink')}: ${props.selectedElement.data.camLinks.subStreamLink || 'N/A'}`}</p>
                              </div>
                              :
                              <p>{`SNR = ${props.selectedElement?.data}`}</p>

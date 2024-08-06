@@ -1,16 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Graphin, { IUserEdge, IUserNode } from "@antv/graphin";
-import { ElementPopover } from "./popover/ElementPopover.tsx";
-import { RootState } from "../../../../redux/store.ts";
-import { graphStyle } from "../../../../utils/topologyUtils/graphUtils.ts";
-import { TopologyTopBar } from "../TopologyTopBar/TopologyTopBar.tsx";
-import { updateNodePositions } from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {useEffect, useRef, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import Graphin, {IUserEdge, IUserNode} from "@antv/graphin";
+import {ElementPopover} from "./popover/ElementPopover.tsx";
+import {RootState} from "../../../../redux/store.ts";
+import {graphStyle} from "../../../../utils/topologyUtils/graphUtils.ts";
+import {TopologyTopBar} from "../TopologyTopBar/TopologyTopBar.tsx";
+import {updateNodePositions} from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 
 export function TopologyGraph() {
     const dispatch = useDispatch();
     const [selectedElement, setSelectedElement] = useState<IUserNode | IUserEdge | null>(null);
-    const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+    const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({x: 0, y: 0});
     const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
     const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
     const graphRef = useRef<any>(null);
@@ -49,51 +49,59 @@ export function TopologyGraph() {
         const graph = graphRef.current?.graph;
         if (graph) {
             const point = graph.getCanvasByPoint(model.x, model.y);
-            setPopoverPosition({ x: point.x, y: point.y });
+            setPopoverPosition({x: point.x, y: point.y});
         }
     };
 
-    // useEffect(() => {
-    //     const layout = graphLayoutTypeSelector === "dagre" ?
-    //         { name: 'dagre', options: {} }
-    //         : {
-    //             type: graphLayoutTypeSelector, // 'force', 'grid', 'circular', 'concentric'
-    //             preventOverlap: true,
-    //             linkDistance: 150,
-    //             nodeStrength: -30,
-    //             edgeStrength: 0.1,
-    //         };
-    //     setGraphLayout(layout);
-    //     setGraphKey(prevKey => prevKey + 1);
-    // }, [graphLayoutTypeSelector]);
+    useEffect(() => {
+        const graph = graphRef.current?.graph;
+        if (graph) {
+            graph.on('node:click', handleElementClick);
+
+            graph.on('node:touchstart', (event: any) => {
+                const model = event.item.getModel();
+                console.log('Touched node ID:', model.id);
+                handleElementClick(event);
+            });
+
+            // // Alternatively, handling touch events on canvas
+            // graph.on('canvas:touchstart', (event) => {
+            //     const { x, y } = event;
+            //     const point = graph.getPointByClient(x, y);
+            //     const nodes = graph.getNodes();
+            //
+            //     nodes.forEach((node) => {
+            //         const model = node.getModel();
+            //         if (model.x === point.x && model.y === point.y) {
+            //             console.log('Touched node ID:', model.id);
+            //         }
+            //     });
+            // });
+        }
+
+        return () => {
+            if (graph) {
+                graph.off('node:click', handleElementClick);
+                graph.off('node:touchstart');
+                // graph.off('canvas:touchstart');
+            }
+        };
+    }, []);
 
     const modes = {
         default: [
             'drag-node', 'drag-canvas', 'zoom-canvas', 'drag-combo',
-            { type: 'click-select', onClick: handleElementClick, selectNode: true, selectEdge: true },
-            { type: 'click-select' },
+            {type: 'click-select', onClick: handleElementClick, selectNode: true, selectEdge: true,},
+            {type: 'click-select',},
         ]
     };
 
     return (
-        <Graphin
-            // key={graphKey}
-            ref={graphRef}
-            modes={modes}
-            data={{ nodes: nodesSelector, edges: edgesSelector }}
-            style={graphStyle}
-            layout={{ name: 'dagre', options: {} }/*graphLayout*/}
-        >
-            {selectedElement &&
-                <ElementPopover
-                    position={popoverPosition}
-                    selectedElement={selectedElement}
-                    onClose={() => setSelectedElement(null)}
-                />
-            }
-            <TopologyTopBar />
+        <Graphin ref={graphRef} modes={modes} data={{nodes: nodesSelector, edges: edgesSelector}}
+                 style={graphStyle} layout={{name: 'dagre', options: {}}/*graphLayout*/}>
+            {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
+                                                onClose={() => setSelectedElement(null)}/>}
+            <TopologyTopBar/>
         </Graphin>
     );
 }
-
-export default TopologyGraph;

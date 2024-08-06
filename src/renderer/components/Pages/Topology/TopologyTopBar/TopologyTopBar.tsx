@@ -1,5 +1,6 @@
 import { TableModal } from "./topologyTable/TableModal.tsx";
 import { LegendSnr } from "./LegendSnr.tsx";
+import {GetCamerasButton} from "./GetCamerasButton.tsx";
 // import TopologyLayoutModal from "./TopologyLayoutModal.tsx";
 
 export function TopologyTopBar() {
@@ -8,6 +9,7 @@ export function TopologyTopBar() {
             <TableModal />
             {/* <TopologyLayoutModal /> */}
             <LegendSnr />
+            <GetCamerasButton />
         </div>
     );
 }

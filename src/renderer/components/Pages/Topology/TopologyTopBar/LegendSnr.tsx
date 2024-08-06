@@ -13,7 +13,7 @@ export function LegendSnr() {
 
     return (
         <div>
-            <button className={'text-black h-14 w-14 mt-5 rounded-xl'} onClick={openModal}>
+            <button className={'text-black h-16 w-16 m-5 rounded-xl'} onClick={openModal}>
                 <img className={'bg-black rounded-full border-white border'} src={legendsIcon} alt={t("settings")} />
             </button>
             <Modal closable={true} centered={true} open={modalState} afterClose={closeModal} onCancel={closeModal}
