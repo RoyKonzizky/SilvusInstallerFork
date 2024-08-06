@@ -6,8 +6,9 @@ import { batteriesType, devicesType, snrsType } from "../../../constants/types/d
 import useWebSocket from "react-use-websocket";
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
-import { updateEdges, updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import { updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import { RootState } from "../../../redux/store.ts";
+import {IUserEdge, IUserNode} from "@antv/graphin";
 
 export function Topology(props: ITopologyProps) {
     const [devices, setDevices] = useState<devicesType | null>(null);
@@ -24,6 +25,7 @@ export function Topology(props: ITopologyProps) {
     const {t} = useTranslation();
     const dispatch = useDispatch();
     const selector = useSelector((state: RootState) => state.topologyGroups);
+    const [edges, setEdges] = useState<IUserEdge[]>([]);
 
     useEffect(() => {
         if (lastJsonMessage) {
@@ -48,11 +50,11 @@ export function Topology(props: ITopologyProps) {
             }
         }
     }, [lastJsonMessage]);
-
-    const derivedData = useMemo(() => {
+//Make sure both of the values of the useMemo are the same
+    const derivedData: {nodes: IUserNode[], edges: IUserEdge[]} = useMemo(() => {
         if (devices && batteries && snrsData) {
             const newNodes = createNodesFromData(devices, batteries);
-            const edges = createEdgesFromData(snrsData);
+            const newEdges = createEdgesFromData(snrsData);
 
             const updatedNodes = newNodes.map(newNode => {
                 // sync server data with existing nodes in redux:
@@ -71,16 +73,17 @@ export function Topology(props: ITopologyProps) {
                 return newNode;
             });
 
-            return { updatedNodes, edges };
+            return { nodes: updatedNodes, edges: newEdges };
         }
-        return { updatedNodes: [], edges: [] };
+        return { nodes: [], edges: [] };
     }, [devices, batteries, snrsData]);
 
     useEffect(() => {
-        if (derivedData?.updatedNodes?.length && derivedData.edges?.length) {
+        if (derivedData?.nodes?.length && derivedData.edges?.length) {
             try {
-                dispatch(updateEdges(derivedData.edges));
-                dispatch(updateNodes(derivedData.updatedNodes));
+                // dispatch(updateEdges(derivedData.edges));
+                dispatch(updateNodes(derivedData.nodes));
+                setEdges(derivedData.edges);
             } catch (error) {
                 console.error('Error in loading data:', error);
             }
@@ -90,7 +93,7 @@ export function Topology(props: ITopologyProps) {
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {
-                selector.nodes?.length > 0 ? <TopologyGraph />
+                selector.nodes?.length > 0 ? <TopologyGraph edges={edges} />
                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
             }
         </div>

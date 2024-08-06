@@ -7,12 +7,15 @@ import {graphStyle} from "../../../../utils/topologyUtils/graphUtils.ts";
 import {TopologyTopBar} from "../TopologyTopBar/TopologyTopBar.tsx";
 import {updateNodePositions} from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 
-export function TopologyGraph() {
+interface ITopologyGraph {
+    edges: IUserEdge[]
+}
+
+export function TopologyGraph(props: ITopologyGraph) {
     const dispatch = useDispatch();
     const [selectedElement, setSelectedElement] = useState<IUserNode | IUserEdge | null>(null);
     const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({x: 0, y: 0});
     const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
-    const edgesSelector = useSelector((state: RootState) => state.topologyGroups.edges);
     const graphRef = useRef<any>(null);
     // const graphLayoutTypeSelector = useSelector((state: RootState) => state.topologyGroups.graphLayout);
     // const [graphKey, setGraphKey] = useState(0);
@@ -88,6 +91,50 @@ export function TopologyGraph() {
         };
     }, []);
 
+    useEffect(() => {
+        const graph = graphRef.current.graph;
+
+        const updatedEdges = props.edges.map(edge => {
+            const labelValue = Number(edge.style?.label?.value);
+            // console.log(labelValue);// console.log('this edge is in for: ', edge);
+            let edgeColor;
+
+            if (labelValue < 20) {
+                edgeColor = 'red';
+            } else if (labelValue > 30) {
+                edgeColor = 'green';
+            } else {
+                edgeColor = 'yellow';
+            }
+
+            return {
+                ...edge,
+                style: {
+                    ...edge.style,
+                    label: {
+                        ...edge.style?.label,
+                        value: `${labelValue}`,
+                        fill: edgeColor,
+                        fontSize: 30,
+                    },
+                    keyshape: {
+                        ...edge.style?.keyshape,
+                        endArrow: {
+                            path: '',
+                        },
+                        stroke: edgeColor,
+                        lineWidth: 6,
+                    },
+                },
+            };
+        });
+
+        graph.changeData({
+            ...graph.save(),
+            edges: updatedEdges,
+        });
+    }, [props.edges]);
+
     const modes = {
         default: [
             'drag-node', 'drag-canvas', 'zoom-canvas', 'drag-combo',
@@ -97,7 +144,7 @@ export function TopologyGraph() {
     };
 
     return (
-        <Graphin ref={graphRef} modes={modes} data={{nodes: nodesSelector, edges: edgesSelector}}
+        <Graphin ref={graphRef} modes={modes} data={{nodes: nodesSelector, edges: props.edges}}
                  style={graphStyle} layout={{name: 'dagre', options: {}}/*graphLayout*/}>
             {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
                                                 onClose={() => setSelectedElement(null)}/>}

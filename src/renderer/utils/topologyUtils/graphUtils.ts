@@ -58,6 +58,7 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
         }
 
         edges.push({
+            id:`${snrs[i].id1}-${snrs[i].id2}`,
             source: snrs[i].id1,
             target: snrs[i].id2,
             style: {
