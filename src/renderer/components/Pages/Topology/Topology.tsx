@@ -26,6 +26,7 @@ export function Topology(props: ITopologyProps) {
     const dispatch = useDispatch();
     const selector = useSelector((state: RootState) => state.topologyGroups);
     const [edges, setEdges] = useState<IUserEdge[]>([]);
+    const [nodes, setNodes] = useState<IUserNode[]>([]);
 
     useEffect(() => {
         if (lastJsonMessage) {
@@ -50,11 +51,12 @@ export function Topology(props: ITopologyProps) {
             }
         }
     }, [lastJsonMessage]);
-//Make sure both of the values of the useMemo are the same
+
+    //Make sure both of the values of the useMemo are the same
     const derivedData: {nodes: IUserNode[], edges: IUserEdge[]} = useMemo(() => {
-        if (devices && batteries && snrsData) {
-            const newNodes = createNodesFromData(devices, batteries);
-            const newEdges = createEdgesFromData(snrsData);
+        if (devices) {
+            const newNodes = createNodesFromData(devices, batteries!);
+            const newEdges = createEdgesFromData(snrsData!);
 
             const updatedNodes = newNodes.map(newNode => {
                 // sync server data with existing nodes in redux:
@@ -83,6 +85,7 @@ export function Topology(props: ITopologyProps) {
             try {
                 // dispatch(updateEdges(derivedData.edges));
                 dispatch(updateNodes(derivedData.nodes));
+                setNodes(derivedData.nodes);
                 setEdges(derivedData.edges);
             } catch (error) {
                 console.error('Error in loading data:', error);
@@ -93,7 +96,7 @@ export function Topology(props: ITopologyProps) {
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {
-                selector.nodes?.length > 0 ? <TopologyGraph edges={edges} />
+                selector.nodes?.length > 0 ? <TopologyGraph edges={edges} nodes={nodes}/>
                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
             }
         </div>
