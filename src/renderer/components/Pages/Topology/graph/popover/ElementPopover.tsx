@@ -7,6 +7,7 @@ import { RootState } from "../../../../../redux/store.ts";
 import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {ChangeEvent, useState} from "react";
 import {sendNames} from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
+import {connectCamToDevice} from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -60,8 +61,16 @@ export function ElementPopover(props: IElementPopoverProps) {
                                      </div>
                                      <Battery voltage={Math.round(props.selectedElement?.data.battery)}/>
                                      <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
-                                     <p>{`${t('cameraMainStreamLink')}: ${props.selectedElement.data.camLinks.mainStreamLink || 'N/A'}`}</p>
-                                     <p>{`${t('cameraSubStreamLink')}: ${props.selectedElement.data.camLinks.subStreamLink || 'N/A'}`}</p>
+                                     <p>
+                                         {`${t('cameraMainStreamLink')}: 
+                                         ${connectCamToDevice(props.selectedElement.data.ip, selector.cameras).mainStreamLink
+                                         || 'N/A'}`}
+                                     </p>
+                                     <p>
+                                         {`${t('cameraSubStreamLink')}: 
+                                         ${connectCamToDevice(props.selectedElement.data.ip, selector.cameras).subStreamLink 
+                                         || 'N/A'}`}
+                                     </p>
                                  </div>
                                  :
                                  <p>{`SNR = ${props.selectedElement?.data}`}</p>

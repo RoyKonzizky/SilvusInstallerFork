@@ -142,10 +142,6 @@ export function TopologyGraph(props: ITopologyGraph) {
                         battery: node.data.battery ? node.data.battery.toString() : 'N/A',
                         statuses: node.data.statuses || [],
                         ip: node.data.ip || 'N/A',
-                        camLinks: {
-                            mainStreamLink: node.data.camLinks.mainStreamLink || 'N/A',
-                            subStreamLink: node.data.camLinks.subStreamLink || 'N/A',
-                        },
                     },
                 };
 

@@ -31,10 +31,6 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
                 battery: batteries[i] ? batteries[i].percent.toString() : 'N/A',
                 statuses: devices[i].status,
                 ip: devices[i].ip,
-                camLinks: {
-                    mainStreamLink: 'N/A',
-                    subStreamLink: 'N/A',
-                },
             },
         };
     }
