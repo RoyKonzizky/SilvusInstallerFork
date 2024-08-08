@@ -34,6 +34,15 @@ const topologyGroupsSlice = createSlice({
         },
         setGraphLayoutType(state, action: PayloadAction<string>) {
             state.graphLayout = action.payload;
+        },
+        updateSingleDeviceBattery(state, action: PayloadAction<{id: string, battery: string}>) {
+            const nodes = [...state.nodes];
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].id === action.payload.id) {
+                    nodes[i].data.battery = action.payload.battery;
+                }
+            }
+            state.nodes = nodes;
         }
     },
 });
@@ -44,7 +53,8 @@ export const {
     updateEdges,
     setGraphData,
     updateNodePositions,
-    setGraphLayoutType
+    setGraphLayoutType,
+    updateSingleDeviceBattery
 } = topologyGroupsSlice.actions;
 
 export default topologyGroupsSlice.reducer;

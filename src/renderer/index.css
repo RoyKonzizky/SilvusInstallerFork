@@ -34,3 +34,16 @@
   text-align: right;
   margin-right: 2rem;
 }
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.rotate-animation {
+  animation: rotate 1s ease-in-out infinite;
+}

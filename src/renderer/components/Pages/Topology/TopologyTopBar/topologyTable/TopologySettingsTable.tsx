@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Button, Table } from "antd";
-import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import { updateHulls, updateNodes, updateSingleDeviceBattery } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {
     convertNodesToHulls,
     createColumns,
@@ -15,6 +15,9 @@ import {
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
 import { HullCfg, IUserNode } from "@antv/graphin";
+import axios from "axios";
+import i18n from "../../../../../i18n.ts";
+import { toast } from "react-toastify";
 
 interface ITopologySettingsTable {
     onSave: (hullOptions: HullCfg[], nodes: IUserNode[]) => void,
@@ -34,21 +37,14 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             (nodeId: string, groupIndex: number, status: number) => {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
-            }
+            }, () => updateBatteryInfo
         ));
 
     useEffect(() => {
         setNodes(nodesSelector);
     }, [nodesSelector]);
 
-    useEffect(() => {
-        setHulls(hullsSelector);
-    }, [hullsSelector]);
 
-    useEffect(() => {
-        const newGroups = createGroups(hulls);
-        setGroups(newGroups);
-    }, [hulls]);
 
     useEffect(() => {
         setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes, groups));
@@ -65,6 +61,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
             },
+            updateBatteryInfo
         ));
     }, [groups, nodes, hulls]);
 
@@ -74,12 +71,36 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         dispatch(updateHulls(newHulls));
     }, [nodes]);
 
+    const updateBatteryInfo = async (deviceId: string) => {
+        try {
+            const updatedBatteryInfo = await axios.get(`http://localhost:8080/device-battery?device_id=${deviceId}`);
+            if (updatedBatteryInfo?.data?.percent) {
+                if (updatedBatteryInfo?.data?.percent == -2) {
+                    toast.error(t("batteryInfoFailureMsg"));
+                }
+
+                dispatch(updateSingleDeviceBattery({
+                    id: deviceId,
+                    battery: updatedBatteryInfo?.data?.percent
+                }));
+            }
+        } catch (e) {
+            toast.error(t("batteryInfoFailureMsg"));
+        }
+    }
+
     return (
         <>
             <GroupAdditionModal groups={groups} nodes={nodes} onAdd={(groupName) =>
                 handleAddGroup(groupName, groups, setGroups, nodes, setNodes, hulls,
                     setHulls, dispatch, updateNodes, updateHulls)} />
-            <Table dataSource={dataSource} columns={columns} rowKey="key" className={'bottom-0'} />
+            <Table
+                dataSource={dataSource}
+                columns={columns}
+                rowKey="key"
+                className={'bottom-0'}
+                style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl' }}
+            />
             <Button
                 onClick={() => props.onSave(hulls, nodes)}
                 className={'text-black h-14 w-40 m-5 rounded-xl'}
