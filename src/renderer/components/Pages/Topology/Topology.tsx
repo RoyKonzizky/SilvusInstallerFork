@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useState} from 'react';
 import { ITopologyProps } from "./ITopologyProps";
 import {TopologyGraph} from "./graph/TopologyGraph";
 import { createEdgesFromData, createNodesFromData } from "../../../utils/topologyUtils/graphUtils.ts";
@@ -52,46 +52,37 @@ export function Topology(props: ITopologyProps) {
         }
     }, [lastJsonMessage]);
 
-    //Make sure both of the values of the useMemo are the same
-    const derivedData: {nodes: IUserNode[], edges: IUserEdge[]} = useMemo(() => {
-        if (devices) {
-            const newNodes = createNodesFromData(devices, batteries!);
-            const newEdges = createEdgesFromData(snrsData!);
-
-            const updatedNodes = newNodes.map(newNode => {
-                // sync server data with existing nodes in redux:
-                const existingNode = selector.nodes.find(node => node.id === newNode.id);
-                if (existingNode) {
-                    return {
-                        ...existingNode,
-                        data: {
-                            ...existingNode.data,
-                            battery: newNode.data.battery
-                        },
-                        x: existingNode.x,
-                        y: existingNode.y
-                    };
-                }
-                return newNode;
-            });
-
-            return { nodes: updatedNodes, edges: newEdges };
-        }
-        return { nodes: [], edges: [] };
-    }, [devices, batteries, snrsData]);
-
     useEffect(() => {
-        if (derivedData?.nodes?.length && derivedData.edges?.length) {
+        if (devices) {
             try {
-                // dispatch(updateEdges(derivedData.edges));
-                dispatch(updateNodes(derivedData.nodes));
-                setNodes(derivedData.nodes);
-                setEdges(derivedData.edges);
+                const newNodes = createNodesFromData(devices, batteries!);
+                const newEdges = createEdgesFromData(snrsData!);
+
+                const updatedNodes = newNodes.map(newNode => {
+                    const existingNode = selector.nodes
+                        .find((node: IUserNode) => node.id === newNode.id);
+                    if (existingNode) {
+                        return {
+                            ...existingNode,
+                            data: {
+                                ...existingNode.data,
+                                battery: newNode.data.battery
+                            }
+                        };
+                    }
+                    return newNode;
+                });
+
+                // dispatch(updateEdges(edges));
+                dispatch(updateNodes(updatedNodes));
+                setNodes(updatedNodes);
+                setEdges(newEdges);
+
             } catch (error) {
                 console.error('Error in loading data:', error);
             }
         }
-    }, [derivedData]);
+    }, [devices, batteries, snrsData]);
 
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
@@ -102,3 +93,44 @@ export function Topology(props: ITopologyProps) {
         </div>
     );
 }
+
+// //Make sure both of the values of the useMemo are the same
+// const derivedData: {nodes: IUserNode[], edges: IUserEdge[]} = useMemo(() => {
+//     if (devices) {
+//         const newNodes = createNodesFromData(devices, batteries!);
+//         const newEdges = createEdgesFromData(snrsData!);
+//
+//         const updatedNodes = newNodes.map(newNode => {
+//             // sync server data with existing nodes in redux:
+//             const existingNode = selector.nodes.find(node => node.id === newNode.id);
+//             if (existingNode) {
+//                 return {
+//                     ...existingNode,
+//                     data: {
+//                         ...existingNode.data,
+//                         battery: newNode.data.battery
+//                     },
+//                     x: existingNode.x,
+//                     y: existingNode.y
+//                 };
+//             }
+//             return newNode;
+//         });
+//
+//         return { nodes: updatedNodes, edges: newEdges };
+//     }
+//     return { nodes: [], edges: [] };
+// }, [devices, batteries, snrsData]);
+//
+// useEffect(() => {
+//     if (derivedData?.nodes?.length && derivedData.edges?.length) {
+//         try {
+//             // dispatch(updateEdges(derivedData.edges));
+//             dispatch(updateNodes(derivedData.nodes));
+//             setNodes(derivedData.nodes);
+//             setEdges(derivedData.edges);
+//         } catch (error) {
+//             console.error('Error in loading data:', error);
+//         }
+//     }
+// }, [derivedData]);

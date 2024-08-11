@@ -152,15 +152,16 @@ export function TopologyGraph(props: ITopologyGraph) {
 
     const modes = {
         default: [
-            'drag-node', 'drag-canvas', 'zoom-canvas', 'drag-combo',
-            {type: 'click-select', onClick: handleElementClick, selectNode: true, selectEdge: true,},
-            {type: 'click-select',},
+            'drag-node', 'drag-combo',
+            {type: 'drag-canvas', enableOptimize: true}, {type: 'zoom-canvas', enableOptimize: true},
+            { type: 'click-select', onClick: handleElementClick, selectNode: true, selectEdge: true },
+            { type: 'click-select' },
         ]
     };
 
     return (
         <Graphin ref={graphRef} modes={modes} data={{ nodes: props.nodes, edges: props.edges }} style={graphStyle}
-                 layout={{ name: 'dagre', options: {} }}>
+                 layout={{ name: 'force2', options: {} }} width={2000} height={1000}>
             {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
                                                 onClose={() => setSelectedElement(null)} />}
             <TopologyTopBar />

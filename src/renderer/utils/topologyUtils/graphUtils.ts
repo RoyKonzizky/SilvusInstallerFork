@@ -3,8 +3,6 @@ import {batteriesType, devicesType, snrsType} from "../../constants/types/device
 
 export const graphStyle = {
     background: "black",
-    width: '100%',
-    height: '100%',
     color: "white"
 };
 

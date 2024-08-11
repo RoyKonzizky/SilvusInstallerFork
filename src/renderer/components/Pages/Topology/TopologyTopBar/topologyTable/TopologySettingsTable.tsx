@@ -3,9 +3,9 @@ import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Button, Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {
-    convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, createGroups,
-    checkIfUnassignedToGroup, padStatuses,
+import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, createGroups,
+    checkIfUnassignedToGroup,
+    // padStatuses,
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
@@ -33,7 +33,8 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         ));
 
     useEffect(() => {
-        setNodes(padStatuses(nodesSelector));
+        // setNodes(padStatuses(nodesSelector));
+        setNodes(nodesSelector);
     }, [nodesSelector]);
 
     useEffect(() => {
