@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Button, Table } from "antd";
-import { updateHulls, updateNodes, updateSingleDeviceBattery } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {
     convertNodesToHulls,
     createColumns,

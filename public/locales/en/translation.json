@@ -28,6 +28,7 @@
   "error": "Error",
   "id": "ID",
   "elementDetails": "Element Details",
+  "connectivityLevelHeader": "Data Update Frequency",
   "SNRLegend": "SNR Legend",
   "graphLayout": "Graph Layout Type",
   "dragOptionLabel": "Draggable",
