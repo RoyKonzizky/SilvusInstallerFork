@@ -10,6 +10,8 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import refreshIcon from "../../assets/refresh.svg";
 import { t } from "i18next";
 import i18n from "../../i18n";
+import { toast } from "react-toastify";
+import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGroupsSlice";
 
 const { Option } = Select;
 
@@ -48,7 +50,7 @@ export function createColumns(
     updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
     updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
     handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
-    updateBatteryInfo: (deviceId: string) => void
+    updateBatteryInfo: (deviceId: string, dispatch: any) => void
 ) {
     const columns = [
         { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
@@ -59,7 +61,7 @@ export function createColumns(
             render: (status: number, record: any) => (
                 <div style={{ display: 'flex', gap: '1rem' }}>
                     <div style={{ width: '1rem' }}>{status >= 0 ? status : ''}</div>
-                    <button onClick={() => updateBatteryInfo(record.key)} style={{ width: '4rem' }}>
+                    <button onClick={() => updateBatteryInfo(record.key, dispatch)} style={{ width: '4rem' }}>
                         <img
                             src={refreshIcon}
                             style={{ width: '1.2rem' }}
@@ -245,3 +247,22 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
         console.error('Error sending data:', error);
     }
 };
+
+export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
+    try {
+        const updatedBatteryInfo = await axios.get(`http://localhost:8080/device-battery?device_id=${deviceId}`);
+        if (updatedBatteryInfo?.data?.percent ?? false) {
+            if (updatedBatteryInfo?.data?.percent == -2) {
+                toast.error(t("batteryInfoFailureMsg"));
+                return;
+            }
+
+            dispatch(updateSingleDeviceBattery({
+                id: deviceId,
+                battery: updatedBatteryInfo.data.percent
+            }));
+        }
+    } catch (e) {
+        toast.error(t("batteryInfoFailureMsg"));
+    }
+}

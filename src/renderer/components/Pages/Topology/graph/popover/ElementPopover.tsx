@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {ChangeEvent, useState} from "react";
+import { ChangeEvent, useState } from "react";
+import refreshIcon from "../../../../../assets/refresh.svg";
+import { updateBatteryInfo } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -25,7 +27,7 @@ export function ElementPopover(props: IElementPopoverProps) {
         const newLabel = e.target.value;
         const newNodes = selector.nodes.map(node => {
             if (node.id === props.selectedElement?.id) {
-                return {...node, style: {...node.style, label: {...node.style?.label, value: newLabel,},},};
+                return { ...node, style: { ...node.style, label: { ...node.style?.label, value: newLabel, }, }, };
             }
             return node;
         });
@@ -34,29 +36,40 @@ export function ElementPopover(props: IElementPopoverProps) {
 
     return (
         <Popover title={t('elementDetails')} placement={"top"} arrow={false} open={!!props.selectedElement}
-                 getPopupContainer={trigger => trigger.parentElement!}
-                 overlayStyle={{
-                     height: '75px', position: 'absolute',
-                     top: (!isNaN(props.position.y)) ? props.position.y : 100,
-                     left: (!isNaN(props.position.x)) ? props.position.x : 0,
-                 }}
-                 content={
-                     <div>
-                         {props.selectedElement?.type === 'graphin-circle' ?
-                             <div>
-                                 <input className={"text-xl"} onChange={handleLabelChange} value={label}/>
-                                 <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
-                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
-                             </div>
-                             :
-                             <p>{`SNR = ${props.selectedElement?.data}`}</p>
-                         }
-                         <button onClick={props.onClose}
-                             className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +
-                                 'focus:outline-none z-50 flex justify-center absolute top-2 right-2 round'}>X
-                         </button>
-                     </div>
-                 }
+            getPopupContainer={trigger => trigger.parentElement!}
+            overlayStyle={{
+                height: '75px', position: 'absolute',
+                top: (!isNaN(props.position.y)) ? props.position.y : 100,
+                left: (!isNaN(props.position.x)) ? props.position.x : 0,
+            }}
+            content={
+                <div>
+                    {props.selectedElement?.type === 'graphin-circle' ?
+                        <div>
+                            <input className={"text-xl"} onChange={handleLabelChange} value={label} />
+                            <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
+                                <button
+                                    onClick={() => updateBatteryInfo(props.selectedElement?.id, dispatch)}
+                                >
+                                    <img
+                                        src={refreshIcon}
+                                        style={{ width: '1.2rem' }}
+                                        className={props.selectedElement?.data.battery === -1 ? 'rotate-animation' : ''}
+                                    />
+                                </button>
+                            </div>
+                            <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
+                        </div>
+                        :
+                        <p>{`SNR = ${props.selectedElement?.data}`}</p>
+                    }
+                    <button onClick={props.onClose}
+                        className={'bg-gray-900 w-9 h-9 focus:opacity-75 text-white font-bold py-2 px-4 rounded' +
+                            'focus:outline-none z-50 flex justify-center absolute top-2 right-2 round'}>X
+                    </button>
+                </div>
+            }
         />
     );
 }

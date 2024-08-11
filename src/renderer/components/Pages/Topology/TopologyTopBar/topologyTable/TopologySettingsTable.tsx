@@ -11,13 +11,12 @@ import {
     handleStatusChange,
     createGroups,
     checkIfUnassignedToGroup,
+    updateBatteryInfo,
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
 import { HullCfg, IUserNode } from "@antv/graphin";
-import axios from "axios";
 import i18n from "../../../../../i18n.ts";
-import { toast } from "react-toastify";
 
 interface ITopologySettingsTable {
     onSave: (hullOptions: HullCfg[], nodes: IUserNode[]) => void,
@@ -44,8 +43,6 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         setNodes(nodesSelector);
     }, [nodesSelector]);
 
-
-
     useEffect(() => {
         setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes, groups));
         dispatch(updateNodes(nodes));
@@ -70,24 +67,6 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         setHulls(newHulls);
         dispatch(updateHulls(newHulls));
     }, [nodes]);
-
-    const updateBatteryInfo = async (deviceId: string) => {
-        try {
-            const updatedBatteryInfo = await axios.get(`http://localhost:8080/device-battery?device_id=${deviceId}`);
-            if (updatedBatteryInfo?.data?.percent) {
-                if (updatedBatteryInfo?.data?.percent == -2) {
-                    toast.error(t("batteryInfoFailureMsg"));
-                }
-
-                dispatch(updateSingleDeviceBattery({
-                    id: deviceId,
-                    battery: updatedBatteryInfo?.data?.percent
-                }));
-            }
-        } catch (e) {
-            toast.error(t("batteryInfoFailureMsg"));
-        }
-    }
 
     return (
         <>
