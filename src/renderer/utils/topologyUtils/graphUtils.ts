@@ -3,8 +3,6 @@ import {batteriesType, devicesType, snrsType} from "../../constants/types/device
 
 export const graphStyle = {
     background: "black",
-    width: '100%',
-    height: '100%',
     color: "white"
 };
 
@@ -17,7 +15,7 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
             id: devices[i].id.toString(),
             style: {
                 label: {
-                    value: devices[i].ip.toString(),
+                    value: devices[i].name.toString() || devices[i].ip.toString(),
                     fill: '#FFFFFF',
                 },
                 keyshape: {
@@ -28,12 +26,13 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
                 },
             },
             data: {
-                battery: batteries[i] ? batteries[i].percent.toString() : 'N/A',
-                statuses: [1],
+                battery: batteries[i].percent.toString(),
+                statuses: devices[i].status,
                 ip: devices[i].ip,
             },
         };
     }
+
     return nodes as IUserNode[];
 }
 
@@ -53,6 +52,7 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
         }
 
         edges.push({
+            id:`${snrs[i].id1}-${snrs[i].id2}`,
             source: snrs[i].id1,
             target: snrs[i].id2,
             style: {
@@ -73,14 +73,4 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
         });
     }
     return edges;
-}
-
-export function nodeLabelEdit(nodes: IUserNode[], nodeToEdit: IUserNode, labelChange: string): IUserNode[] {
-    const index = nodes.indexOf(nodeToEdit);
-    if (index !== -1) {
-        if (nodes[index].style) {
-            nodes[index].style!.label!.value = labelChange;
-        }
-    }
-    return nodes;
 }

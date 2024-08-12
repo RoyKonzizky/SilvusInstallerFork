@@ -1,12 +1,12 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import binIcon from "../../assets/bin.png";
-import { Button, Select } from "antd";
-import { IUserNode } from "@antv/graphin";
-import { HullCfg } from "@antv/graphin/lib/components/Hull";
+import {Button, Select} from "antd";
+import {IUserNode} from "@antv/graphin";
+import {HullCfg} from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
-import { Dispatch, SetStateAction } from "react";
-import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
+import {Dispatch, SetStateAction} from "react";
+import {ActionCreatorWithPayload} from "@reduxjs/toolkit";
 import { t } from "i18next";
 import { toast } from "react-toastify";
 import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGroupsSlice";
@@ -75,6 +75,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
 
     return columns;
 }
+
 export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupIndex: number, status: number,
     dispatch: any,
     updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">) {
@@ -190,6 +191,7 @@ export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullC
     return newHulls;
 }
 
+
 export function findLongestStatusesLength(nodes: IUserNode[]): number {
     let maxLength = 0;
 
@@ -206,13 +208,13 @@ export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[
     const num_groups = hulls.length;
     const ips = nodes.map(node => node.data.ip) as string[];
     const statuses = nodes.map(node => node.data.statuses);
-    console.log(statuses);
-    return { ips, num_groups, statuses };
+    // console.log(statuses);
+    return {ips, num_groups, statuses};
 }
 
 export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
     try {
-        const response = await axios.post(
+        await axios.post(
             'http://localhost:8080/set-ptt-groups', convertPttDataToServerFormat(hullOptions, nodes),
             {
                 headers: {
@@ -220,7 +222,7 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
                 },
             }
         );
-        console.log('Response received:', response.data);
+        // console.log('Response received:', response.data);
     } catch (error) {
         console.error('Error sending data:', error);
     }
@@ -265,4 +267,22 @@ export const updateDataInterval = async (value: number) => {
     } catch (e) {
         return null
     }
+}
+
+export function padStatuses(nodes: IUserNode[]): IUserNode[] {
+    const maxLength = Math.max(...nodes.map(node => node.data.statuses.length));
+
+    return nodes.map(node => {
+        const paddedStatuses = [...node.data.statuses];
+        while (paddedStatuses.length < maxLength) {
+            paddedStatuses.push(0);
+        }
+        return {
+            ...node,
+            data: {
+                ...node.data,
+                statuses: paddedStatuses,
+            },
+        };
+    });
 }

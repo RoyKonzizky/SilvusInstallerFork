@@ -4,5 +4,6 @@ export const initialTopologyGroupsState: ITopologyGroupsReducerState = {
     nodes: [],
     edges: [],
     hullOptions: [],
-    graphLayout: 'dagre'
+    graphLayout: 'dagre',
+    cameras: {message: '', data: []},
 };

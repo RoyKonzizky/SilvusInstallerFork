@@ -4,9 +4,9 @@ import {IUserNode} from "@antv/graphin";
 import {useTranslation} from 'react-i18next';
 
 interface IGroupAdditionModal {
-    groups: string[];
-    nodes: IUserNode[];
-    onAdd: (groupName: string) => void;
+    groups: string[],
+    nodes: IUserNode[],
+    onAdd: (groupName: string) => void,
 }
 
 export function GroupAdditionModal(props: IGroupAdditionModal) {

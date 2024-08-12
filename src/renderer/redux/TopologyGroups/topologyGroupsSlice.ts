@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { initialTopologyGroupsState } from "./initialTopologyGroupsState";
 import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import { IUserEdge, IUserNode } from "@antv/graphin";
+import {camsType} from "../../constants/types/devicesDataTypes.ts";
 
 const topologyGroupsSlice = createSlice({
     name: 'topologyGroups',
@@ -35,6 +36,9 @@ const topologyGroupsSlice = createSlice({
         setGraphLayoutType(state, action: PayloadAction<string>) {
             state.graphLayout = action.payload;
         },
+        setCameras: (state, action: PayloadAction<camsType>) => {
+            state.cameras = action.payload;
+        },
         updateSingleDeviceBattery(state, action: PayloadAction<{id: string, battery: string}>) {
             const nodes = [...state.nodes];
             for (let i = 0; i < nodes.length; i++) {
@@ -54,6 +58,7 @@ export const {
     setGraphData,
     updateNodePositions,
     setGraphLayoutType,
+    setCameras,
     updateSingleDeviceBattery
 } = topologyGroupsSlice.actions;
 

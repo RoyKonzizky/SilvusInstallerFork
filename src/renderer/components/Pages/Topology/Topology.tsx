@@ -1,37 +1,36 @@
-import { useEffect, useMemo, useState } from 'react';
+import {useEffect, useState} from 'react';
 import { ITopologyProps } from "./ITopologyProps";
-import TopologyGraph from "./graph/TopologyGraph";
+import {TopologyGraph} from "./graph/TopologyGraph";
 import { createEdgesFromData, createNodesFromData } from "../../../utils/topologyUtils/graphUtils.ts";
 import { batteriesType, devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
-import { updateEdges, updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import { updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import { RootState } from "../../../redux/store.ts";
+import {IUserEdge, IUserNode} from "@antv/graphin";
 
-export function Topology({ isSmaller }: ITopologyProps) {
+export function Topology(props: ITopologyProps) {
     const [devices, setDevices] = useState<devicesType | null>(null);
     const [batteries, setBatteries] = useState<batteriesType | null>(null);
     const [snrsData, setSnrsData] = useState<snrsType | null>(null);
     const ws_url = "ws://localhost:8080/ws";
-    const { lastJsonMessage } = useWebSocket(ws_url, {
-        share: true,
-        shouldReconnect: () => true,
-        onError: (error) => console.error('WebSocket error:', error),
-        onOpen: () => console.log('WebSocket connected'),
-        onClose: () => console.log('WebSocket disconnected')
-    });
-    const { t } = useTranslation();
+    const { lastJsonMessage } = useWebSocket(
+        ws_url, {
+            share: true,
+            shouldReconnect: () => true, onError: (error) => console.error('WebSocket error:', error),
+            onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
+        }
+    );
+    const {t} = useTranslation();
     const dispatch = useDispatch();
-    const { nodes, edges } = useSelector((state: RootState) => state.topologyGroups);
+    const selector = useSelector((state: RootState) => state.topologyGroups);
+    const [edges, setEdges] = useState<IUserEdge[]>([]);
+    const [nodes, setNodes] = useState<IUserNode[]>([]);
 
     useEffect(() => {
         if (lastJsonMessage) {
-            const {
-                type,
-                data,
-                has_changed
-            } = lastJsonMessage as { type: string; data: any; has_changed: boolean };
+            const {type, data, has_changed} = lastJsonMessage as { type: string; data: any; has_changed: boolean };
 
             try {
                 if (type === 'net_data') {
@@ -53,153 +52,85 @@ export function Topology({ isSmaller }: ITopologyProps) {
         }
     }, [lastJsonMessage]);
 
-    const derivedData = useMemo(() => {
-        if (devices && batteries && snrsData) {
-            const newNodes = createNodesFromData(devices, batteries);
-            const edges = createEdgesFromData(snrsData);
-
-            const updatedNodes = newNodes.map(newNode => {
-                // sync server data with existing nodes in redux:
-                const existingNode = nodes.find(node => node.id === newNode.id);
-                if (existingNode) {
-                    return {
-                        ...existingNode,
-                        data: {
-                            ...existingNode.data,
-                            battery: newNode.data.battery
-                        },
-                        x: existingNode.x,
-                        y: existingNode.y
-                    };
-                }
-                return newNode;
-            });
-
-            return { updatedNodes, edges };
-        }
-        return { updatedNodes: [], edges: [] };
-    }, [devices, batteries, snrsData]);
-
     useEffect(() => {
-        if (derivedData?.updatedNodes?.length && derivedData.edges?.length) {
+        if (devices) {
             try {
-                dispatch(updateEdges(derivedData.edges));
-                dispatch(updateNodes(derivedData.updatedNodes));
+                const newNodes = createNodesFromData(devices, batteries!);
+                const newEdges = createEdgesFromData(snrsData!);
+
+                const updatedNodes = newNodes.map(newNode => {
+                    const existingNode = selector.nodes
+                        .find((node: IUserNode) => node.id === newNode.id);
+                    if (existingNode) {
+                        return {
+                            ...existingNode,
+                            data: {
+                                ...existingNode.data,
+                                battery: newNode.data.battery
+                            }
+                        };
+                    }
+                    return newNode;
+                });
+
+                // dispatch(updateEdges(edges));
+                dispatch(updateNodes(updatedNodes));
+                setNodes(updatedNodes);
+                setEdges(newEdges);
+
             } catch (error) {
                 console.error('Error in loading data:', error);
             }
         }
-    }, [derivedData]);
+    }, [devices, batteries, snrsData]);
 
     return (
-        <div className={`${isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
+        <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {
-                nodes?.length > 0 ? <TopologyGraph />
+                selector.nodes?.length > 0 ? <TopologyGraph edges={edges} nodes={nodes}/>
                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
             }
         </div>
     );
 }
 
-export default Topology;
-
-
-
-
-
-// import { useEffect, useState } from 'react';
-// import { ITopologyProps } from "./ITopologyProps";
-// import TopologyGraph from "./graph/TopologyGraph";
-// import { createEdgesFromData, createNodesFromData } from "../../../utils/topologyUtils/graphUtils.ts";
-// import { batteriesType, devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
-// import useWebSocket from "react-use-websocket";
-// import { useTranslation } from 'react-i18next';
-// import { useDispatch, useSelector } from "react-redux";
-// import { updateEdges, updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-// import { RootState } from "../../../redux/store.ts";
-
-// export function Topology(props: ITopologyProps) {
-//     const [devices, setDevices] = useState<devicesType | null>(null);
-//     const [batteries, setBatteries] = useState<batteriesType | null>(null);
-//     const [snrsData, setSnrsData] = useState<snrsType | null>(null);
-//     const ws_url = "ws://localhost:8080/ws";
-//     const { lastJsonMessage } = useWebSocket(
-//         ws_url, {
-//         share: true,
-//         shouldReconnect: () => true,
-//         onError: (error) => console.error('WebSocket error:', error),
-//         onOpen: () => console.log('WebSocket connected'),
-//         onClose: () => console.log('WebSocket disconnected')
+// //Make sure both of the values of the useMemo are the same
+// const derivedData: {nodes: IUserNode[], edges: IUserEdge[]} = useMemo(() => {
+//     if (devices) {
+//         const newNodes = createNodesFromData(devices, batteries!);
+//         const newEdges = createEdgesFromData(snrsData!);
+//
+//         const updatedNodes = newNodes.map(newNode => {
+//             // sync server data with existing nodes in redux:
+//             const existingNode = selector.nodes.find(node => node.id === newNode.id);
+//             if (existingNode) {
+//                 return {
+//                     ...existingNode,
+//                     data: {
+//                         ...existingNode.data,
+//                         battery: newNode.data.battery
+//                     },
+//                     x: existingNode.x,
+//                     y: existingNode.y
+//                 };
+//             }
+//             return newNode;
+//         });
+//
+//         return { nodes: updatedNodes, edges: newEdges };
 //     }
-//     );
-//     const { t } = useTranslation();
-//     const dispatch = useDispatch();
-//     const { nodes, edges } = useSelector((state: RootState) => state.topologyGroups);
-
-//     useEffect(() => {
-//         if (lastJsonMessage) {
-//             try {
-//                 const newData = lastJsonMessage as { type: string, data: any, has_changed: boolean };
-//                 if (newData.type === 'net_data') {
-//                     const {
-//                         'device_list': device_list,
-//                         'snr-list': snr_list
-//                     } = newData.data;
-
-//                     if (newData.has_changed) {
-//                         setDevices(device_list);
-//                     }
-
-//                     setSnrsData(snr_list);
-//                 } else if (newData.type === 'battery') {
-//                     setBatteries(newData.data);
-//                 } else {
-//                     console.log('Unknown message type:', newData.type);
-//                 }
-//             } catch (error) {
-//                 console.error('Error handling WebSocket message:', error);
-//             }
+//     return { nodes: [], edges: [] };
+// }, [devices, batteries, snrsData]);
+//
+// useEffect(() => {
+//     if (derivedData?.nodes?.length && derivedData.edges?.length) {
+//         try {
+//             // dispatch(updateEdges(derivedData.edges));
+//             dispatch(updateNodes(derivedData.nodes));
+//             setNodes(derivedData.nodes);
+//             setEdges(derivedData.edges);
+//         } catch (error) {
+//             console.error('Error in loading data:', error);
 //         }
-//     }, [lastJsonMessage]);
-
-//     useEffect(() => {
-//         if (devices && batteries && snrsData) {
-//             try {
-//                 const newNodes = createNodesFromData(devices, batteries);
-//                 const edges = createEdgesFromData(snrsData);
-
-//                 const updatedNodes = newNodes.map(newNode => {
-//                     // sync server data with existing nodes in redux:
-//                     const existingNode = nodes.find(node => node.id === newNode.id);
-//                     if (existingNode) {
-//                         return {
-//                             ...existingNode,
-//                             data: {
-//                                 ...existingNode.data,
-//                                 battery: newNode.data.battery
-//                             },
-//                             x: existingNode.x,
-//                             y: existingNode.y
-//                         };
-//                     }
-//                     return newNode;
-//                 });
-
-//                 dispatch(updateEdges(edges));
-//                 dispatch(updateNodes(updatedNodes));
-//             } catch (error) {
-//                 console.error('Error in loading data:', error);
-//             }
-//         }
-//     }, [devices, batteries, snrsData]);
-
-//     return (
-//         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' :
-//             'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
-//             {
-//                 nodes?.length > 0 ? <TopologyGraph />
-//                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
-//             }
-//         </div>
-//     );
-// }
+//     }
+// }, [derivedData]);
