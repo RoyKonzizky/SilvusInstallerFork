@@ -11,7 +11,7 @@ import {
     handleStatusChange,
     createGroups,
     checkIfUnassignedToGroup,
-    updateBatteryInfo,
+    // updateBatteryInfo,
 } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
@@ -36,7 +36,8 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             (nodeId: string, groupIndex: number, status: number) => {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
-            }, () => updateBatteryInfo
+            },
+            // () => updateBatteryInfo
         ));
 
     useEffect(() => {
@@ -44,7 +45,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [nodesSelector]);
 
     useEffect(() => {
-        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes, groups));
+        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes));
         dispatch(updateNodes(nodes));
     }, [groups]);
 
@@ -58,7 +59,45 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
             },
-            updateBatteryInfo
+            // updateBatteryInfo
+        ));
+    }, [groups, nodes, hulls]);
+
+    useEffect(() => {
+        const newHulls = convertNodesToHulls(nodes, hulls);
+        setHulls(newHulls);
+        dispatch(updateHulls(newHulls));
+    }, [nodes]);
+
+
+    useEffect(() => {
+        setNodes(nodesSelector);
+    }, [nodesSelector]);
+
+    useEffect(() => {
+        setHulls(hullsSelector);
+    }, [hullsSelector]);
+
+    useEffect(() => {
+        const newGroups = createGroups(hulls);
+        setGroups(newGroups);
+    }, [hulls]);
+
+    useEffect(() => {
+        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes));
+        dispatch(updateNodes(nodes));
+    }, [groups]);
+
+    useEffect(() => {
+        setDataSource(createDataSource(nodes, groups));
+    }, [nodes, groups]);
+
+    useEffect(() => {
+        setColumns(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
+            (nodeId: string, groupIndex: number, status: number) => {
+                const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
+                setNodes(updatedNodes);
+            },
         ));
     }, [groups, nodes, hulls]);
 

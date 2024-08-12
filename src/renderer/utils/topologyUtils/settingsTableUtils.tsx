@@ -7,9 +7,7 @@ import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
-import refreshIcon from "../../assets/refresh.svg";
 import { t } from "i18next";
-import i18n from "../../i18n";
 import { toast } from "react-toastify";
 import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGroupsSlice";
 
@@ -42,35 +40,12 @@ export function createGroups(hulls: HullCfg[]) {
     return filteredGroups;
 }
 
-export function createColumns(
-    groups: string[],
-    nodes: IUserNode[],
-    hulls: HullCfg[],
-    dispatch: any,
-    updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
-    updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
-    handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
-    updateBatteryInfo: (deviceId: string, dispatch: any) => void
-) {
+export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullCfg[], dispatch: any,
+                              updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
+                              updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
+                              handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void) {
     const columns = [
-        { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
-        {
-            title: t('batteryHeader'),
-            dataIndex: 'battery',
-            key: 'battery',
-            render: (status: number, record: any) => (
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ width: '1rem' }}>{status >= 0 ? status : ''}</div>
-                    <button onClick={() => updateBatteryInfo(record.key, dispatch)} style={{ width: '4rem' }}>
-                        <img
-                            src={refreshIcon}
-                            style={{ width: '1.2rem' }}
-                            className={status === -1 ? 'rotate-animation' : ''}
-                        />
-                    </button>
-                </div>
-            )
-        },
+        { title: 'Node Label', dataIndex: 'label', key: 'label' },
         ...groups.map((group, groupIndex) => ({
             title: (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -81,14 +56,12 @@ export function createColumns(
                     </Button>
                 </div>
             ),
-            dataIndex: group,
-            key: group,
+            dataIndex: group, key: group,
             render: (status: number, record: any) => (
                 <Select
                     value={status}
                     onChange={(value: number) => handleStatusChange(record.key, groupIndex, value)}
                     style={{ width: '100%' }}
-                    direction={i18n.language === 'en' ? 'ltr' : 'rtl'}
                 >
                     {deviceTalkStatus.map(statusOption => (
                         <Option key={statusOption.value} value={statusOption.value}>
@@ -102,7 +75,6 @@ export function createColumns(
 
     return columns;
 }
-
 export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupIndex: number, status: number,
     dispatch: any,
     updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">) {
@@ -177,56 +149,62 @@ export function handleDeleteGroup(groupToDelete: string, groups: string[], nodes
 
 }
 
-export function checkIfUnassignedToGroup(nodes: IUserNode[], groups: string[]) {
-    const groupCount = groups.length;
-
+export function checkIfUnassignedToGroup(nodes: IUserNode[]): IUserNode[] {
     return nodes.map(node => {
-        const statuses = node.data.statuses;
-        const isAssigned = statuses.includes(1);
+        const newStatuses = [...node.data.statuses];
 
-        const updatedStatuses = Array.from({ length: groupCount }, (_, index) =>
-            statuses[index] || 0);
-
-        if (!isAssigned && groupCount > 0) {
-            updatedStatuses[0] = 1;
+        if (!newStatuses.includes(1)) {
+            newStatuses[0] = 1;
         }
 
         return {
             ...node,
             data: {
                 ...node.data,
-                statuses: updatedStatuses
-            }
+                statuses: newStatuses,
+            },
         };
     });
 }
 
 export function convertNodesToHulls(nodes: IUserNode[], hulls: HullCfg[]): HullCfg[] {
-    const updatedHulls = hulls.map(hull => ({
-        ...hull,
-        members: new Set<string>()
-    }));
+    const longestStatusesLength = findLongestStatusesLength(nodes);
+    const newHulls: HullCfg[] = [];
+
+    for (let i = 0; i < longestStatusesLength; i++) {
+        if (hulls[i]) {
+            newHulls[i] = { id: hulls[i].id, members: [...hulls[i].members] };
+        } else {
+            newHulls[i] = { id: `hull${i}`, members: [] };
+        }
+    }
 
     nodes.forEach(node => {
-        const statuses = node.data.statuses;
-
-        statuses.forEach((status: number, index: number) => {
-            if (status > 0) {
-                updatedHulls[index].members.add(node.id);
+        node.data.statuses.forEach((statusPtt: number, index: number) => {
+            if (statusPtt > 0 && newHulls[index]) {
+                newHulls[index].members.push(node.id);
             }
         });
     });
 
-    return updatedHulls.map(hull => ({
-        ...hull,
-        members: Array.from(hull.members)
-    }));
+    return newHulls;
+}
+
+export function findLongestStatusesLength(nodes: IUserNode[]): number {
+    let maxLength = 0;
+
+    nodes.forEach(node => {
+        if (node.data.statuses.length > maxLength) {
+            maxLength = node.data.statuses.length;
+        }
+    });
+
+    return maxLength;
 }
 
 export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[]) {
     const num_groups = hulls.length;
     const ips = nodes.map(node => node.data.ip) as string[];
-    const names = nodes.map(node => node.style?.label?.value) as string[];
     const statuses = nodes.map(node => node.data.statuses);
     console.log(statuses);
     return { ips, num_groups, statuses };
