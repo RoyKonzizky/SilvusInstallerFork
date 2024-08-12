@@ -10,6 +10,7 @@ import {ActionCreatorWithPayload} from "@reduxjs/toolkit";
 import { t } from "i18next";
 import { toast } from "react-toastify";
 import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGroupsSlice";
+import refreshIcon from "../../assets/refresh.svg";
 
 const { Option } = Select;
 
@@ -43,9 +44,27 @@ export function createGroups(hulls: HullCfg[]) {
 export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullCfg[], dispatch: any,
                               updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
                               updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
-                              handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void) {
+                              handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
+                              updateBatteryInfo: (deviceId: string, dispatch: any) => void) {
     const columns = [
-        { title: 'Node Label', dataIndex: 'label', key: 'label' },
+        { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
+        {
+            title: t('batteryHeader'),
+            dataIndex: 'battery',
+            key: 'battery',
+            render: (status: number, record: any) => (
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <div style={{ width: '1rem' }}>{status >= 0 ? status : ''}</div>
+                    <button onClick={() => updateBatteryInfo(record.key, dispatch)} style={{ width: '4rem' }}>
+                        <img
+                            src={refreshIcon}
+                            style={{ width: '1.2rem' }}
+                            className={status === -1 ? 'rotate-animation' : ''}
+                        />
+                    </button>
+                </div>
+            )
+        },
         ...groups.map((group, groupIndex) => ({
             title: (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

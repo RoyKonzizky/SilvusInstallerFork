@@ -90,6 +90,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
             },
+            updateBatteryInfo
         ));
     }, [groups, nodes, hulls]);
 
@@ -104,17 +105,9 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             <GroupAdditionModal groups={groups} nodes={nodes} onAdd={(groupName) =>
                 handleAddGroup(groupName, groups, setGroups, nodes, setNodes, hulls,
                     setHulls, dispatch, updateNodes, updateHulls)} />
-            <Table
-                dataSource={dataSource}
-                columns={columns}
-                rowKey="key"
-                className={'bottom-0'}
-                style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl' }}
-            />
-            <Button
-                onClick={() => props.onSave(hulls, nodes)}
-                className={'text-black h-14 w-40 m-5 rounded-xl'}
-            >
+            <Table dataSource={dataSource} columns={columns} rowKey="key" className={'bottom-0'}
+                   style={{direction: i18n.language === 'en' ? 'ltr' : 'rtl', overflow: 'auto',}}/>
+            <Button onClick={() => props.onSave(hulls, nodes)} className={'text-black h-14 w-40 m-5 rounded-xl'}>
                 {t("Apply")}
             </Button>
         </>
