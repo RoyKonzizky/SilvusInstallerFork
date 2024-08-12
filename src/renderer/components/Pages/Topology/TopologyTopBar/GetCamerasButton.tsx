@@ -19,7 +19,7 @@ export function GetCamerasButton() {
 
     return(
         <button onClick={loadCamerasData}>
-            <img className={'w-12 h-12 rounded-full ml-7'} src={camsRefresh} alt={'refresh cameras'}/>
+            <img className={'w-14 h-14 mt-5 rounded-full'} src={camsRefresh} alt={'refresh cameras'}/>
         </button>
     );
 }

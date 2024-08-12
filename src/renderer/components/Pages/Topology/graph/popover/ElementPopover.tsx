@@ -65,17 +65,12 @@ export function ElementPopover(props: IElementPopoverProps) {
                                                 value={label || ''}/>
                                          <Button onClick={handleButtonClick}>V</Button>
                                      </div>
-                                     <Battery voltage={Math.round(props.selectedElement?.data.battery)}/>
                                      <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                                          <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
-                                         <button
-                                             onClick={() => updateBatteryInfo(props.selectedElement?.id, dispatch)}
-                                         >
-                                             <img
-                                                 src={refreshIcon}
-                                                 style={{ width: '1.2rem' }}
-                                                 className={props.selectedElement?.data.battery === -1 ? 'rotate-animation' : ''}
-                                             />
+                                         <button onClick={() => updateBatteryInfo(props.selectedElement?.id, dispatch)}>
+                                             <img src={refreshIcon} alt={'refresh battery'} style={{ width: '1.2rem' }}
+                                                 className={props.selectedElement?.data.battery === -1
+                                                     ? 'rotate-animation' : ''}/>
                                          </button>
                                      </div>
                                      <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
