@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Modal, Slider } from "antd";
+import { useEffect, useState } from "react";
+import { Modal, Slider, Button } from "antd";
 import { snrColors } from "../../../../utils/topologyUtils/LegendSnrUtils.ts";
 import { useTranslation } from 'react-i18next';
 import connectivityIcon from "../../../../assets/connectivity.svg";
-import { Button } from "antd";
+import { getDataInterval, updateDataInterval } from "../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import { toast } from "react-toastify";
 
 export function LegendSnr() {
     const DEFAULT_INTERVAL_VALUE = 2;
@@ -12,6 +13,23 @@ export function LegendSnr() {
     const { t, i18n } = useTranslation();
 
     const [intervalValue, setIntervalValue] = useState<number>(DEFAULT_INTERVAL_VALUE);
+
+    useEffect(() => {
+        (async () => {
+            const interval = await getDataInterval();
+            setIntervalValue(interval ?? DEFAULT_INTERVAL_VALUE);
+        })();
+    }, []);
+
+    const handleApplyButtonClicked = async () => {
+        const updatedValue = await updateDataInterval(intervalValue);
+        if (updatedValue) {
+            toast.success(t("dataIntervalUpdateSuccessMsg"));
+            setModalState(false);
+            return;
+        }
+        toast.error(t("dataIntervalUpdateFailureMsg"));
+    }
 
     return (
         <div>
@@ -32,7 +50,6 @@ export function LegendSnr() {
                 onCancel={() => setModalState(false)}
                 afterClose={() => setModalState(false)}
             >
-
                 <div style={{ padding: '3rem 0' }}>
                     <Slider
                         min={2}
@@ -47,10 +64,7 @@ export function LegendSnr() {
 
                     <div className="flex justify-center">
                         <Button
-                            onClick={() => {
-                                // TODO add by api
-                                setModalState(false);
-                            }}
+                            onClick={handleApplyButtonClicked}
                             className={'text-black h-10 w-30 mt-10 rounded-xl'}
                         >
                             {t("Apply")}

@@ -266,3 +266,25 @@ export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
         toast.error(t("batteryInfoFailureMsg"));
     }
 }
+
+export const getDataInterval = async () => {
+    try {
+        const response = await axios.get(`http://localhost:8080/data-interval`);
+        return response?.data?.value;
+    } catch (e) {
+        return null;
+    }
+}
+
+export const updateDataInterval = async (value: number) => {
+    try {
+        const response = await axios.post(`http://localhost:8080/data-interval`, { value });
+
+        if (response?.status === 200) {
+            return response.data;
+        }
+        return null;
+    } catch (e) {
+        return null
+    }
+}

@@ -29,6 +29,8 @@
   "id": "מזהה",
   "elementDetails": "מידע על המכשיר",
   "connectivityLevelHeader": "תדירות עדכון נתונים",
+  "dataIntervalUpdateSuccessMsg": "שינוי תדירות עדכון נתונים בוצע בהצלחה",
+  "dataIntervalUpdateFailureMsg": "שינוי תדירות עדכון נתונים נכשל. אנא נסה שנית",
   "SNRLegend": "מקרא SNR",
   "graphLayout": "סוג פרישת הגרף",
   "dragOptionLabel": "גריר",

@@ -29,6 +29,8 @@
   "id": "ID",
   "elementDetails": "Element Details",
   "connectivityLevelHeader": "Data Update Frequency",
+  "dataIntervalUpdateSuccessMsg": "Successfully changed data update interval",
+  "dataIntervalUpdateFailureMsg": "Failed to change data update interval. Please try again",
   "SNRLegend": "SNR Legend",
   "graphLayout": "Graph Layout Type",
   "dragOptionLabel": "Draggable",
