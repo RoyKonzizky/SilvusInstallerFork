@@ -139,9 +139,9 @@ export function TopologyGraph(props: ITopologyGraph) {
                         },
                     },
                     data: {
-                        battery: node.data.battery ? node.data.battery.toString() : 'N/A',
-                        statuses: node.data.statuses || [],
-                        ip: node.data.ip || 'N/A',
+                        battery: node.data.battery.toString(),
+                        statuses: node.data.statuses,
+                        ip: node.data.ip,
                     },
                 };
 
@@ -154,7 +154,7 @@ export function TopologyGraph(props: ITopologyGraph) {
         default: [
             'drag-node', 'drag-combo',
             {type: 'drag-canvas', enableOptimize: true}, {type: 'zoom-canvas', enableOptimize: true},
-            { type: 'click-select', onClick: handleElementClick, selectNode: true, selectEdge: true },
+            { type: 'click-select', onClick: handleElementClick, selectNode: true, },
             { type: 'click-select' },
         ]
     };
