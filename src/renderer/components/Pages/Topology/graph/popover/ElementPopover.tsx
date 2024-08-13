@@ -8,12 +8,8 @@ import {updateNodes} from "../../../../../redux/TopologyGroups/topologyGroupsSli
 import {ChangeEvent, useState} from "react";
 import refreshIcon from "../../../../../assets/refresh.svg";
 import { updateBatteryInfo } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
-import {
-    sendNames
-} from "../../../../../../../local_app_build/Lizi-win32-x64/resources/app/src/renderer/utils/topologyUtils/elementPopoverUtils.ts";
-import {
-    connectCamToDevice
-} from "../../../../../../../local_app_build/Lizi-win32-x64/resources/app/src/renderer/utils/topologyUtils/getCamerasButtonUtils.ts";
+import {sendNames} from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
+import {connectCamToDevice} from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
