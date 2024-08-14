@@ -1,16 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import binIcon from "../../assets/bin.png";
-import {Button, Select} from "antd";
-import {IUserNode} from "@antv/graphin";
-import {HullCfg} from "@antv/graphin/lib/components/Hull";
+import { Button, Popover, Select } from "antd";
+import { IUserNode } from "@antv/graphin";
+import { HullCfg } from "@antv/graphin/lib/components/Hull";
 import axios from "axios";
-import {Dispatch, SetStateAction} from "react";
-import {ActionCreatorWithPayload} from "@reduxjs/toolkit";
+import { Dispatch, SetStateAction } from "react";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { t } from "i18next";
 import { toast } from "react-toastify";
 import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGroupsSlice";
 import refreshIcon from "../../assets/refresh.svg";
+import cameraIcon from "../../assets/video-camera.svg";
 
 const { Option } = Select;
 
@@ -41,11 +42,11 @@ export function createGroups(hulls: HullCfg[]) {
     return filteredGroups;
 }
 
-export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullCfg[], dispatch: any,
-                              updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
-                              updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
-                              handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
-                              updateBatteryInfo: (deviceId: string, dispatch: any) => void) {
+export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullCfg[], camerasMap: any, dispatch: any,
+    updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
+    updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
+    handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
+    updateBatteryInfo: (deviceId: string, dispatch: any) => void) {
     const columns = [
         { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
         {
@@ -62,6 +63,30 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
                             className={status === -1 ? 'rotate-animation' : ''}
                         />
                     </button>
+                </div>
+            )
+        },
+        {
+            title: "מצלמה",
+            dataIndex: 'camera',
+            key: 'camera',
+            render: (status: number, record: any) => (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    {camerasMap[record.key] &&
+                        <Popover
+                            trigger="click"
+                            placement="bottom"
+                            content={
+                                <div>
+                                    <div style={{ fontWeight: 'bold' }}>Camera Info</div>
+                                    <div>{`Camera IP: ${camerasMap[record.key].ip}`}</div>
+                                    <div>{`Device IP: ${camerasMap[record.key].device_ip}`}</div>
+                                </div>
+                            }
+                        >
+                            <img src={cameraIcon} style={{ width: '1.8rem' }} />
+                        </Popover>
+                    }
                 </div>
             )
         },
@@ -228,7 +253,7 @@ export function convertPttDataToServerFormat(hulls: HullCfg[], nodes: IUserNode[
     const ips = nodes.map(node => node.data.ip) as string[];
     const statuses = nodes.map(node => node.data.statuses);
     // console.log(statuses);
-    return {ips, num_groups, statuses};
+    return { ips, num_groups, statuses };
 }
 
 export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) => {
