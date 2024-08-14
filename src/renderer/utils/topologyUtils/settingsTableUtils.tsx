@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGroupsSlice";
 import refreshIcon from "../../assets/refresh.svg";
 import cameraIcon from "../../assets/video-camera.svg";
+import i18n from "../../i18n";
 
 const { Option } = Select;
 
@@ -67,7 +68,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             )
         },
         {
-            title: "מצלמה",
+            title: t('CameraHeader'),
             dataIndex: 'camera',
             key: 'camera',
             render: (status: number, record: any) => (
@@ -77,17 +78,17 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
                             trigger="click"
                             placement="bottom"
                             content={
-                                <div>
-                                    <div style={{ fontWeight: 'bold' }}>Camera Info</div>
-                                    <div>{`Camera IP: ${camerasMap[record.key].ip}`}</div>
-                                    <div>{`Device IP: ${camerasMap[record.key].device_ip}`}</div>
+                                <div style={{ direction: i18n.language === 'en' ? "ltr" : "rtl" }}>
+                                    <div style={{ fontWeight: 'bold' }}>{t('CameraPopoverHeader')}</div>
+                                    <div>{`${t('CameraIpLabel')}: ${camerasMap[record.key].ip}`}</div>
+                                    <div>{`${t('DeviceIpLabel')}: ${camerasMap[record.key].device_ip}`}</div>
                                 </div>
                             }
                         >
                             <img src={cameraIcon} style={{ width: '1.8rem' }} />
-                        </Popover>
+                        </Popover >
                     }
-                </div>
+                </div >
             )
         },
         ...groups.map((group, groupIndex) => ({
