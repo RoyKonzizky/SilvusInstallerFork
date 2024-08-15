@@ -165,10 +165,22 @@ export function TopologyGraph(props: ITopologyGraph) {
     };
 
     return (
-        <Graphin ref={graphRef} modes={modes} data={{ nodes: props.nodes, edges: props.edges }} style={graphStyle}
-            layout={{ name: 'force2', options: {} }} width={2000} height={1000}>
-            {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
-                onClose={() => setSelectedElement(null)} />}
+        <Graphin
+            ref={graphRef}
+            modes={modes}
+            data={{ nodes: props.nodes, edges: props.edges }}
+            style={graphStyle}
+            layout={{ name: 'force2', options: {} }}
+            width={2000}
+            height={1000}
+        >
+            {selectedElement &&
+                <ElementPopover
+                    position={popoverPosition}
+                    selectedElement={selectedElement}
+                    onClose={() => setSelectedElement(null)}
+                />
+            }
             <TopologyTopBar />
         </Graphin>
     );

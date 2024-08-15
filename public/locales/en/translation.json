@@ -59,6 +59,7 @@
   "saveSettingsFailureMsg": "Error has occurred while saving settings",
   "networkSaveConfirmation": "The settings will be applied for all the devices in the network. Are you sure you want to proceed?",
   "NodeLabel": "Node Label",
+  "updateDeviceLabelButton": "Update",
   "cameraMainStreamLink": "Camera main stream link",
   "cameraSubStreamLink": "Camera sun stream link"
 }
