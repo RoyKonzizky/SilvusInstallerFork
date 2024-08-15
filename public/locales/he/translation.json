@@ -43,6 +43,10 @@
   "batteryHeader": "סוללה",
   "batteryLoadingStatus": "טוען...",
   "batteryInfoFailureMsg": "לא ניתן להשיג מצב סוללה עדכני",
+  "CameraHeader": "מצלמה",
+  "CameraPopoverHeader": "פרטי מצלמה",
+  "CameraIpLabel": "כתובת מצלמה",
+  "DeviceIpLabel": "כתובת מכשיר",
   "AddGroup": "הוספת קבוצה",
   "Apply": "החל הגדרות",
   "InsertGroupName": "הכניסו שם קבוצה",
@@ -54,6 +58,7 @@
   "cameraMainStreamLink": "לינק לשידור ראשי",
   "cameraSubStreamLink": "לינק לשידור משני",
   "Node Label": "תווית",
+  "updateDeviceLabelButton": "עדכן",
   "saveSettingsSuccessMsg": "ההגדרות נשמרו בהצלחה!",
   "saveSettingsFailureMsg": "שגיאה בעת שמירת ההגדרות. הפעולה בוטלה",
   "networkSaveConfirmation": "?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך"

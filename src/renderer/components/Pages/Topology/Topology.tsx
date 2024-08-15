@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { ITopologyProps } from "./ITopologyProps";
-import {TopologyGraph} from "./graph/TopologyGraph";
+import { TopologyGraph } from "./graph/TopologyGraph";
 import { createEdgesFromData, createNodesFromData } from "../../../utils/topologyUtils/graphUtils.ts";
 import { batteriesType, devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
 import { updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import { RootState } from "../../../redux/store.ts";
-import {IUserEdge, IUserNode} from "@antv/graphin";
+import { IUserEdge, IUserNode } from "@antv/graphin";
 
 export function Topology(props: ITopologyProps) {
     const [devices, setDevices] = useState<devicesType | null>(null);
@@ -17,20 +17,21 @@ export function Topology(props: ITopologyProps) {
     const ws_url = "ws://localhost:8080/ws";
     const { lastJsonMessage } = useWebSocket(
         ws_url, {
-            share: true,
-            shouldReconnect: () => true, onError: (error) => console.error('WebSocket error:', error),
-            onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
-        }
+        share: true,
+        shouldReconnect: () => true, onError: (error) => console.error('WebSocket error:', error),
+        onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
+    }
     );
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const dispatch = useDispatch();
     const selector = useSelector((state: RootState) => state.topologyGroups);
     const [edges, setEdges] = useState<IUserEdge[]>([]);
     const [nodes, setNodes] = useState<IUserNode[]>([]);
+    const [isCurrentlyDragged, setIsCurrentlyDragged] = useState<boolean>(false);
 
     useEffect(() => {
-        if (lastJsonMessage) {
-            const {type, data, has_changed} = lastJsonMessage as { type: string; data: any; has_changed: boolean };
+        if (lastJsonMessage && !isCurrentlyDragged) {
+            const { type, data, has_changed } = lastJsonMessage as { type: string; data: any; has_changed: boolean };
 
             try {
                 if (type === 'net_data') {
@@ -87,7 +88,12 @@ export function Topology(props: ITopologyProps) {
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {
-                selector.nodes?.length > 0 ? <TopologyGraph edges={edges} nodes={nodes}/>
+                selector.nodes?.length > 0 ?
+                    <TopologyGraph
+                        nodes={nodes}
+                        edges={edges}
+                        setDraggingState={(isDragged: boolean) => setIsCurrentlyDragged(isDragged)}
+                    />
                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
             }
         </div>

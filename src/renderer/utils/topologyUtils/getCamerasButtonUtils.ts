@@ -1,5 +1,11 @@
 import axios from "axios";
-import {camsType} from "../../constants/types/devicesDataTypes.ts";
+import { Camera, camsType } from "../../constants/types/devicesDataTypes.ts";
+import { IUserNode } from "@antv/graphin";
+
+export type CamStreams = {
+    mainStreamLink?: string;
+    subStreamLink?: string;
+};
 
 export const getCameras = async () => {
     try {
@@ -12,19 +18,27 @@ export const getCameras = async () => {
     }
 };
 
-export type CamStreams = {
-    mainStreamLink?: string;
-    subStreamLink?: string;
-};
+export const mapCamerasToDevices = (nodes: IUserNode[], cameras: Camera[]) => {
+    const cameraMap: { [deviceId: string]: Camera } = {};
+
+    nodes.forEach((node: IUserNode) => {
+        const camera = cameras?.find((camera: Camera) => camera.device_id == node.id);
+        if (camera) {
+            cameraMap[node.id] = camera;
+        }
+    });
+
+    return cameraMap;
+}
 
 export function connectCamToDevice(deviceIp: string, cams: camsType): CamStreams {
     const matchedCam = cams.data.find(cam =>
-        cam.camera.connected_to === deviceIp);
+        cam.device_ip === deviceIp);
 
     if (matchedCam) {
         return {
-            mainStreamLink: matchedCam.camera.main_stream.uri,
-            subStreamLink: matchedCam.camera.sub_stream.uri,
+            mainStreamLink: matchedCam.main_stream.uri,
+            subStreamLink: matchedCam.sub_stream.uri,
         };
     } else {
         return {};

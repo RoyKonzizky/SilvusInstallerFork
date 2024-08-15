@@ -3,12 +3,21 @@ import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Button, Table } from "antd";
 import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, createGroups,
-    checkIfUnassignedToGroup, updateBatteryInfo,} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {
+    convertNodesToHulls,
+    createColumns,
+    createDataSource,
+    handleAddGroup,
+    handleStatusChange,
+    createGroups,
+    checkIfUnassignedToGroup,
+    updateBatteryInfo,
+} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
 import { HullCfg, IUserNode } from "@antv/graphin";
 import i18n from "../../../../../i18n.ts";
+import { getCameras, mapCamerasToDevices } from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
 
 interface ITopologySettingsTable {
     onSave: (hullOptions: HullCfg[], nodes: IUserNode[]) => void,
@@ -22,15 +31,29 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     const [nodes, setNodes] = useState(nodesSelector);
     const [hulls, setHulls] = useState(hullsSelector);
     const [groups, setGroups] = useState<string[]>(createGroups(hullsSelector));
+    const [camerasMap, setCamerasMap] = useState({});
     const [dataSource, setDataSource] = useState<any[]>(createDataSource(nodesSelector, groups));
+
     const [columns, setColumns] =
-        useState(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
+        useState(createColumns(groups, nodes, hulls, camerasMap, dispatch, updateNodes, updateHulls,
             (nodeId: string, groupIndex: number, status: number) => {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
             },
             () => updateBatteryInfo
         ));
+
+    useEffect(() => {
+        const loadCameras = async () => {
+            const cameras = await getCameras();
+            if (cameras?.data) {
+                const camerasByDeviceId = mapCamerasToDevices(nodes, cameras.data);
+                setCamerasMap(camerasByDeviceId);
+            }
+        }
+
+        loadCameras();
+    }, []);
 
     useEffect(() => {
         setNodes(nodesSelector);
@@ -46,7 +69,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
     }, [nodes, groups]);
 
     useEffect(() => {
-        setColumns(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
+        setColumns(createColumns(groups, nodes, hulls, camerasMap, dispatch, updateNodes, updateHulls,
             (nodeId: string, groupIndex: number, status: number) => {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
@@ -61,10 +84,10 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         dispatch(updateHulls(newHulls));
     }, [nodes]);
 
-
-    useEffect(() => {
-        setNodes(nodesSelector);
-    }, [nodesSelector]);
+    // useEffect(() => {
+    //     setNodes(nodesSelector);
+    // }, [nodesSelector]);
+    // (duplicate)
 
     useEffect(() => {
         setHulls(hullsSelector);
@@ -75,30 +98,32 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         setGroups(newGroups);
     }, [hulls]);
 
-    useEffect(() => {
-        setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes));
-        dispatch(updateNodes(nodes));
-    }, [groups]);
+    // useEffect(() => {
+    //     setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes));
+    //     dispatch(updateNodes(nodes));
+    // }, [groups]);
 
-    useEffect(() => {
-        setDataSource(createDataSource(nodes, groups));
-    }, [nodes, groups]);
+    // useEffect(() => {
+    //     setDataSource(createDataSource(nodes, groups));
+    // }, [nodes, groups]);
+    // (duplicate)
 
-    useEffect(() => {
-        setColumns(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
-            (nodeId: string, groupIndex: number, status: number) => {
-                const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
-                setNodes(updatedNodes);
-            },
-            updateBatteryInfo
-        ));
-    }, [groups, nodes, hulls]);
+    // useEffect(() => {
+    //     setColumns(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
+    //         (nodeId: string, groupIndex: number, status: number) => {
+    //             const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
+    //             setNodes(updatedNodes);
+    //         },
+    //         updateBatteryInfo
+    //     ));
+    // }, [groups, nodes, hulls]);
 
-    useEffect(() => {
-        const newHulls = convertNodesToHulls(nodes, hulls);
-        setHulls(newHulls);
-        dispatch(updateHulls(newHulls));
-    }, [nodes]);
+    // useEffect(() => {
+    //     const newHulls = convertNodesToHulls(nodes, hulls);
+    //     setHulls(newHulls);
+    //     dispatch(updateHulls(newHulls));
+    // }, [nodes]);
+    // (duplicate)
 
     return (
         <>
@@ -106,7 +131,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 handleAddGroup(groupName, groups, setGroups, nodes, setNodes, hulls,
                     setHulls, dispatch, updateNodes, updateHulls)} />
             <Table dataSource={dataSource} columns={columns} rowKey="key" className={'bottom-0'}
-                   style={{direction: i18n.language === 'en' ? 'ltr' : 'rtl', overflow: 'auto',}}/>
+                style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl', overflow: 'auto', }} />
             <Button onClick={() => props.onSave(hulls, nodes)} className={'text-black h-14 w-40 m-5 rounded-xl'}>
                 {t("Apply")}
             </Button>
