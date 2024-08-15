@@ -17,6 +17,8 @@ export function TopologyGraph(props: ITopologyGraph) {
     const [selectedElement, setSelectedElement] = useState<IUserNode | IUserEdge | null>(null);
     const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const graphRef = useRef<any>(null);
+    const [doubleClickDetector, setDoubleClickDetector] = useState(0);
+    const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
 
     const { setDraggingState } = props;
 
@@ -29,8 +31,8 @@ export function TopologyGraph(props: ITopologyGraph) {
                     const canvasPosition = graph.getCanvasByPoint(model.x, model.y);
                     return {
                         id: model.id,
-                        x: canvasPosition.x,
-                        y: canvasPosition.y
+                        x: Number(canvasPosition.x.toFixed(3)),
+                        y: Number(canvasPosition.y.toFixed(3))
                     };
                 });
                 dispatch(updateNodePositions(updatedNodes));
@@ -67,7 +69,22 @@ export function TopologyGraph(props: ITopologyGraph) {
             graph.on('node:touchstart', (event: any) => {
                 const model = event.item.getModel();
                 console.log('Touched node ID:', model.id);
-                handleElementClick(event);
+
+                if (timerId) {
+                    clearTimeout(timerId);
+                }
+
+                setDoubleClickDetector(prevState => prevState + 1);
+
+                if (doubleClickDetector === 1){
+                    setDoubleClickDetector(0);
+                    handleElementClick(event);
+                }else {
+                    const newTimerId = setTimeout(() => {
+                        setDoubleClickDetector(0);
+                    }, 200);
+                    setTimerId(newTimerId);
+                }
             });
         }
 
@@ -77,84 +94,7 @@ export function TopologyGraph(props: ITopologyGraph) {
                 graph.off('node:touchstart');
             }
         };
-    }, []);
-
-    useEffect(() => {
-        const graph = graphRef.current?.graph;
-
-        const updatedEdges = props.edges.map(edge => {
-            const labelValue = Number(edge.style?.label?.value);
-            let edgeColor;
-
-            if (labelValue < 20) {
-                edgeColor = 'red';
-            } else if (labelValue > 30) {
-                edgeColor = 'green';
-            } else {
-                edgeColor = 'yellow';
-            }
-
-            return {
-                ...edge,
-                style: {
-                    ...edge.style,
-                    label: {
-                        ...edge.style?.label,
-                        value: `${labelValue}`,
-                        fill: edgeColor,
-                        fontSize: 30,
-                    },
-                    keyshape: {
-                        ...edge.style?.keyshape,
-                        endArrow: {
-                            path: '',
-                        },
-                        stroke: edgeColor,
-                        lineWidth: 6,
-                    },
-                },
-            };
-        });
-
-        if (graph) {
-            graph.changeData({
-                ...graph.save(),
-                edges: updatedEdges,
-            });
-        }
-    }, [props.edges]);
-
-    useEffect(() => {
-        const graph = graphRef.current?.graph;
-
-        if (graph) {
-            props.nodes.forEach(node => {
-                const updatedNode = {
-                    ...node,
-                    id: node.id,
-                    style: {
-                        label: {
-                            value: node.style?.label?.value || '',
-                            fill: '#FFFFFF',
-                        },
-                        keyshape: {
-                            fill: '#1fb639',
-                            stroke: '#1fb639',
-                            fillOpacity: 1,
-                            size: 50,
-                        },
-                    },
-                    data: {
-                        battery: node.data.battery.toString(),
-                        statuses: node.data.statuses,
-                        ip: node.data.ip,
-                    },
-                };
-
-                graph.updateItem(node.id, updatedNode);
-            });
-        }
-    }, [props.nodes]);
+    }, [doubleClickDetector]);
 
     const modes = {
         default: [
