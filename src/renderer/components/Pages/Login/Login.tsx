@@ -18,8 +18,8 @@ export function Login() {
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [errorModalIsOpen, setErrorModalIsOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const dispatch = useDispatch();
     const [isProtectedDevice, setIsProtectedDevice] = useState(false);
+    const dispatch = useDispatch();
     const {t} = useTranslation();
 
     const callStartup = async () => {
@@ -30,7 +30,7 @@ export function Login() {
         }
         if (startUpData.type === "Success") {
             setIpAddress((startUpData.msg as serverResponseIpDataType).ip);
-            setIsProtectedDevice((startUpData.msg as serverResponseIpDataType).isProtected === 1);
+            setIsProtectedDevice((startUpData.msg as serverResponseIpDataType).is_protected === 1);
         }
     }
 

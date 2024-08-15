@@ -6,7 +6,7 @@ export const netData = async () => {
         console.log('Response received:', response.data);
         return JSON.parse(response.data);
     } catch (error) {
-        console.error('Error fetching setRadioIP:', error);
+        console.error('Error fetching netData:', error);
         return null;
     }
 };
