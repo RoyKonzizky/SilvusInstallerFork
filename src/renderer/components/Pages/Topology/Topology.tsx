@@ -54,7 +54,7 @@ export function Topology(props: ITopologyProps) {
     }, [lastJsonMessage]);
 
     useEffect(() => {
-        if (devices) {
+        if (devices && !isCurrentlyDragged) {
             try {
                 const newNodes = createNodesFromData(devices, batteries!);
                 const newEdges = createEdgesFromData(snrsData!);
