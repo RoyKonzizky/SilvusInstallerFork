@@ -7,8 +7,9 @@ import { TopologyTopBar } from "../TopologyTopBar/TopologyTopBar.tsx";
 import { updateNodePositions } from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 
 interface ITopologyGraph {
-    edges: IUserEdge[],
     nodes: IUserNode[],
+    edges: IUserEdge[],
+    setDraggingState: (isDragged: boolean) => void
 }
 
 export function TopologyGraph(props: ITopologyGraph) {
@@ -16,6 +17,8 @@ export function TopologyGraph(props: ITopologyGraph) {
     const [selectedElement, setSelectedElement] = useState<IUserNode | IUserEdge | null>(null);
     const [popoverPosition, setPopoverPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const graphRef = useRef<any>(null);
+
+    const { setDraggingState } = props;
 
     useEffect(() => {
         const graph = graphRef.current?.graph;
@@ -31,11 +34,14 @@ export function TopologyGraph(props: ITopologyGraph) {
                     };
                 });
                 dispatch(updateNodePositions(updatedNodes));
+                setDraggingState(false);
             };
 
+            graph.on('node:dragstart', () => setDraggingState(true));
             graph.on('node:dragend', handleNodePositionChange);
 
             return () => {
+                graph.off('node:dragstart', () => setDraggingState(true));
                 graph.off('node:dragend', handleNodePositionChange);
             };
         }
@@ -48,7 +54,7 @@ export function TopologyGraph(props: ITopologyGraph) {
         const graph = graphRef.current?.graph;
         if (graph) {
             const point = graph.getCanvasByPoint(model.x, model.y);
-            setPopoverPosition({x: point.x, y: point.y});
+            setPopoverPosition({ x: point.x, y: point.y });
         }
     };
 
@@ -152,8 +158,7 @@ export function TopologyGraph(props: ITopologyGraph) {
 
     const modes = {
         default: [
-            'drag-node', 'drag-combo',
-            {type: 'drag-canvas', enableOptimize: true}, {type: 'zoom-canvas', enableOptimize: true},
+            'drag-node', 'drag-combo', 'drag-canvas', 'zoom-canvas',
             { type: 'click-select', onClick: handleElementClick, selectNode: true, },
             { type: 'click-select' },
         ]
@@ -161,9 +166,9 @@ export function TopologyGraph(props: ITopologyGraph) {
 
     return (
         <Graphin ref={graphRef} modes={modes} data={{ nodes: props.nodes, edges: props.edges }} style={graphStyle}
-                 layout={{ name: 'force2', options: {} }} width={2000} height={1000}>
+            layout={{ name: 'force2', options: {} }} width={2000} height={1000}>
             {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
-                                                onClose={() => setSelectedElement(null)} />}
+                onClose={() => setSelectedElement(null)} />}
             <TopologyTopBar />
         </Graphin>
     );
