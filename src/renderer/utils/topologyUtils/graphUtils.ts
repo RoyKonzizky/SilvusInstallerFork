@@ -58,8 +58,9 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
             style: {
                 label: {
                     value: `${labelValue}`,
-                    fill: edgeColor,
-                    fontSize: 30
+                    fill: '#FFFFFF',
+                    fontSize: 30,
+                    offset: [0,15]
                 },
                 keyshape: {
                     endArrow: {
