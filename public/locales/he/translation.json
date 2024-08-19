@@ -61,5 +61,6 @@
   "updateDeviceLabelButton": "עדכן",
   "saveSettingsSuccessMsg": "ההגדרות נשמרו בהצלחה!",
   "saveSettingsFailureMsg": "שגיאה בעת שמירת ההגדרות. הפעולה בוטלה",
-  "networkSaveConfirmation": "?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך"
+  "networkSaveConfirmation": "?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך",
+  "logoutConfirmation": "?האם אתה בטוח שברצונך להתנתק"
 }

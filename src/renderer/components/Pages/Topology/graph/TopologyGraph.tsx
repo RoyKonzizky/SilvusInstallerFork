@@ -24,29 +24,31 @@ export function TopologyGraph(props: ITopologyGraph) {
 
     useEffect(() => {
         const graph = graphRef.current?.graph;
-        if (graph) {
-            const handleNodePositionChange = () => {
-                const updatedNodes = graph.getNodes().map((node: any) => {
-                    const model = node.getModel();
-                    const canvasPosition = graph.getCanvasByPoint(model.x, model.y);
-                    return {
-                        id: model.id,
-                        x: Number(canvasPosition.x.toFixed(3)),
-                        y: Number(canvasPosition.y.toFixed(3))
-                    };
-                });
-                dispatch(updateNodePositions(updatedNodes));
-                setDraggingState(false);
-            };
+        if (!graph) return;
 
-            graph.on('node:dragstart', () => setDraggingState(true));
-            graph.on('node:dragend', handleNodePositionChange);
+        graph.fitView();
 
-            return () => {
-                graph.off('node:dragstart', () => setDraggingState(true));
-                graph.off('node:dragend', handleNodePositionChange);
-            };
-        }
+        const handleNodeDragEnd = () => {
+            const updatedNodes = graph.getNodes().map((node: IUserNode) => {
+                const model = node.getModel();
+                return {
+                    id: model.id,
+                    x: model.x,
+                    y: model.y
+                };
+            });
+
+            dispatch(updateNodePositions(updatedNodes));
+            setDraggingState(false);
+        };
+
+        graph.on('node:dragstart', () => setDraggingState(true));
+        graph.on('node:dragend', handleNodeDragEnd);
+
+        return () => {
+            graph.off('node:dragstart', () => setDraggingState(true));
+            graph.off('node:dragend', handleNodeDragEnd);
+        };
     }, []);
 
     const handleElementClick = (event: { item: any; }) => {

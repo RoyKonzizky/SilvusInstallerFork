@@ -61,5 +61,6 @@
   "NodeLabel": "Node Label",
   "updateDeviceLabelButton": "Update",
   "cameraMainStreamLink": "Camera main stream link",
-  "cameraSubStreamLink": "Camera sun stream link"
+  "cameraSubStreamLink": "Camera sun stream link",
+  "logoutConfirmation": "Are you sure you want to exit?"
 }

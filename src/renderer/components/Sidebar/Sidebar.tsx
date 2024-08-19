@@ -1,6 +1,6 @@
 // import RecordingsLogo from "../../assets/recordings.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
 import { interactExpandingAndCollapsingButton } from "../../redux/Collapsing/collapsingSlice.ts";
 import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
@@ -28,7 +28,12 @@ export function Sidebar() {
     if (window.location.pathname === Paths.Main) return null;
 
     const callLogOut = async () => {
-        await logout();
+        const confirmed = confirm(t("logoutConfirmation"));
+
+        if (confirmed) {
+            await logout();
+            window.location.href = "/";
+        }
     }
 
     return (
@@ -76,8 +81,8 @@ export function Sidebar() {
                 </div>
                 <div className='mt-[4vh]'>
                     <NavigatorButton
+                        href={""}
                         onClick={callLogOut}
-                        href={Paths.Main}
                         isSubsection={false}
                         text={t('exit')}
                         file={LogoutLogo}
