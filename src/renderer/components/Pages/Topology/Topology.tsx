@@ -70,7 +70,7 @@ export function Topology(props: ITopologyProps) {
 
     useEffect(() => {
         const { devices, batteries, snrsData } = topologyData;
-        if (devices && !isCurrentlyDragged) {
+        if (devices?.length && !isCurrentlyDragged) {
             try {
                 const newNodes = createNodesFromData(devices, batteries);
                 const newEdges = createEdgesFromData(snrsData);
