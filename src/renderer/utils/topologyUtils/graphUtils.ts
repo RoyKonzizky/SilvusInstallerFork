@@ -1,21 +1,24 @@
-import {IUserEdge, IUserNode} from "@antv/graphin";
-import {batteriesType, devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
+import { IUserEdge, IUserNode } from "@antv/graphin";
+import { batteriesType, devicesType, snrsType } from "../../constants/types/devicesDataTypes.ts";
 
 export const graphStyle = {
     background: "black",
-    color: "white"
+    color: "white",
 };
 
-export function createNodesFromData(devices: devicesType, batteries: batteriesType) {
+export function createNodesFromData(devices: devicesType, batteries: batteriesType): IUserNode[] {
     const nodes: IUserNode[] = [];
+    const color = '#1fb639';
+
     for (let i = 0; i < devices.length; i++) {
-        const color = '#1fb639';
+        const device = devices[i];
+        const battery = batteries[i];
 
         nodes[i] = {
-            id: devices[i].id.toString(),
+            id: device.id.toString(),
             style: {
                 label: {
-                    value: devices[i].name.toString() || devices[i].ip.toString(),
+                    value: device.name || device.ip,
                     fill: '#FFFFFF',
                 },
                 keyshape: {
@@ -26,21 +29,22 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
                 },
             },
             data: {
-                battery: batteries[i].percent.toString(),
-                statuses: devices[i].status,
-                ip: devices[i].ip,
-            },
+                battery: battery.percent,
+                statuses: device.status,
+                ip: device.ip,
+            }
         };
     }
 
-    return nodes as IUserNode[];
+    return nodes;
 }
 
 export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
     const edges: IUserEdge[] = [];
 
     for (let i = 0; i < snrs.length; i++) {
-        const labelValue = Number(snrs[i].snr);
+        const snr = snrs[i];
+        const labelValue = Number(snr.snr);
 
         let edgeColor;
         if (labelValue < 20) {
@@ -52,15 +56,15 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
         }
 
         edges.push({
-            id:`${snrs[i].id1}-${snrs[i].id2}`,
-            source: snrs[i].id1,
-            target: snrs[i].id2,
+            id: `${snr.id1}-${snr.id2}`,
+            source: snr.id1,
+            target: snr.id2,
             style: {
                 label: {
-                    value: `${labelValue}`,
+                    value: labelValue.toString(),
                     fill: '#FFFFFF',
                     fontSize: 30,
-                    offset: [0,15]
+                    offset: [0, 10]
                 },
                 keyshape: {
                     endArrow: {
@@ -70,7 +74,7 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
                     lineWidth: 6
                 },
             },
-            data: `${labelValue.toString()}`,
+            data: labelValue.toString(),
         });
     }
     return edges;
