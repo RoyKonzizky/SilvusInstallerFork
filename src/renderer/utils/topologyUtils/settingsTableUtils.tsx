@@ -71,7 +71,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             title: t('CameraHeader'),
             dataIndex: 'camera',
             key: 'camera',
-            render: (status: number, record: any) => (
+            render: (_: number, record: any) => (
                 <div style={{ display: "flex", justifyContent: "center" }}>
                     {camerasMap[record.key] &&
                         <Popover
@@ -85,7 +85,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
                                 </div>
                             }
                         >
-                            <img src={cameraIcon} style={{ width: '1.8rem' }} />
+                            <img src={cameraIcon} style={{ width: '1.8rem' }} alt={'camera icon'}/>
                         </Popover >
                     }
                 </div >
