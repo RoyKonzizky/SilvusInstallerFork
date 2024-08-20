@@ -9,7 +9,7 @@ import { updateNodePositions } from "../../../../redux/TopologyGroups/topologyGr
 interface ITopologyGraph {
     nodes: IUserNode[],
     edges: IUserEdge[],
-    setDraggingState: (isDragged: boolean) => void
+    setDraggingState: (isDragged: boolean) => void,
 }
 
 export function TopologyGraph(props: ITopologyGraph) {
@@ -24,29 +24,58 @@ export function TopologyGraph(props: ITopologyGraph) {
 
     useEffect(() => {
         const graph = graphRef.current?.graph;
-        if (graph) {
-            const handleNodePositionChange = () => {
-                const updatedNodes = graph.getNodes().map((node: any) => {
-                    const model = node.getModel();
-                    const canvasPosition = graph.getCanvasByPoint(model.x, model.y);
-                    return {
-                        id: model.id,
-                        x: Number(canvasPosition.x.toFixed(3)),
-                        y: Number(canvasPosition.y.toFixed(3))
-                    };
-                });
-                dispatch(updateNodePositions(updatedNodes));
-                setDraggingState(false);
-            };
+        if (!graph) return;
 
-            graph.on('node:dragstart', () => setDraggingState(true));
-            graph.on('node:dragend', handleNodePositionChange);
+        graph.fitView();
 
-            return () => {
-                graph.off('node:dragstart', () => setDraggingState(true));
-                graph.off('node:dragend', handleNodePositionChange);
-            };
-        }
+        const handleNodeDragStart = () => setDraggingState(true);
+
+        const handleNodeDragEnd = () => {
+            const updatedNodes = graph.getNodes().map((node: IUserNode) => {
+                const nodeModel = node.getModel();
+                return {
+                    id: nodeModel.id,
+                    x: nodeModel.x,
+                    y: nodeModel.y,
+                };
+            });
+
+            dispatch(updateNodePositions(updatedNodes));
+            setDraggingState(false);
+        };
+
+        const handleTouchStart = (event: any) => {
+            const model = event.item.getModel();
+            console.log('Touch started on node ID:', model.id);
+            setDraggingState(true);
+        };
+
+        const handleTouchEnd = () => {
+            const updatedNodes = graph.getNodes().map((node: IUserNode) => {
+                const nodeModel = node.getModel();
+                return {
+                    id: nodeModel.id,
+                    x: nodeModel.x,
+                    y: nodeModel.y,
+                };
+            });
+            setDraggingState(false);
+            dispatch(updateNodePositions(updatedNodes));
+        };
+
+        graph.on('node:dragstart', handleNodeDragStart);
+        graph.on('node:dragend', handleNodeDragEnd);
+        graph.on('node:touchstart', handleTouchStart);
+
+        const canvasElement = graph.get('canvas').get('el');
+        canvasElement.addEventListener('touchend', handleTouchEnd);
+
+        return () => {
+            graph.off('node:dragstart', handleNodeDragStart);
+            graph.off('node:dragend', handleNodeDragEnd);
+            graph.off('node:touchstart', handleTouchStart);
+            canvasElement.removeEventListener('touchend', handleTouchEnd);
+        };
     }, []);
 
     const handleElementClick = (event: { item: any; }) => {
@@ -67,12 +96,9 @@ export function TopologyGraph(props: ITopologyGraph) {
             graph.on('node:click', handleElementClick);
 
             graph.on('node:touchstart', (event: any) => {
-                const model = event.item.getModel();
-                console.log('Touched node ID:', model.id);
+                // const model = event.item.getModel(); // console.log('Touched node ID:', model.id);
 
-                if (timerId) {
-                    clearTimeout(timerId);
-                }
+                if (timerId) { clearTimeout(timerId); }
 
                 setDoubleClickDetector(prevState => prevState + 1);
 
@@ -105,22 +131,10 @@ export function TopologyGraph(props: ITopologyGraph) {
     };
 
     return (
-        <Graphin
-            ref={graphRef}
-            modes={modes}
-            data={{ nodes: props.nodes, edges: props.edges }}
-            style={graphStyle}
-            layout={{ name: 'force2', options: {} }}
-            width={2000}
-            height={1000}
-        >
-            {selectedElement &&
-                <ElementPopover
-                    position={popoverPosition}
-                    selectedElement={selectedElement}
-                    onClose={() => setSelectedElement(null)}
-                />
-            }
+        <Graphin ref={graphRef} modes={modes} data={{ nodes: props.nodes, edges: props.edges }} style={graphStyle}
+                 layout={{ name: 'force2', options: {} }} width={2000} height={1000}>
+            {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
+                                                onClose={() => setSelectedElement(null)}/>}
             <TopologyTopBar />
         </Graphin>
     );
