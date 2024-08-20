@@ -1,6 +1,6 @@
 // import RecordingsLogo from "../../assets/recordings.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import { interactExpandingAndCollapsingButton } from "../../redux/Collapsing/collapsingSlice.ts";
 import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
@@ -46,19 +46,14 @@ export function Sidebar() {
                     file={ExpandCollapseLogo}
                     onClick={() => dispatch(interactExpandingAndCollapsingButton())}
                 />
-                <NavigatorButton
-                    href=""
-                    isSubsection={false}
-                    text={i18n.language === 'he' ? 'עב' : 'EN'}
-                    onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'he' : 'en')}
-                />
-                <NavigatorButton
-                    href={Paths.Dashboard}
-                    isSubsection={false}
-                    text={t('dashboard')}
-                    file={DashboardLogo}
-                />
-                <div className='mt-[4vh]'>
+
+                <div className="flex flex-col gap-4 mt-[4vh]">
+                    <NavigatorButton
+                        href={Paths.Dashboard}
+                        isSubsection={false}
+                        text={t('dashboard')}
+                        file={DashboardLogo}
+                    />
                     <NavigatorButton
                         href={Paths.Settings}
                         isSubsection={false}
@@ -67,19 +62,19 @@ export function Sidebar() {
                     />
                     <NavigatorButton
                         href={Paths.Topology}
-                        // href="#"
                         isSubsection={false}
                         text={t('topology')}
                         file={TopologyLogo}
                     />
-                    {/*<NavigatorButton*/}
-                    {/*    href="" isSubsection={false}*/}
-                    {/*    text="הקלטות" file={RecordingsLogo}*/}
-                    {/*    possibleHrefSubsections={[Paths.Camera, Paths.Video, Paths.Gallery]}*/}
-                    {/*    subsections={<SubsectionsOfRecordingsNavigatorButton/>}*/}
-                    {/*/>*/}
                 </div>
-                <div className='mt-[4vh]'>
+
+                <div className='absolute bottom-0'>
+                    <NavigatorButton
+                        href=""
+                        isSubsection={false}
+                        text={i18n.language === 'he' ? 'עב' : 'EN'}
+                        onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'he' : 'en')}
+                    />
                     <NavigatorButton
                         href={""}
                         onClick={callLogOut}
