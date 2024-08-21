@@ -27,6 +27,11 @@ export function TopologyGraph(props: ITopologyGraph) {
         if (!graph) return;
 
         graph.fitView();
+    }, []);
+
+    useEffect(() => {
+        const graph = graphRef.current?.graph;
+        if (!graph) return;
 
         const handleNodeDragStart = () => setDraggingState(true);
 
@@ -76,7 +81,7 @@ export function TopologyGraph(props: ITopologyGraph) {
             graph.off('node:touchstart', handleTouchStart);
             canvasElement.removeEventListener('touchend', handleTouchEnd);
         };
-    }, []);
+    }, [props.nodes]);
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();

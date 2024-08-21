@@ -7,7 +7,7 @@ import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
 import ExpandCollapseLogo from '../../assets/expand_collapse.svg';
 import SettingsLogo from '../../assets/settings.svg';
 import TopologyLogo from '../../assets/topology.svg';
-import DashboardLogo from "../../assets/dashboard.svg";
+// import DashboardLogo from "../../assets/dashboard.svg";
 import LogoutLogo from "../../assets/logout.svg";
 import { Paths } from "../../constants/Paths.ts";
 import '../../i18n.ts';
@@ -47,12 +47,12 @@ export function Sidebar() {
                     text={i18n.language === 'he' ? 'עב' : 'EN'}
                     onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'he' : 'en')}
                 />
-                <NavigatorButton
-                    href={Paths.Dashboard}
-                    isSubsection={false}
-                    text={t('dashboard')}
-                    file={DashboardLogo}
-                />
+                {/*<NavigatorButton*/}
+                {/*    href={Paths.Dashboard}*/}
+                {/*    isSubsection={false}*/}
+                {/*    text={t('dashboard')}*/}
+                {/*    file={DashboardLogo}*/}
+                {/*/>*/}
                 <div className='mt-[4vh]'>
                     <NavigatorButton
                         href={Paths.Settings}
