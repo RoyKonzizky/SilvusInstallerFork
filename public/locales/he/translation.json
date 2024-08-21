@@ -26,6 +26,7 @@
   "loginModalErrorMessage": "הסיסמה או המשתמש אינם נכונים. אנא נסו שנית",
   "loginErrorMessage": "כתובת הרשת שהכנסתם לא תקנית ו/או לא קיימת. אנא נסו שנית",
   "error": "שגיאה",
+  "unknownError": "שגיאת התחברות לא ידועה",
   "id": "מזהה",
   "elementDetails": "מידע על המכשיר",
   "connectivityLevelHeader": "תדירות עדכון נתונים",

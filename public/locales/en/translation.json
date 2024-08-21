@@ -26,6 +26,7 @@
   "loginModalErrorMessage": "Your Username or Password is incorrect. Please try again!",
   "loginErrorMessage": "IP is not existed or was inputted incorrectly. Please try again!",
   "error": "Error",
+  "unknownError": "Unknown Error",
   "id": "ID",
   "elementDetails": "Element Details",
   "connectivityLevelHeader": "Data Update Frequency",

@@ -13,7 +13,7 @@ export const netData = async () => {
 
 export const startUp = async () => {
     try {
-        const response = await axios.post('http://localhost:8080/start-up');
+        const response = await axios.get('http://localhost:8080/ip');
         console.log('Response received:', response.data);
         return response.data;
     } catch (error) {
@@ -22,14 +22,15 @@ export const startUp = async () => {
     }
 };
 
-export const fetchProtectedLogin = async (loginUser: { password: string; username: string }) => {
+export const fetchProtectedLogin = async (loginUser: { radio_ip: string, password?: string; username?: string }) => {
+    let response = null;
     try {
-        const response = await axios.post('http://localhost:8080/log-in', loginUser);
+        response = await axios.post('http://localhost:8080/log-in', loginUser);
         console.log('Response received:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching Protected Login:', error);
-        return null;
+        return error;
     }
 };
 
