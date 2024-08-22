@@ -23,7 +23,7 @@ export function Settings(props: ISettingsProps) {
     const ipAddress = useSelector((state: RootState) => state.ip.ip_address);
 
     const dispatch = useDispatch();
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     useEffect(() => {
         isMounted.current = true;
@@ -105,8 +105,14 @@ export function Settings(props: ISettingsProps) {
 
     return (
         <>
-            <div className={`${!props.isSmaller && "h-screen"} flex flex-col justify-center items-center gap-y-8`}>
-                <AppInputs appInputs={settingInputs} className={props.isSmaller ? 'flex-col' : `mr-[10%] ${i18n.language === 'en' ? 'w-[90%]' : 'w-[100%]'}`} isSmaller={props.isSmaller} />
+            <div
+                style={{ transform: 'scale(0.6)' }}
+                className={`flex flex-col justify-center items-center gap-y-8 ${!props.isSmaller ? "h-screen" : ""}`}>
+                <AppInputs
+                    appInputs={settingInputs}
+                    className={`${props.isSmaller ? 'flex-col' : `mr-[10%] w-full lg:w-[90%] xl:w-[80%]`} w-full`}
+                    isSmaller={props.isSmaller}
+                />
             </div>
             <div
                 onClick={openSilvusWebSystem}
@@ -115,7 +121,7 @@ export function Settings(props: ISettingsProps) {
                 <BottomCircle
                     image={PresetsImage}
                     bgColor='#303030'
-                    radius={40}
+                    radius={30}
                 />
             </div>
         </>

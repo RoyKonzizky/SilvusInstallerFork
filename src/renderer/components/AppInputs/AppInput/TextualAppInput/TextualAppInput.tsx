@@ -1,4 +1,4 @@
-import {ITextualAppInputProps} from "./ITextualAppInputProps.ts";
+import { ITextualAppInputProps } from "./ITextualAppInputProps.ts";
 import { useTranslation } from 'react-i18next';
 
 export function TextualAppInput(props: ITextualAppInputProps) {
@@ -6,7 +6,19 @@ export function TextualAppInput(props: ITextualAppInputProps) {
 
     return (
         <>
-            {(props.type === 'text' || props.type === 'number') && <label className={`w-[60%] flex ${i18n.language === 'en' && "text-start"} ${i18n.language === 'he' && "justify-end"}`}>{props.label}</label>}
+            {(props.type === 'text' || props.type === 'number') &&
+                <label
+                    style={{
+                        display: 'flex',
+                        width: '50%',
+                        textAlign: i18n.language === 'en' ? "left" : "right",
+                        direction: i18n.language === 'en' ? "ltr" : "rtl",
+                        alignItems: 'center'
+                    }}
+                >
+                    {props.label}
+                </label>
+            }
         </>
     );
 }
