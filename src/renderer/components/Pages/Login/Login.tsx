@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { setIp } from "../../../redux/IP/IPSlice.ts";
 import { useTranslation } from 'react-i18next';
 import "../../../i18n.ts";
-import { fetchProtectedLogin, netData, startUp } from "../../../utils/loginUtils.ts";
+import { fetchProtectedLogin, startUp } from "../../../utils/loginUtils.ts";
 import { serverResponseIpDataType } from "../../../constants/types/serverResponseDataType.ts";
 
 export function Login() {
