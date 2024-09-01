@@ -58,17 +58,17 @@ export function Topology(props: ITopologyProps) {
             try {
                 const newNodes = createNodesFromData(devices, batteries!);
                 const newEdges = createEdgesFromData(snrsData!);
-
+                //refactor to remove this part cause the change made this part pretty obsolete
                 const updatedNodes = newNodes.map(newNode => {
                     const existingNode = selector.nodes
                         .find((node: IUserNode) => node.id === newNode.id);
                     if (existingNode) {
                         return {
                             ...existingNode,
-                            data: {
-                                ...existingNode.data,
-                                battery: newNode.data.battery
-                            }
+                            // data: {
+                            //     ...existingNode.data,
+                            //     battery: existingNode.data.battery
+                            // }
                         };
                     }
                     return newNode;
@@ -88,13 +88,9 @@ export function Topology(props: ITopologyProps) {
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {
-                selector.nodes?.length > 0 ?
-                    <TopologyGraph
-                        nodes={nodes}
-                        edges={edges}
-                        setDraggingState={(isDragged: boolean) => setIsCurrentlyDragged(isDragged)}
-                    />
-                    : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
+                selector.nodes?.length > 0 ? <TopologyGraph nodes={nodes} edges={edges}
+                        setDraggingState={(isDragged: boolean) => setIsCurrentlyDragged(isDragged)}/>
+                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
             }
         </div>
     );
