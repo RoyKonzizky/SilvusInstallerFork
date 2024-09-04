@@ -72,7 +72,7 @@ function createWindow() {
     }
   });
 
-  electron.Menu.setApplicationMenu(null);
+  // electron.Menu.setApplicationMenu(null);
 
   mainWindow.loadURL("http://localhost:5173");
 
