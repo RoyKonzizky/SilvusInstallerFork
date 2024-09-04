@@ -32,8 +32,15 @@ export const mapCamerasToDevices = (nodes: IUserNode[], cameras: Camera[]) => {
 }
 
 export function connectCamToDevice(deviceIp: string, cams: camsType): CamStreams {
-    const matchedCam = cams.data.find(cam =>
-        cam.device_ip === deviceIp);
+    // console.log('Device IP:', deviceIp); // console.log('Cams:', cams);
+
+    if (!cams || !cams.data) {
+        // console.error("cams or cams.data is null/undefined");
+        return { mainStreamLink: 'N/A', subStreamLink: 'N/A' };
+    }
+
+    const matchedCam = cams.data.find(cam => cam.device_ip === deviceIp);
+    // console.log("Matched Camera:", matchedCam);
 
     if (matchedCam) {
         return {
@@ -41,15 +48,9 @@ export function connectCamToDevice(deviceIp: string, cams: camsType): CamStreams
             subStreamLink: matchedCam.sub_stream.uri,
         };
     } else {
-        return {};
+        return {
+            mainStreamLink: 'N/A',
+            subStreamLink: 'N/A'
+        };
     }
 }
-
-export const loadCamerasData = async () => {
-    try {
-        return await getCameras();
-    } catch (error) {
-        console.error("Error in receiving cameras", error);
-    }
-};
-

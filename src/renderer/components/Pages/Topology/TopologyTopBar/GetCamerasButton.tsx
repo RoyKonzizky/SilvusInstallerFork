@@ -10,7 +10,7 @@ export function GetCamerasButton() {
     const loadCamerasData = async () => {
         try {
             const cameras: camsType = await getCameras();
-            console.log(cameras);
+            // console.log(cameras);
             dispatch(setCameras(cameras));
         } catch (error) {
             console.error("Error in receiving cameras", error);
