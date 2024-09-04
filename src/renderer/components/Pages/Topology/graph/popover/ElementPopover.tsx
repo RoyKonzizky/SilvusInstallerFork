@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import { ChangeEvent, useState } from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import refreshIcon from "../../../../../assets/refresh.svg";
 import { updateBatteryInfo } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { sendNames } from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
-import { connectCamToDevice } from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
+import {CamStreams, connectCamToDevice} from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -23,6 +23,7 @@ export function ElementPopover(props: IElementPopoverProps) {
     const selector = useSelector((state: RootState) => state.topologyGroups);
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [label, setLabel] = useState(props.selectedElement?.style?.label?.value);
+    const [camLinks, setCamLinks] = useState<CamStreams>();
 
     const handleLabelChange = (e: ChangeEvent<HTMLInputElement>) => {
         setLabel(e.target.value);
@@ -43,6 +44,15 @@ export function ElementPopover(props: IElementPopoverProps) {
         );
         setIsEditMode(false);
     };
+
+    useEffect(() => {
+        setCamLinks({
+            mainStreamLink: `${t('cameraMainStreamLink')}: 
+                                         ${connectCamToDevice(props.selectedElement!.data.ip, selector.cameras).mainStreamLink}`,
+            subStreamLink: `${t('cameraSubStreamLink')}: 
+                                         ${connectCamToDevice(props.selectedElement!.data.ip, selector.cameras).subStreamLink}`
+        });
+    }, []);
 
     return (
         props.selectedElement?.type === 'graphin-circle' ?
@@ -69,8 +79,9 @@ export function ElementPopover(props: IElementPopoverProps) {
                                             width: '55%',
                                             height: '2.5rem'
                                         }}
-                                        onFocus={(e) => setIsEditMode(true)}
-                                        onBlur={(e) => setIsEditMode(false)}
+                                        className={'bg-white'}
+                                        onFocus={() => setIsEditMode(true)}
+                                        onBlur={() => setIsEditMode(false)}
                                     />
                                     <Button
                                         onClick={handleButtonClick}
@@ -87,7 +98,6 @@ export function ElementPopover(props: IElementPopoverProps) {
                                         }}>
                                         {t('updateDeviceLabelButton')}
                                     </Button>
-
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                                     <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
@@ -99,14 +109,10 @@ export function ElementPopover(props: IElementPopoverProps) {
                                 </div>
                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
                                 <p>
-                                    {`${t('cameraMainStreamLink')}: 
-                                         ${connectCamToDevice(props.selectedElement.data.ip, selector.cameras).mainStreamLink
-                                        || 'N/A'}`}
+                                    {camLinks?.mainStreamLink}
                                 </p>
                                 <p>
-                                    {`${t('cameraSubStreamLink')}: 
-                                         ${connectCamToDevice(props.selectedElement.data.ip, selector.cameras).subStreamLink
-                                        || 'N/A'}`}
+                                    {camLinks?.subStreamLink}
                                 </p>
                             </div>
                             :
