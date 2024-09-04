@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ITopologyProps } from "./ITopologyProps";
 import { TopologyGraph } from "./graph/TopologyGraph";
 import { createEdgesFromData, createNodesFromData } from "../../../utils/topologyUtils/graphUtils.ts";
-import { batteriesType, devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
+import { devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
@@ -12,15 +12,14 @@ import { IUserEdge, IUserNode } from "@antv/graphin";
 
 export function Topology(props: ITopologyProps) {
     const [devices, setDevices] = useState<devicesType | null>(null);
-    const [batteries, setBatteries] = useState<batteriesType | null>(null);
     const [snrsData, setSnrsData] = useState<snrsType | null>(null);
     const ws_url = "ws://localhost:8080/ws";
     const { lastJsonMessage } = useWebSocket(
         ws_url, {
-        share: true,
-        shouldReconnect: () => true, onError: (error) => console.error('WebSocket error:', error),
-        onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
-    }
+            share: true,
+            shouldReconnect: () => true, onError: (error) => console.error('WebSocket error:', error),
+            onOpen: () => console.log('WebSocket connected'), onClose: () => console.log('WebSocket disconnected'),
+        }
     );
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -42,9 +41,8 @@ export function Topology(props: ITopologyProps) {
                     }
 
                     setSnrsData(snr_list);
-                } else if (type === 'battery') {
-                    setBatteries(data);
-                } else {
+                }
+                else {
                     console.log('Unknown message type:', type);
                 }
             } catch (error) {
@@ -56,9 +54,9 @@ export function Topology(props: ITopologyProps) {
     useEffect(() => {
         if (devices && !isCurrentlyDragged) {
             try {
-                const newNodes = createNodesFromData(devices, batteries!);
+                const newNodes = createNodesFromData(devices);
                 const newEdges = createEdgesFromData(snrsData!);
-                //refactor to remove this part cause the change made this part pretty obsolete
+                //TODO refactor to remove this part cause the change made this part pretty obsolete
                 const updatedNodes = newNodes.map(newNode => {
                     const existingNode = selector.nodes
                         .find((node: IUserNode) => node.id === newNode.id);
@@ -83,7 +81,7 @@ export function Topology(props: ITopologyProps) {
                 console.error('Error in loading data:', error);
             }
         }
-    }, [devices, batteries, snrsData]);
+    }, [devices, snrsData]);
 
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>

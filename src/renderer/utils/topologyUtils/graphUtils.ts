@@ -1,12 +1,12 @@
 import {IUserEdge, IUserNode} from "@antv/graphin";
-import {batteriesType, devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
+import {devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
 
 export const graphStyle = {
     background: "black",
     color: "white"
 };
 
-export function createNodesFromData(devices: devicesType, batteries: batteriesType) {
+export function createNodesFromData(devices: devicesType) {
     const nodes: IUserNode[] = [];
     for (let i = 0; i < devices.length; i++) {
         const color = '#1fb639';
@@ -26,7 +26,7 @@ export function createNodesFromData(devices: devicesType, batteries: batteriesTy
                 },
             },
             data: {
-                battery: batteries[i].percent.toString(),
+                battery: devices[i].percent.toString(),
                 statuses: devices[i].status,
                 ip: devices[i].ip,
             },
