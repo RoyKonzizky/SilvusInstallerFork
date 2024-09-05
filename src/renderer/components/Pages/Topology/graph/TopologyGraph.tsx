@@ -33,20 +33,24 @@ export function TopologyGraph(props: ITopologyGraph) {
         const graph = graphRef.current?.graph;
         if (!graph) return;
 
-        const handleNodeDragStart = () => setDraggingState(true);
+        const handleNodeDragStart = () => {
+            setDraggingState(true);
+            setIsTouchStarted(true);
+            setSelectedElement(null);
+        };
 
         const handleNodeDragEnd = () => {
             if (!isTouchStarted) return;
-            const updatedNodes = graph.getNodes().map((node: IUserNode) => {
-                const nodeModel = node.getModel();
-                return {
-                    id: nodeModel.id,
-                    x: nodeModel.x,
-                    y: nodeModel.y,
-                };
-            });
-
-            dispatch(updateNodePositions(updatedNodes));
+            // const updatedNodes = graph.getNodes().map((node: IUserNode) => {
+            //     const nodeModel = node.getModel();
+            //     return {
+            //         id: nodeModel.id,
+            //         x: nodeModel.x,
+            //         y: nodeModel.y,
+            //     };
+            // });
+            //
+            // dispatch(updateNodePositions(updatedNodes));
             setDraggingState(false);
             setIsTouchStarted(false);
         };
@@ -61,16 +65,16 @@ export function TopologyGraph(props: ITopologyGraph) {
 
         const handleTouchEnd = () => {
             if (!isTouchStarted) return;
-            const updatedNodes = graph.getNodes().map((node: IUserNode) => {
-                const nodeModel = node.getModel();
-                return {
-                    id: nodeModel.id,
-                    x: nodeModel.x,
-                    y: nodeModel.y,
-                };
-            });
+            // const updatedNodes = graph.getNodes().map((node: IUserNode) => {
+            //     const nodeModel = node.getModel();
+            //     return {
+            //         id: nodeModel.id,
+            //         x: nodeModel.x,
+            //         y: nodeModel.y,
+            //     };
+            // });
+            // dispatch(updateNodePositions(updatedNodes));
             setDraggingState(false);
-            dispatch(updateNodePositions(updatedNodes));
             setIsTouchStarted(false);
         };
 
@@ -86,8 +90,25 @@ export function TopologyGraph(props: ITopologyGraph) {
             graph.off('node:dragend', handleNodeDragEnd);
             graph.off('node:touchstart', handleTouchStart);
             canvasElement.removeEventListener('touchend', handleTouchEnd);
+
+            // Save node positions when the component is unmounting
+            dispatchNodesLocations(graph);
         };
     }, [props.nodes, isTouchStarted]);
+
+    function dispatchNodesLocations(graph: any) {
+        if (graph && graph.getNodes()) {
+            const updatedNodes = graph.getNodes().map((node: IUserNode) => {
+                const nodeModel = node.getModel();
+                return {
+                    id: nodeModel.id,
+                    x: nodeModel.x,
+                    y: nodeModel.y,
+                };
+            });
+            dispatch(updateNodePositions(updatedNodes));
+        }
+    }
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();
@@ -107,9 +128,9 @@ export function TopologyGraph(props: ITopologyGraph) {
             graph.on('node:click', handleElementClick);
 
             graph.on('node:touchstart', (event: any) => {
-                // const model = event.item.getModel(); // console.log('Touched node ID:', model.id);
-
-                if (timerId) { clearTimeout(timerId); }
+                if (timerId) {
+                    clearTimeout(timerId);
+                }
 
                 setDoubleClickDetector(prevState => prevState + 1);
 
@@ -119,7 +140,7 @@ export function TopologyGraph(props: ITopologyGraph) {
                 }else {
                     const newTimerId = setTimeout(() => {
                         setDoubleClickDetector(0);
-                    }, 500);
+                    }, 200);
                     setTimerId(newTimerId);
                 }
             });
@@ -130,6 +151,9 @@ export function TopologyGraph(props: ITopologyGraph) {
                 graph.off('node:click', handleElementClick);
                 graph.off('node:touchstart');
             }
+
+            // Save node positions when the component is unmounting
+            dispatchNodesLocations(graph);
         };
     }, [doubleClickDetector, props.nodes, isTouchStarted]);
 
