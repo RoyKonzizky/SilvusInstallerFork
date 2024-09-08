@@ -77,7 +77,8 @@ export function ElementPopover(props: IElementPopoverProps) {
                                             borderRadius: '5px',
                                             fontSize: '1.2rem',
                                             width: '55%',
-                                            height: '2.5rem'
+                                            height: '2.5rem',
+                                            backgroundColor: 'white',
                                         }}
                                         className={'bg-white'}
                                         onFocus={() => setIsEditMode(true)}
@@ -103,8 +104,8 @@ export function ElementPopover(props: IElementPopoverProps) {
                                     <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
                                     <button onClick={() => updateBatteryInfo(props.selectedElement?.id, dispatch)}>
                                         <img src={refreshIcon} alt={'refresh battery'} style={{ width: '1.2rem' }}
-                                            className={props.selectedElement?.data.battery === -1
-                                                ? 'rotate-animation' : ''} />
+                                            className={props.selectedElement?.data.battery === -1 ? 'rotate-animation' : ''}
+                                        />
                                     </button>
                                 </div>
                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>

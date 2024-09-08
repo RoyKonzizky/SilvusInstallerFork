@@ -56,7 +56,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             key: 'battery',
             render: (status: number, record: any) => (
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ width: '1rem' }}>{status >= 0 ? status : ''}</div>
+                    <div style={{ width: '2rem' }}>{status >= 0 ? status : ''}</div>
                     <button onClick={() => updateBatteryInfo(record.key, dispatch)} style={{ width: '4rem' }}>
                         <img
                             src={refreshIcon}
