@@ -24,7 +24,7 @@ function FrequencyAppInput(props: IFrequencyAppInputProps) {
     const customStyles = {
         control: (provided: any, state: any) => ({
             ...provided,
-            backgroundColor: '#303030',
+            backgroundColor: '#1F2937',
             border: state.isFocused ? '2px solid #4A5568' : '1px solid #2D3748', // focus ring and default border
             boxShadow: state.isFocused ? '0 0 0 2px rgba(72, 187, 120, 0.5)' : 'none',
             borderRadius: '0.75rem',
@@ -42,7 +42,7 @@ function FrequencyAppInput(props: IFrequencyAppInputProps) {
         }),
         menu: (provided: any) => ({
             ...provided,
-            backgroundColor: '#303030',
+            backgroundColor: '#1F2937',
             borderRadius: '0.75rem',
         }),
         placeholder: (provided: any) => ({
@@ -51,6 +51,7 @@ function FrequencyAppInput(props: IFrequencyAppInputProps) {
         }),
         input: (provided: any) => ({
             ...provided,
+            backgroundColor: '#1F2937',
             color: '#FFFFFF', // Make the input text white
             direction: i18n.language === 'he' ? 'rtl' : 'ltr', // Ensure correct cursor position based on language
         }),
@@ -65,7 +66,7 @@ function FrequencyAppInput(props: IFrequencyAppInputProps) {
 
     return (
         <div
-            className={`bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 w-[50%] ${i18n.language === 'en' && "text-start"} ${i18n.language === 'he' && "justify-end text-end rtl"} p-2 rounded-xl`}
+            className={`w-[50%] ${i18n.language === 'en' && "text-start"} ${i18n.language === 'he' && "justify-end text-end rtl"} p-2 rounded-xl`}
         >
             <AsyncSelect
                 cacheOptions loadOptions={loadOptions} value={defaultValue} defaultValue={defaultValue}
