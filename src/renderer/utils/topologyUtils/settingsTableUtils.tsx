@@ -59,7 +59,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
                     <div style={{ width: '2rem' }}>{status >= 0 ? status : ''}</div>
                     <button onClick={() => updateBatteryInfo(record.key, dispatch)} style={{ width: '4rem' }}>
                         <img
-                            src={refreshIcon}
+                            src={refreshIcon} alt={'refresh icon'}
                             style={{ width: '1.2rem' }}
                             className={status === -1 ? 'rotate-animation' : ''}
                         />

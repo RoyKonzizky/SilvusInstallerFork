@@ -84,11 +84,6 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         dispatch(updateHulls(newHulls));
     }, [nodes]);
 
-    // useEffect(() => {
-    //     setNodes(nodesSelector);
-    // }, [nodesSelector]);
-    // (duplicate)
-
     useEffect(() => {
         setHulls(hullsSelector);
     }, [hullsSelector]);
@@ -97,33 +92,6 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
         const newGroups = createGroups(hulls);
         setGroups(newGroups);
     }, [hulls]);
-
-    // useEffect(() => {
-    //     setNodes(prevNodes => checkIfUnassignedToGroup(prevNodes));
-    //     dispatch(updateNodes(nodes));
-    // }, [groups]);
-
-    // useEffect(() => {
-    //     setDataSource(createDataSource(nodes, groups));
-    // }, [nodes, groups]);
-    // (duplicate)
-
-    // useEffect(() => {
-    //     setColumns(createColumns(groups, nodes, hulls, dispatch, updateNodes, updateHulls,
-    //         (nodeId: string, groupIndex: number, status: number) => {
-    //             const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
-    //             setNodes(updatedNodes);
-    //         },
-    //         updateBatteryInfo
-    //     ));
-    // }, [groups, nodes, hulls]);
-
-    // useEffect(() => {
-    //     const newHulls = convertNodesToHulls(nodes, hulls);
-    //     setHulls(newHulls);
-    //     dispatch(updateHulls(newHulls));
-    // }, [nodes]);
-    // (duplicate)
 
     return (
         <>
