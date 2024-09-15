@@ -55,7 +55,7 @@ export function TopologyGraph(props: ITopologyGraph) {
             setIsTouchStarted(false);
         };
 
-        const handleTouchStart = (event: any) => {
+        const handleNodeTouchStart = (event: any) => {
             const model = event.item.getModel();
             console.log('Touch started on node ID:', model.id);
             setDraggingState(true);
@@ -63,7 +63,7 @@ export function TopologyGraph(props: ITopologyGraph) {
             setSelectedElement(null);
         };
 
-        const handleTouchEnd = () => {
+        const handleNodeTouchEnd = () => {
             if (!isTouchStarted) return;
             // const updatedNodes = graph.getNodes().map((node: IUserNode) => {
             //     const nodeModel = node.getModel();
@@ -78,18 +78,37 @@ export function TopologyGraph(props: ITopologyGraph) {
             setIsTouchStarted(false);
         };
 
+        const handleCanvasTouchStart = () => {
+            setDraggingState(true);
+            setIsTouchStarted(true);
+            setSelectedElement(null);
+        };
+
+        const handleCanvasTouchEnd = () => {
+            if (!isTouchStarted) return;
+            setDraggingState(false);
+            setIsTouchStarted(false);
+        };
+
+        graph.on('canvas:touchstart', handleCanvasTouchStart);
+        graph.on('canvas:touchend', handleCanvasTouchEnd);
+
         graph.on('node:dragstart', handleNodeDragStart);
         graph.on('node:dragend', handleNodeDragEnd);
-        graph.on('node:touchstart', handleTouchStart);
 
+        graph.on('node:touchstart', handleNodeTouchStart);
         const canvasElement = graph.get('canvas').get('el');
-        canvasElement.addEventListener('touchend', handleTouchEnd);
+        canvasElement.addEventListener('touchend', handleNodeTouchEnd);
 
         return () => {
+            graph.off('canvas:touchstart', handleNodeTouchStart);
+            graph.off('canvas:touchend', handleNodeTouchStart);
+
             graph.off('node:dragstart', handleNodeDragStart);
             graph.off('node:dragend', handleNodeDragEnd);
-            graph.off('node:touchstart', handleTouchStart);
-            canvasElement.removeEventListener('touchend', handleTouchEnd);
+
+            graph.off('node:touchstart', handleNodeTouchStart);
+            canvasElement.removeEventListener('touchend', handleNodeTouchEnd);
 
             // Save node positions when the component is unmounting
             dispatchNodesLocations(graph);
