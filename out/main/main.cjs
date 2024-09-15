@@ -64,15 +64,16 @@ function stopPythonServer() {
 
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
-    // fullscreen: true,
     icon: path.join(__dirname, '../../public/Lizi.ico'),
     webPreferences: {
       preload: path__namespace.join(__dirname, "../preload/preload.cjs"),
-      webSecurity: false
+      webSecurity: false,
+      enableRemoteModule: true, // Allow remote module usage
+      touchSupport: true, // Enable touch support for virtual keyboards
+      contextIsolation: false, // Allow IPC between renderer and main processes
+      nodeIntegration: true // Allow Node.js integration in the renderer
     }
   });
-
-  // electron.Menu.setApplicationMenu(null);
 
   mainWindow.loadURL("http://localhost:5173");
 
