@@ -15,8 +15,6 @@ if (-Not (Test-Path $loadingGif)) {
 # Start the external C# loading window in the background
 $loadingProcess = Start-Process -FilePath $loadingApp -ArgumentList $loadingGif -PassThru
 
-# Rest of your PowerShell script starts here
-
 # Add local Node.js and Python binaries to the PATH
 $localNodeDir = ".\local_node"
 $localPythonDir = ".\local_python"
@@ -34,6 +32,9 @@ Stop-Process -Name "node" -ErrorAction SilentlyContinue
 
 # Set up npcap if it doesn't exist
 if (-Not (Test-Path "C:\Program Files\Npcap")) {
+    # Close the loading window
+    Stop-Process -Id $loadingProcess.Id
+
     Write-Output "Setting up npcap environment..."
     $process = Start-Process $npcapPackage -Wait -PassThru
     $process.WaitForExit()
@@ -41,6 +42,9 @@ if (-Not (Test-Path "C:\Program Files\Npcap")) {
         Write-Output "Failed to install Npcap."
         exit 1
     }
+
+    # Start the external C# loading window in the background
+    $loadingProcess = Start-Process -FilePath $loadingApp -ArgumentList $loadingGif -PassThru
 }
 
 # Set up Python virtual environment if it doesn't exist
