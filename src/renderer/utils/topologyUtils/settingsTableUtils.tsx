@@ -268,8 +268,10 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
             }
         );
         // console.log('Response received:', response.data);
+        toast.success(t("saveSettingsSuccessMsg"));
     } catch (error) {
         console.error('Error sending data:', error);
+        toast.error(t("saveSettingsFailureMsg"));
     }
 };
 
