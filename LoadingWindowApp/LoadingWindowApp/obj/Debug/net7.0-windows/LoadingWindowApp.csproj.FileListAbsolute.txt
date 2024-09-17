@@ -1,0 +1,15 @@
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\bin\Debug\net7.0-windows\LoadingWindowApp.exe
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\bin\Debug\net7.0-windows\LoadingWindowApp.deps.json
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\bin\Debug\net7.0-windows\LoadingWindowApp.runtimeconfig.json
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\bin\Debug\net7.0-windows\LoadingWindowApp.dll
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\bin\Debug\net7.0-windows\LoadingWindowApp.pdb
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.csproj.AssemblyReference.cache
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.AssemblyInfoInputs.cache
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.AssemblyInfo.cs
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.csproj.CoreCompileInputs.cache
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.dll
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\refint\LoadingWindowApp.dll
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.pdb
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\LoadingWindowApp.genruntimeconfig.cache
+C:\Users\Hadar\Documents\untitled6\LoadingWindowApp\LoadingWindowApp\obj\Debug\net7.0-windows\ref\LoadingWindowApp.dll

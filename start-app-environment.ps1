@@ -1,4 +1,23 @@
-# Paths to local Node.js and Python binaries
+# Define paths for the external C# executable and the GIF
+$loadingApp = ".\LoadingWindowApp\LoadingWindowApp\bin\Debug\net7.0-windows\LoadingWindowApp.exe"
+$loadingGif = ".\loading.gif"
+
+# Check if the executable and GIF exist before proceeding
+if (-Not (Test-Path $loadingApp)) {
+    Write-Error "Loading window application not found at path: $loadingApp"
+    exit 1
+}
+if (-Not (Test-Path $loadingGif)) {
+    Write-Error "Loading GIF not found at path: $loadingGif"
+    exit 1
+}
+
+# Start the external C# loading window in the background
+$loadingProcess = Start-Process -FilePath $loadingApp -ArgumentList $loadingGif -PassThru
+
+# Rest of your PowerShell script starts here
+
+# Add local Node.js and Python binaries to the PATH
 $localNodeDir = ".\local_node"
 $localPythonDir = ".\local_python"
 $npmPath = "$localNodeDir\npm.cmd"
@@ -7,49 +26,6 @@ $pythonServer = "..\svApp"
 $localPythonPackages = ".\local_python_packages"
 $npcapPackage = ".\npcap-1.79.exe"
 
-# Function to check if a process is running
-function Test-Process {
-    param (
-        [string]$Name
-    )
-    $process = Get-Process -Name $Name -ErrorAction SilentlyContinue
-    return $null -ne $process
-}
-
-# Function to display the loading GIF window
-function Show-LoadingWindow {
-    Add-Type -AssemblyName System.Windows.Forms
-    Add-Type -AssemblyName System.Drawing
-
-    # Create the form for the loading window
-    $form = New-Object Windows.Forms.Form
-    $form.Text = "Loading..."
-    $form.Size = New-Object Drawing.Size(300, 300)
-    $form.StartPosition = "CenterScreen"
-
-    # Add a picture box to display the loading GIF
-    $pictureBox = New-Object Windows.Forms.PictureBox
-    $pictureBox.SizeMode = "StretchImage"
-    $pictureBox.ImageLocation = ".\loading.gif"  # Path to your loading GIF
-    $pictureBox.Dock = "Fill"
-    $form.Controls.Add($pictureBox)
-
-    # Set the form to be on top of other windows
-    $form.Topmost = $true
-
-    # Set up a timer to close the form after 10 seconds
-    $timer.Interval = 10000  # 10 seconds
-    $timer.Add_Tick({
-        $timer.Stop()
-        $form.Close()
-    })
-    $timer.Start()
-
-    # Show the form (this call will block until the form is closed)
-    $form.ShowDialog()
-}
-
-# Add local Node.js and Python binaries to the PATH
 $env:PATH = "$localNodeDir;$localPythonDir;$env:PATH"
 
 # Stop any previous instances of the app
@@ -66,9 +42,6 @@ if (-Not (Test-Path "C:\Program Files\Npcap")) {
         exit 1
     }
 }
-
-# Show the loading window (this will block for 10 seconds while the GIF is displayed)
-Show-LoadingWindow
 
 # Set up Python virtual environment if it doesn't exist
 if (-Not (Test-Path "$pythonServer\venv")) {
@@ -101,6 +74,9 @@ if ($process.ExitCode -ne 0) {
     exit 1
 }
 
+# Close the loading window
+Stop-Process -Id $loadingProcess.Id
+
 # Start the app
 Write-Output "Starting the app..."
 $process = Start-Process $npmPath -ArgumentList "run dev" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
@@ -109,7 +85,7 @@ $process = Start-Process $npmPath -ArgumentList "run dev" -NoNewWindow -PassThru
 Start-Sleep -Seconds 10
 
 # Check if the app is running
-if (Test-Process -Name "node") {
+if (Get-Process -Name "node" -ErrorAction SilentlyContinue) {
     Write-Output "The app is running."
 } else {
     Write-Output "Failed to start the app."
@@ -122,4 +98,5 @@ while ($process.HasExited -eq $false) {
 }
 
 Write-Output "The app has exited."
+
 exit
