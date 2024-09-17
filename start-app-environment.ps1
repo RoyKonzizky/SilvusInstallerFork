@@ -21,21 +21,6 @@ function Show-LoadingWindow {
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
 
-    # Calculate the timer interval dynamically
-    $interval = 10000  # Base interval of 10 seconds (10,000 milliseconds)
-
-    # Check if the virtual environment directory exists
-    if (-Not (Test-Path "$pythonServer\venv")) {
-        # Add 1 minute (60,000 milliseconds) if the directory does not exist
-        $interval += 60000
-    }
-
-    # Check if the virtual environment directory is empty or doesn't exist
-    if (-Not (Test-Path "$pythonServer\venv") -or (Get-ChildItem "$pythonServer\venv" | Measure-Object).Count -eq 0) {
-        # Add 40 seconds (40,000 milliseconds) if the directory is empty or doesn't exist
-        $interval += 40000
-    }
-
     # Create the form for the loading window
     $form = New-Object Windows.Forms.Form
     $form.Text = "Loading..."
@@ -52,9 +37,8 @@ function Show-LoadingWindow {
     # Set the form to be on top of other windows
     $form.Topmost = $true
 
-    # Set up a timer to close the form after the calculated interval
-    $timer = New-Object Windows.Forms.Timer
-    $timer.Interval = $interval  # Dynamically set the interval
+    # Set up a timer to close the form after 10 seconds
+    $timer.Interval = 10000  # 10 seconds
     $timer.Add_Tick({
         $timer.Stop()
         $form.Close()
@@ -83,7 +67,7 @@ if (-Not (Test-Path "C:\Program Files\Npcap")) {
     }
 }
 
-# Show the loading window (this will block for the calculated time while the GIF is displayed)
+# Show the loading window (this will block for 10 seconds while the GIF is displayed)
 Show-LoadingWindow
 
 # Set up Python virtual environment if it doesn't exist
