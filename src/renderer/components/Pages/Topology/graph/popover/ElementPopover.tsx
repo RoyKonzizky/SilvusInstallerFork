@@ -37,7 +37,7 @@ export function ElementPopover(props: IElementPopoverProps) {
         dispatch(updateNodes(newNodes));
     };
 
-    const handleButtonClick = () => {
+    const handleLabelEditButtonClick = () => {
         sendNames(
             props.selectedElement?.id as string,
             props.selectedElement?.style?.label?.value as string
@@ -85,7 +85,7 @@ export function ElementPopover(props: IElementPopoverProps) {
                                         onBlur={() => setIsEditMode(false)}
                                     />
                                     <Button
-                                        onClick={handleButtonClick}
+                                        onClick={handleLabelEditButtonClick}
                                         style={{
                                             marginLeft: '0.5rem',
                                             padding: '0.5rem 1rem',
@@ -99,12 +99,13 @@ export function ElementPopover(props: IElementPopoverProps) {
                                         }}>
                                         {t('updateDeviceLabelButton')}
                                     </Button>
+                                    /** ROI GAY*/
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                                     <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
                                     <button onClick={() => updateBatteryInfo(props.selectedElement?.id, dispatch)}>
                                         <img src={refreshIcon} alt={'refresh battery'} style={{ width: '1.2rem' }}
-                                            className={props.selectedElement?.data.battery === -1 ? 'rotate-animation' : ''}
+                                            className={props.selectedElement?.data.battery === '-1' ? 'rotate-animation' : ''}
                                         />
                                     </button>
                                 </div>

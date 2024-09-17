@@ -54,14 +54,14 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             title: t('batteryHeader'),
             dataIndex: 'battery',
             key: 'battery',
-            render: (status: number, record: any) => (
+            render: (status: string, record: any) => (
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ width: '2rem' }}>{status >= 0 ? status : ''}</div>
+                    <div style={{ width: '2rem' }}>{status >= '0' ? status : ''}</div>
                     <button onClick={() => updateBatteryInfo(record.key, dispatch)} style={{ width: '4rem' }}>
                         <img
                             src={refreshIcon} alt={'refresh icon'}
                             style={{ width: '1.2rem' }}
-                            className={status === -1 ? 'rotate-animation' : ''}
+                            className={status === '-1' ? 'rotate-animation' : ''}
                         />
                     </button>
                 </div>
@@ -276,6 +276,12 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
 };
 
 export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
+    // Set status to -1 to indicate loading
+    dispatch(updateSingleDeviceBattery({
+        id: deviceId,
+        battery: '-1'
+    }));
+
     try {
         const updatedBatteryInfo = await axios.get(`http://localhost:8080/device-battery?device_id=${deviceId}`);
         if (updatedBatteryInfo?.data?.percent ?? false) {
@@ -284,6 +290,7 @@ export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
                 return;
             }
 
+            // Set the actual battery status after fetching
             dispatch(updateSingleDeviceBattery({
                 id: deviceId,
                 battery: updatedBatteryInfo.data.percent
@@ -291,6 +298,7 @@ export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
         }
     } catch (e) {
         toast.error(t("batteryInfoFailureMsg"));
+        // Optionally reset the battery to an error state here
     }
 }
 
