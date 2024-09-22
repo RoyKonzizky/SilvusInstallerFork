@@ -99,7 +99,6 @@ export function ElementPopover(props: IElementPopoverProps) {
                                         }}>
                                         {t('updateDeviceLabelButton')}
                                     </Button>
-                                    /** ROI GAY*/
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                                     <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
