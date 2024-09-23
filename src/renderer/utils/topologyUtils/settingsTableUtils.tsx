@@ -13,6 +13,9 @@ import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGr
 import refreshIcon from "../../assets/refresh.svg";
 import cameraIcon from "../../assets/video-camera.svg";
 import i18n from "../../i18n";
+import {getCameras, mapCamerasToDevices} from "./getCamerasButtonUtils.ts";
+import {Camera} from "../../constants/types/devicesDataTypes.ts";
+import {CameraTableColumnHeader} from "../../components/CameraTableColumnHeader.tsx";
 
 const { Option } = Select;
 
@@ -47,7 +50,8 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
     updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
     updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
     handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
-    updateBatteryInfo: (deviceId: string, dispatch: any) => void) {
+    updateBatteryInfo: (deviceId: string, dispatch: any) => void, cameraMap: {[p: string]: Camera},
+    setCamerasMap: Dispatch<SetStateAction<{[p: string]: Camera}>>) {
     const columns = [
         { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
         {
@@ -68,7 +72,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             )
         },
         {
-            title: t('CameraHeader'),
+            title: (<CameraTableColumnHeader cameraMap={cameraMap} nodes={nodes} setCamerasMap={setCamerasMap}/>),
             dataIndex: 'camera',
             key: 'camera',
             render: (_: number, record: any) => (
@@ -341,3 +345,23 @@ export function padStatuses(nodes: IUserNode[]): IUserNode[] {
         };
     });
 }
+
+export const loadCameras = async (
+    nodes: IUserNode[], camerasMap: { [p: string]: Camera },
+    setCamerasMap: Dispatch<SetStateAction<{ [p: string]: Camera }>>
+) => {
+    let camerasByDeviceId;
+    setCamerasMap({});
+    try {
+        const cameras = await getCameras();
+
+        if (cameras?.data) {
+            camerasByDeviceId = mapCamerasToDevices(nodes, cameras.data);
+            setCamerasMap(camerasByDeviceId);
+        }
+    } catch (error) {
+        console.error('Error loading cameras:', error);
+    } finally {
+        setCamerasMap(camerasByDeviceId || camerasMap);
+    }
+};

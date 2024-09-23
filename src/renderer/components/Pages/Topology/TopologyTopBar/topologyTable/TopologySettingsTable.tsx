@@ -2,22 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { useEffect, useState } from "react";
 import { Button, Table } from "antd";
-import { updateHulls, updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {
-    convertNodesToHulls,
-    createColumns,
-    createDataSource,
-    handleAddGroup,
-    handleStatusChange,
-    createGroups,
-    checkIfUnassignedToGroup,
-    updateBatteryInfo,
-} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {updateHulls, updateNodes} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, createGroups,
+    checkIfUnassignedToGroup, updateBatteryInfo,} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
 import { HullCfg, IUserNode } from "@antv/graphin";
 import i18n from "../../../../../i18n.ts";
-import { getCameras, mapCamerasToDevices } from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
 
 interface ITopologySettingsTable {
     onSave: (hullOptions: HullCfg[], nodes: IUserNode[]) => void,
@@ -40,20 +31,8 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
             },
-            () => updateBatteryInfo
+            () => updateBatteryInfo, camerasMap, setCamerasMap
         ));
-
-    useEffect(() => {
-        const loadCameras = async () => {
-            const cameras = await getCameras();
-            if (cameras?.data) {
-                const camerasByDeviceId = mapCamerasToDevices(nodes, cameras.data);
-                setCamerasMap(camerasByDeviceId);
-            }
-        }
-
-        loadCameras();
-    }, []);
 
     useEffect(() => {
         setNodes(nodesSelector);
@@ -74,7 +53,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
             },
-            updateBatteryInfo
+            updateBatteryInfo, camerasMap, setCamerasMap
         ));
     }, [groups, nodes, hulls]);
 

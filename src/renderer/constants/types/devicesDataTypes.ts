@@ -14,8 +14,4 @@ export type Camera = {
         audio: number;
     };
 };
-
-export type camsType = {
-    message: string,
-    data: Camera[];
-};
+export type camsType = { message: string, data: Camera[]; };
