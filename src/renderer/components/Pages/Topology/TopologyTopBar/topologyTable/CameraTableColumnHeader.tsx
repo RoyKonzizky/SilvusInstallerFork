@@ -1,8 +1,8 @@
 import { t } from "i18next";
-import refreshIcon from "../assets/refresh.svg";
-import { loadCameras } from "../utils/topologyUtils/settingsTableUtils.tsx";
+import refreshIcon from "../../../../../assets/refresh.svg";
+import { loadCameras } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { Dispatch, SetStateAction, useState } from "react";
-import { Camera } from "../constants/types/devicesDataTypes.ts";
+import { Camera } from "../../../../../constants/types/devicesDataTypes.ts";
 import { IUserNode } from "@antv/graphin";
 
 interface ICameraTableColumnHeader {

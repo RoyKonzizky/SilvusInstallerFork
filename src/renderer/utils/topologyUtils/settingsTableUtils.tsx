@@ -15,7 +15,7 @@ import cameraIcon from "../../assets/video-camera.svg";
 import i18n from "../../i18n";
 import {getCameras, mapCamerasToDevices} from "./getCamerasButtonUtils.ts";
 import {Camera} from "../../constants/types/devicesDataTypes.ts";
-import {CameraTableColumnHeader} from "../../components/CameraTableColumnHeader.tsx";
+import {CameraTableColumnHeader} from "../../components/Pages/Topology/TopologyTopBar/topologyTable/CameraTableColumnHeader.tsx";
 
 const { Option } = Select;
 
