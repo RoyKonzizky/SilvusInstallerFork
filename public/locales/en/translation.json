@@ -49,7 +49,7 @@
   "CameraIpLabel": "Camera IP",
   "DeviceIpLabel": "Device IP",
   "AddGroup": "Add Group",
-  "Apply": "Apply Settings",
+  "ApplySettings": "Apply Settings",
   "InsertGroupName": "Insert group name",
   "badConnection": "Bad Connection: less than 20db",
   "mediumConnection": "Medium Connection: between 20db to 30db",
@@ -63,5 +63,7 @@
   "updateDeviceLabelButton": "Update",
   "cameraMainStreamLink": "Camera main stream link",
   "cameraSubStreamLink": "Camera sun stream link",
-  "logoutConfirmation": "Are you sure you want to exit?"
+  "logoutConfirmation": "Are you sure you want to exit?",
+  "NodeLabelSizeSuccess": "Node label size change succeeded!",
+  "NodeLabelSizeFailure": "Node label size change failed"
 }

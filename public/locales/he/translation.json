@@ -49,7 +49,7 @@
   "CameraIpLabel": "כתובת מצלמה",
   "DeviceIpLabel": "כתובת מכשיר",
   "AddGroup": "הוספת קבוצה",
-  "Apply": "החל הגדרות",
+  "ApplySettings": "החל הגדרות",
   "InsertGroupName": "הכניסו שם קבוצה",
   "badConnection": "חיבור רע: פחות מ-20",
   "mediumConnection": "חיבור בינוני: בין 20 ל-30",
@@ -63,5 +63,7 @@
   "saveSettingsSuccessMsg": "ההגדרות נשמרו בהצלחה!",
   "saveSettingsFailureMsg": "שגיאה בעת שמירת ההגדרות. הפעולה בוטלה",
   "networkSaveConfirmation": "?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך",
-  "logoutConfirmation": "?האם אתה בטוח שברצונך להתנתק"
+  "logoutConfirmation": "?האם אתה בטוח שברצונך להתנתק",
+  "NodeLabelSizeSuccess": "שינוי גודל שם הצומת הצליח!",
+  "NodeLabelSizeFailure": "שינוי גודל שם הצומת כשל"
 }

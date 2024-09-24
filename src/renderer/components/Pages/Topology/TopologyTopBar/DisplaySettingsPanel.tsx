@@ -5,30 +5,65 @@ import { useTranslation } from 'react-i18next';
 import connectivityIcon from "../../../../assets/connectivity.svg";
 import { getDataInterval, updateDataInterval } from "../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { toast } from "react-toastify";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../../../redux/store.ts";
+import {updateNodes} from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {IUserNode} from "@antv/graphin";
 
-export function LegendSnr() {
-    const DEFAULT_INTERVAL_VALUE = 2;
-
+export function DisplaySettingsPanel() {
+    const DEFAULT_DATA_INTERVAL_VALUE = 2;
+    const DEFAULT_LABEL_SIZE_INTERVAL_VALUE = 1;
+    const dispatch = useDispatch();
+    const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
     const [modalState, setModalState] = useState(false);
     const { t, i18n } = useTranslation();
-
-    const [intervalValue, setIntervalValue] = useState<number>(DEFAULT_INTERVAL_VALUE);
+    const [dataIntervalValue, setDataIntervalValue] = useState<number>(DEFAULT_DATA_INTERVAL_VALUE);
+    const [labelSizeIntervalValue, setLabelSizeIntervalValue] = useState(DEFAULT_LABEL_SIZE_INTERVAL_VALUE);
 
     useEffect(() => {
         (async () => {
             const interval = await getDataInterval();
-            setIntervalValue(interval ?? DEFAULT_INTERVAL_VALUE);
+            setDataIntervalValue(interval ?? DEFAULT_DATA_INTERVAL_VALUE);
         })();
     }, []);
 
-    const handleApplyButtonClicked = async () => {
-        const updatedValue = await updateDataInterval(intervalValue);
+    const handleApplyDataIntervalButtonClicked = async () => {
+        const updatedValue = await updateDataInterval(dataIntervalValue);
         if (updatedValue) {
             toast.success(t("dataIntervalUpdateSuccessMsg"));
             setModalState(false);
             return;
         }
         toast.error(t("dataIntervalUpdateFailureMsg"));
+    }
+
+    const increaseNodesLabelSize = (nodes:IUserNode[], labelSizeIntervalValue: number) => {
+        const updatedNodes:IUserNode[] = nodes.map(node => {
+            const newSize = node.style!.label!.fontSize! * labelSizeIntervalValue;
+            return {
+                ...node,
+                style: {
+                    ...node.style,
+                    label:{
+                        fontSize: newSize,
+                    }
+                }
+            };
+        });
+        return updatedNodes;
+    }
+
+    const handleApplyLabelSizeButtonClicked = async () => {
+        const nodes = nodesSelector;
+        const updatedNodes = increaseNodesLabelSize(nodes, labelSizeIntervalValue);
+        dispatch(updateNodes(updatedNodes));
+        setModalState(false);
+        if (updatedNodes[0].style?.label?.fontSize === nodes[0].style!.label!.fontSize! * labelSizeIntervalValue) {
+            toast.success(t("NodeLabelSizeSuccess"));
+            setModalState(false);
+            return;
+        }
+        toast.error(t("NodeLabelSizeFailure"));
     }
 
     return (
@@ -55,8 +90,8 @@ export function LegendSnr() {
                         min={2}
                         max={10}
                         step={2}
-                        value={intervalValue}
-                        onChange={(newValue) => setIntervalValue(newValue)}
+                        value={dataIntervalValue}
+                        onChange={(newValue) => setDataIntervalValue(newValue)}
                         marks={{ 2: '2', 4: '4', 6: '6', 8: '8', 10: '10' }}
                         tooltip={{ open: false }}
                         style={{ width: '85%', margin: 'auto' }}
@@ -64,10 +99,10 @@ export function LegendSnr() {
 
                     <div className="flex justify-center">
                         <Button
-                            onClick={handleApplyButtonClicked}
+                            onClick={handleApplyDataIntervalButtonClicked}
                             className={'text-black h-10 w-30 mt-10 rounded-xl'}
                         >
-                            {t("Apply")}
+                            {t("ApplySettings")}
                         </Button>
                     </div>
                 </div>
@@ -85,6 +120,28 @@ export function LegendSnr() {
                             {i18n.language === 'he' && <div className={`w-6 h-6 ${value.color}`}></div>}
                         </div>
                     ))}
+                </div>
+
+                <div style={{ padding: '3rem 0' }}>
+                    <Slider
+                        min={1}
+                        max={5}
+                        step={1}
+                        value={labelSizeIntervalValue}
+                        onChange={(newValue) => setLabelSizeIntervalValue(newValue)}
+                        marks={{ 1: '1', 2: '2', 3: '3', 4: '4', 5: '5' }}
+                        tooltip={{ open: false }}
+                        style={{ width: '85%', margin: 'auto' }}
+                    />
+
+                    <div className="flex justify-center">
+                        <Button
+                            onClick={handleApplyLabelSizeButtonClicked}
+                            className={'text-black h-10 w-30 mt-10 rounded-xl'}
+                        >
+                            {t("ApplySettings")}
+                        </Button>
+                    </div>
                 </div>
             </Modal>
         </div>
