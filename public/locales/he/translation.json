@@ -65,5 +65,6 @@
   "networkSaveConfirmation": "?ההגדרות יחולו על כל המכשירים ברשת. האם אתה בטוח שברצונך להמשיך",
   "logoutConfirmation": "?האם אתה בטוח שברצונך להתנתק",
   "NodeLabelSizeSuccess": "שינוי גודל שם הצומת הצליח!",
-  "NodeLabelSizeFailure": "שינוי גודל שם הצומת כשל"
+  "NodeLabelSizeFailure": "שינוי גודל שם הצומת כשל",
+  "nodeLabelSizeSlider": "משנה גודל שם הצומת"
 }

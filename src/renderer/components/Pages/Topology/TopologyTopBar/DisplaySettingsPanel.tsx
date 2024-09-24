@@ -76,17 +76,16 @@ export function DisplaySettingsPanel() {
                 open={modalState}
                 centered={true}
                 className={`flex ${i18n.language === 'en' && "text-start"} ${i18n.language === 'he' && "justify-end"}`}
-                title={
-                    <div style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
-                        {t('connectivityLevelHeader')}
-                    </div>
-                }
+                title={''}
                 footer={null}
                 closable={true}
                 onCancel={() => setModalState(false)}
                 afterClose={() => setModalState(false)}
             >
                 <div style={{ padding: '3rem 0' }}>
+                    <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
+                        {t('connectivityLevelHeader')}
+                    </div>
                     <Slider
                         min={2}
                         max={10}
@@ -110,7 +109,7 @@ export function DisplaySettingsPanel() {
 
                 <hr style={{ paddingBottom: '1rem' }} />
 
-                <div style={{ direction: i18n.language === 'en' ? "ltr" : "rtl" }}>
+                <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={{ direction: i18n.language === 'en' ? "ltr" : "rtl", textAlign: "right", paddingRight: "2rem"  }}>
                     {t('SNRLegend')}
                 </div>
                 <div className={'p-4 bg-white rounded'}>
@@ -124,6 +123,9 @@ export function DisplaySettingsPanel() {
                 </div>
 
                 <div style={{ padding: '3rem 0' }}>
+                    <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
+                        {t("nodeLabelSizeSlider")}
+                    </div>
                     <Slider
                         min={1}
                         max={5}

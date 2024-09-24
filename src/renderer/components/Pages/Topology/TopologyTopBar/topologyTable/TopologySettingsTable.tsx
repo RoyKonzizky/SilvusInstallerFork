@@ -80,7 +80,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             <Table dataSource={dataSource} columns={columns} rowKey="key" className={'bottom-0'}
                 style={{ direction: i18n.language === 'en' ? 'ltr' : 'rtl', overflow: 'auto', }} />
             <Button onClick={() => props.onSave(hulls, nodes)} className={'text-black h-14 w-40 m-5 rounded-xl'}>
-                {t("Apply")}
+                {t("ApplySettings")}
             </Button>
         </>
     );
