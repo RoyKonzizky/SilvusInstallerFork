@@ -45,6 +45,7 @@ export function DisplaySettingsPanel() {
                 style: {
                     ...node.style,
                     label:{
+                        ...node.style?.label,
                         fontSize: newSize,
                     }
                 }
