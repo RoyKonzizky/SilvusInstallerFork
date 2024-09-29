@@ -17,6 +17,7 @@ export function createNodesFromData(devices: devicesType) {
                 label: {
                     value: devices[i].name.toString() || devices[i].ip.toString(),
                     fill: '#FFFFFF',
+                    fontSize: 15,
                 },
                 keyshape: {
                     fill: color,

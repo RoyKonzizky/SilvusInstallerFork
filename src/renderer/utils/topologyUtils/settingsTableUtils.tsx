@@ -10,9 +10,14 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 import { t } from "i18next";
 import { toast } from "react-toastify";
 import { updateSingleDeviceBattery } from "../../redux/TopologyGroups/topologyGroupsSlice";
-import refreshIcon from "../../assets/refresh.svg";
 import cameraIcon from "../../assets/video-camera.svg";
 import i18n from "../../i18n";
+import {getCameras, mapCamerasToDevices} from "./getCamerasButtonUtils.ts";
+import {Camera} from "../../constants/types/devicesDataTypes.ts";
+import {CameraTableColumnHeader} from "../../components/Pages/Topology/TopologyTopBar/topologyTable/CameraTableColumnHeader.tsx";
+import {
+    BatteryCellRefreshSpinner
+} from "../../components/Pages/Topology/TopologyTopBar/topologyTable/BatteryCellRefreshSpinner.tsx";
 
 const { Option } = Select;
 
@@ -43,32 +48,26 @@ export function createGroups(hulls: HullCfg[]) {
     return filteredGroups;
 }
 
-export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullCfg[], camerasMap: any, dispatch: any,
+export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullCfg[], camerasMap: {[p: string]: Camera}, dispatch: any,
     updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">,
     updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
     handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
-    updateBatteryInfo: (deviceId: string, dispatch: any) => void) {
+    setCamerasMap: Dispatch<SetStateAction<{[p: string]: Camera}>>) {
     const columns = [
         { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
         {
             title: t('batteryHeader'),
             dataIndex: 'battery',
             key: 'battery',
-            render: (status: number, record: any) => (
+            render: (status: string, record: any) => (
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <div style={{ width: '2rem' }}>{status >= 0 ? status : ''}</div>
-                    <button onClick={() => updateBatteryInfo(record.key, dispatch)} style={{ width: '4rem' }}>
-                        <img
-                            src={refreshIcon} alt={'refresh icon'}
-                            style={{ width: '1.2rem' }}
-                            className={status === -1 ? 'rotate-animation' : ''}
-                        />
-                    </button>
+                    <div style={{ width: '2rem' }}>{status >= '0' ? status : ''}</div>
+                    <BatteryCellRefreshSpinner dispatch={dispatch} deviceId={record.key} elementBattery={status}/>
                 </div>
             )
         },
         {
-            title: t('CameraHeader'),
+            title: (<CameraTableColumnHeader cameraMap={camerasMap} nodes={nodes} setCamerasMap={setCamerasMap}/>),
             dataIndex: 'camera',
             key: 'camera',
             render: (_: number, record: any) => (
@@ -268,12 +267,20 @@ export const sendPttGroups = async (hullOptions: HullCfg[], nodes: IUserNode[]) 
             }
         );
         // console.log('Response received:', response.data);
+        toast.success(t("saveSettingsSuccessMsg"));
     } catch (error) {
         console.error('Error sending data:', error);
+        toast.error(t("saveSettingsFailureMsg"));
     }
 };
 
 export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
+    // Set status to -1 to indicate loading
+    dispatch(updateSingleDeviceBattery({
+        id: deviceId,
+        battery: '-1'
+    }));
+
     try {
         const updatedBatteryInfo = await axios.get(`http://localhost:8080/device-battery?device_id=${deviceId}`);
         if (updatedBatteryInfo?.data?.percent ?? false) {
@@ -282,6 +289,7 @@ export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
                 return;
             }
 
+            // Set the actual battery status after fetching
             dispatch(updateSingleDeviceBattery({
                 id: deviceId,
                 battery: updatedBatteryInfo.data.percent
@@ -289,6 +297,7 @@ export const updateBatteryInfo = async (deviceId: string, dispatch: any) => {
         }
     } catch (e) {
         toast.error(t("batteryInfoFailureMsg"));
+        // Optionally reset the battery to an error state here
     }
 }
 
@@ -331,3 +340,21 @@ export function padStatuses(nodes: IUserNode[]): IUserNode[] {
         };
     });
 }
+
+export const loadCameras = async (nodes: IUserNode[], camerasMap: { [p: string]: Camera },
+                                  setCamerasMap: Dispatch<SetStateAction<{ [p: string]: Camera }>>) => {
+    let camerasByDeviceId;
+    setCamerasMap({});
+    try {
+        const cameras = await getCameras();
+
+        if (cameras?.data) {
+            camerasByDeviceId = mapCamerasToDevices(nodes, cameras.data);
+            setCamerasMap(camerasByDeviceId);
+        }
+    } catch (error) {
+        console.error('Error loading cameras:', error);
+    } finally {
+        setCamerasMap(camerasByDeviceId || camerasMap);
+    }
+};
