@@ -47,7 +47,10 @@ const topologyGroupsSlice = createSlice({
                 }
             }
             state.nodes = nodes;
-        }
+        },
+        setSizeInterval(state, action: PayloadAction<number>) {
+            state.sizeInterval = action.payload;
+        },
     },
 });
 
@@ -59,7 +62,8 @@ export const {
     updateNodePositions,
     setGraphLayoutType,
     setCameras,
-    updateSingleDeviceBattery
+    updateSingleDeviceBattery,
+    setSizeInterval,
 } = topologyGroupsSlice.actions;
 
 export default topologyGroupsSlice.reducer;

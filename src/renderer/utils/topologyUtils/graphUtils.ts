@@ -6,7 +6,7 @@ export const graphStyle = {
     color: "white"
 };
 
-export function createNodesFromData(devices: devicesType) {
+export function createNodesFromData(devices: devicesType, sizeInterval: number) {
     const nodes: IUserNode[] = [];
     for (let i = 0; i < devices.length; i++) {
         const color = '#1fb639';
@@ -17,13 +17,13 @@ export function createNodesFromData(devices: devicesType) {
                 label: {
                     value: devices[i].name.toString() || devices[i].ip.toString(),
                     fill: '#FFFFFF',
-                    fontSize: 15,
+                    fontSize: 15 * sizeInterval,
                 },
                 keyshape: {
                     fill: color,
                     stroke: color,
                     fillOpacity: 1,
-                    size: 50,
+                    size: 50 * sizeInterval,
                 },
             },
             data: {
@@ -37,7 +37,7 @@ export function createNodesFromData(devices: devicesType) {
     return nodes as IUserNode[];
 }
 
-export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
+export function createEdgesFromData(snrs: snrsType, sizeInterval: number): IUserEdge[] {
     const edges: IUserEdge[] = [];
 
     for (let i = 0; i < snrs.length; i++) {
@@ -60,7 +60,7 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
                 label: {
                     value: `${labelValue}`,
                     fill: '#FFFFFF',
-                    fontSize: 30,
+                    fontSize: 30 * sizeInterval,
                     offset: [0,15]
                 },
                 keyshape: {
@@ -68,7 +68,7 @@ export function createEdgesFromData(snrs: snrsType): IUserEdge[] {
                         path: '',
                     },
                     stroke: edgeColor,
-                    lineWidth: 6
+                    lineWidth: 6 * sizeInterval
                 },
             },
             data: `${labelValue.toString()}`,

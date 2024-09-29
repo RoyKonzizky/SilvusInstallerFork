@@ -8,4 +8,5 @@ export interface ITopologyGroupsReducerState {
     hullOptions: HullCfg[],
     graphLayout: string,
     cameras: camsType,
+    sizeInterval: number,
 }

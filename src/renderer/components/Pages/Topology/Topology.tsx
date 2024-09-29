@@ -6,7 +6,7 @@ import { devicesType, snrsType } from "../../../constants/types/devicesDataTypes
 import useWebSocket from "react-use-websocket";
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from "react-redux";
-import { updateNodes } from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {updateEdges, updateNodes} from "../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import { RootState } from "../../../redux/store.ts";
 import { IUserEdge, IUserNode } from "@antv/graphin";
 
@@ -24,6 +24,7 @@ export function Topology(props: ITopologyProps) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const selector = useSelector((state: RootState) => state.topologyGroups);
+    const sizeIntervalSelector = useSelector((state: RootState) => state.topologyGroups.sizeInterval);
     const [edges, setEdges] = useState<IUserEdge[]>([]);
     const [nodes, setNodes] = useState<IUserNode[]>([]);
     const [isCurrentlyDragged, setIsCurrentlyDragged] = useState<boolean>(false);
@@ -54,8 +55,8 @@ export function Topology(props: ITopologyProps) {
     useEffect(() => {
         if (devices && !isCurrentlyDragged) {
             try {
-                const newNodes = createNodesFromData(devices);
-                const newEdges = createEdgesFromData(snrsData!);
+                const newNodes = createNodesFromData(devices, selector.sizeInterval);
+                const newEdges = createEdgesFromData(snrsData!, selector.sizeInterval);
                 //TODO refactor to remove this part cause the change made this part pretty obsolete
                 const updatedNodes = newNodes.map(newNode => {
                     const existingNode = selector.nodes
@@ -72,7 +73,7 @@ export function Topology(props: ITopologyProps) {
                     return newNode;
                 });
 
-                // dispatch(updateEdges(edges));
+                dispatch(updateEdges(edges));
                 dispatch(updateNodes(updatedNodes));
                 setNodes(updatedNodes);
                 setEdges(newEdges);
@@ -81,7 +82,7 @@ export function Topology(props: ITopologyProps) {
                 console.error('Error in loading data:', error);
             }
         }
-    }, [devices, snrsData]);
+    }, [devices, snrsData, sizeIntervalSelector]);
 
     return (
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>

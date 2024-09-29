@@ -1,24 +1,23 @@
-import { useEffect, useState } from "react";
-import { Modal, Slider, Button } from "antd";
-import { snrColors } from "../../../../utils/topologyUtils/LegendSnrUtils.ts";
-import { useTranslation } from 'react-i18next';
+import {useEffect, useState} from "react";
+import {Button, Modal, Slider} from "antd";
+import {snrColors} from "../../../../utils/topologyUtils/LegendSnrUtils.ts";
+import {useTranslation} from 'react-i18next';
 import connectivityIcon from "../../../../assets/connectivity.svg";
-import { getDataInterval, updateDataInterval } from "../../../../utils/topologyUtils/settingsTableUtils.tsx";
-import { toast } from "react-toastify";
+import {getDataInterval, updateDataInterval} from "../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../redux/store.ts";
-import {updateNodes} from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
-import {IUserNode} from "@antv/graphin";
+import {setSizeInterval, updateEdges, updateNodes} from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {IUserEdge, IUserNode} from "@antv/graphin";
 
 export function DisplaySettingsPanel() {
     const DEFAULT_DATA_INTERVAL_VALUE = 2;
-    const DEFAULT_LABEL_SIZE_INTERVAL_VALUE = 1;
     const dispatch = useDispatch();
-    const nodesSelector = useSelector((state: RootState) => state.topologyGroups.nodes);
+    const selector = useSelector((state: RootState) => state.topologyGroups);
     const [modalState, setModalState] = useState(false);
     const { t, i18n } = useTranslation();
     const [dataIntervalValue, setDataIntervalValue] = useState<number>(DEFAULT_DATA_INTERVAL_VALUE);
-    const [labelSizeIntervalValue, setLabelSizeIntervalValue] = useState(DEFAULT_LABEL_SIZE_INTERVAL_VALUE);
+    const [sizeIntervalValue, setSizeIntervalValue] = useState<number>(selector.sizeInterval);
 
     useEffect(() => {
         (async () => {
@@ -37,34 +36,54 @@ export function DisplaySettingsPanel() {
         toast.error(t("dataIntervalUpdateFailureMsg"));
     }
 
-    const increaseNodesLabelSize = (nodes:IUserNode[], labelSizeIntervalValue: number) => {
+    const increaseElementsSize = (nodes:IUserNode[], edges: IUserEdge[], sizeIntervalValue: number) => {
+        const DEFAULT_NODE_FONT_SIZE = 15;
+        const DEFAULT_NODE_SHAPE_SIZE = 50;
+        const DEFAULT_EDGE_FONT_SIZE = 30;
+        const DEFAULT_EDGE_SHAPE_SIZE = 6;
         const updatedNodes:IUserNode[] = nodes.map(node => {
-            const newSize = node.style!.label!.fontSize! * labelSizeIntervalValue;
             return {
                 ...node,
                 style: {
                     ...node.style,
                     label:{
                         ...node.style?.label,
-                        fontSize: newSize,
-                    }
+                        fontSize: DEFAULT_NODE_FONT_SIZE * sizeIntervalValue,
+                    },
+                    keyshape: {
+                        ...node.style?.keyshape,
+                        size: DEFAULT_NODE_SHAPE_SIZE * sizeIntervalValue,
+                    },
                 }
             };
         });
-        return updatedNodes;
+
+        const updatedEdges: IUserEdge[] = edges.map(edge => {
+            return {
+                ...edge,
+                style: {
+                    ...edge.style,
+                    label: {
+                        ...edge.style?.label,
+                        fontSize: DEFAULT_EDGE_FONT_SIZE * sizeIntervalValue,
+                    },
+                    keyshape: {
+                        ...edge.style?.keyshape,
+                        lineWidth: DEFAULT_EDGE_SHAPE_SIZE * sizeIntervalValue
+                    },
+                },
+            };
+        });
+
+        return {updatedNodes, updatedEdges};
     }
 
     const handleApplyLabelSizeButtonClicked = async () => {
-        const nodes = nodesSelector;
-        const updatedNodes = increaseNodesLabelSize(nodes, labelSizeIntervalValue);
-        dispatch(updateNodes(updatedNodes));
+        const updatedGraphData = increaseElementsSize(selector.nodes, selector.edges, sizeIntervalValue);
+        dispatch(updateNodes(updatedGraphData.updatedNodes));
+        dispatch(updateEdges(updatedGraphData.updatedEdges));
+        dispatch(setSizeInterval(sizeIntervalValue));
         setModalState(false);
-        if (updatedNodes[0].style?.label?.fontSize === nodes[0].style!.label!.fontSize! * labelSizeIntervalValue) {
-            toast.success(t("NodeLabelSizeSuccess"));
-            setModalState(false);
-            return;
-        }
-        toast.error(t("NodeLabelSizeFailure"));
     }
 
     return (
@@ -109,7 +128,7 @@ export function DisplaySettingsPanel() {
 
                 <hr style={{ paddingBottom: '1rem' }} />
 
-                <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={{ direction: i18n.language === 'en' ? "ltr" : "rtl", textAlign: "right", paddingRight: "2rem"  }}>
+                <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
                     {t('SNRLegend')}
                 </div>
                 <div className={'p-4 bg-white rounded'}>
@@ -130,8 +149,8 @@ export function DisplaySettingsPanel() {
                         min={1}
                         max={5}
                         step={1}
-                        value={labelSizeIntervalValue}
-                        onChange={(newValue) => setLabelSizeIntervalValue(newValue)}
+                        value={sizeIntervalValue}
+                        onChange={(newValue) => setSizeIntervalValue(newValue)}
                         marks={{ 1: '1', 2: '2', 3: '3', 4: '4', 5: '5' }}
                         tooltip={{ open: false }}
                         style={{ width: '85%', margin: 'auto' }}
