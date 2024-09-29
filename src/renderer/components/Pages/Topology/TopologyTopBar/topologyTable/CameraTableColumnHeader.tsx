@@ -1,8 +1,8 @@
 import { t } from "i18next";
-import refreshIcon from "../assets/refresh.svg";
-import { loadCameras } from "../utils/topologyUtils/settingsTableUtils.tsx";
+import refreshIcon from "../../../../../assets/refresh.svg";
+import { loadCameras } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { Dispatch, SetStateAction, useState } from "react";
-import { Camera } from "../constants/types/devicesDataTypes.ts";
+import { Camera } from "../../../../../constants/types/devicesDataTypes.ts";
 import { IUserNode } from "@antv/graphin";
 
 interface ICameraTableColumnHeader {
@@ -16,8 +16,11 @@ export function CameraTableColumnHeader(props: ICameraTableColumnHeader) {
 
     const handleRefreshClick = async () => {
         setIsSpin(true);
-        await loadCameras(props.nodes, props.cameraMap, props.setCamerasMap);
-        setIsSpin(false);
+        setTimeout(async () => {
+            //TODO refactor other spinners to follow this pattern
+            await loadCameras(props.nodes, props.cameraMap, props.setCamerasMap);
+            setIsSpin(false); // This will only execute after loadCameras is done
+        },2000);
     };
 
     return (

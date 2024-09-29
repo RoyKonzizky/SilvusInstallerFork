@@ -6,10 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../../redux/store.ts";
 import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {ChangeEvent, useEffect, useState} from "react";
-import refreshIcon from "../../../../../assets/refresh.svg";
-import { updateBatteryInfo } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { sendNames } from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
 import {CamStreams, connectCamToDevice} from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
+import {PopoverBatteryRefreshSpinner} from "./PopoverBatteryRefreshSpinner.tsx";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -24,6 +23,7 @@ export function ElementPopover(props: IElementPopoverProps) {
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [label, setLabel] = useState(props.selectedElement?.style?.label?.value);
     const [camLinks, setCamLinks] = useState<CamStreams>();
+    const [elementBattery, setElementBattery] = useState<string>(props.selectedElement?.data.battery);
 
     const handleLabelChange = (e: ChangeEvent<HTMLInputElement>) => {
         setLabel(e.target.value);
@@ -101,12 +101,9 @@ export function ElementPopover(props: IElementPopoverProps) {
                                     </Button>
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-                                    <Battery voltage={Math.round(props.selectedElement?.data.battery)} />
-                                    <button onClick={() => updateBatteryInfo(props.selectedElement?.id, dispatch)}>
-                                        <img src={refreshIcon} alt={'refresh battery'} style={{ width: '1.2rem' }}
-                                            className={props.selectedElement?.data.battery === '-1' ? 'rotate-animation' : ''}
-                                        />
-                                    </button>
+                                    <Battery voltage={Math.round(Number(elementBattery))} />
+                                    <PopoverBatteryRefreshSpinner elementBattery={elementBattery} setElementBattery={setElementBattery}
+                                                                  dispatch={dispatch} deviceId={props.selectedElement.id}/>
                                 </div>
                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
                                 <p>

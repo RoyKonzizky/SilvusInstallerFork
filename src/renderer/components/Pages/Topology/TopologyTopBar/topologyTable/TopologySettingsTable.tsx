@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, Table } from "antd";
 import {updateHulls, updateNodes} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {convertNodesToHulls, createColumns, createDataSource, handleAddGroup, handleStatusChange, createGroups,
-    checkIfUnassignedToGroup, updateBatteryInfo,} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+    checkIfUnassignedToGroup, } from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
 import { GroupAdditionModal } from "./GroupAdditionModal.tsx";
 import { t } from "i18next";
 import { HullCfg, IUserNode } from "@antv/graphin";
@@ -30,8 +30,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             (nodeId: string, groupIndex: number, status: number) => {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
-            },
-            () => updateBatteryInfo, camerasMap, setCamerasMap
+            }, setCamerasMap
         ));
 
     useEffect(() => {
@@ -52,8 +51,7 @@ export function TopologySettingsTable(props: ITopologySettingsTable) {
             (nodeId: string, groupIndex: number, status: number) => {
                 const updatedNodes = handleStatusChange(nodes, nodeId, groupIndex, status, dispatch, updateNodes);
                 setNodes(updatedNodes);
-            },
-            updateBatteryInfo, camerasMap, setCamerasMap
+            }, setCamerasMap
         ));
     }, [groups, nodes, hulls]);
 
