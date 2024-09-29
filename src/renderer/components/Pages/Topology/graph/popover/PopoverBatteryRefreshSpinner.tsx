@@ -12,21 +12,18 @@ interface IBatteryRefreshSpinner {
     elementBattery: string,
 }
 
-export function BatteryRefreshSpinner(props: IBatteryRefreshSpinner) {
+export function PopoverBatteryRefreshSpinner(props: IBatteryRefreshSpinner) {
     const [isSpin, setIsSpin] = useState(false);
 
     const handleRefreshClick = async () => {
         setIsSpin(true);
-        await updateBatteryInfo(props.deviceId, props.dispatch, props.setElementBattery, props.elementBattery);
-        setIsSpin(false);
+        setTimeout(() => {
+            updateBatteryInfo(props.deviceId, props.dispatch, props.setElementBattery, props.elementBattery);
+        },2000);
     };
 
-    const updateBatteryInfo = async (
-        deviceId: string,
-        dispatch: any,
-        setElementBattery: Dispatch<SetStateAction<string>>,
-        elementBattery: string
-    ) => {
+    const updateBatteryInfo = async (deviceId: string, dispatch: any, setElementBattery: Dispatch<SetStateAction<string>>,
+                                    elementBattery: string) => {
         let batteryStatus = '-1'; // Default to loading status
         dispatch(updateSingleDeviceBattery({ id: deviceId, battery: batteryStatus }));
         setElementBattery(batteryStatus); // Set element battery to loading status
@@ -50,6 +47,7 @@ export function BatteryRefreshSpinner(props: IBatteryRefreshSpinner) {
             // Always update the battery status in Redux and the element, regardless of success or failure
             dispatch(updateSingleDeviceBattery({ id: deviceId, battery: batteryStatus }) ?? elementBattery);
             setElementBattery(batteryStatus ?? elementBattery);
+            setIsSpin(false);
         }
     };
 

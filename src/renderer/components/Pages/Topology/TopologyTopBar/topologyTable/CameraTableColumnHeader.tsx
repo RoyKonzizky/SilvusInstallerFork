@@ -16,8 +16,11 @@ export function CameraTableColumnHeader(props: ICameraTableColumnHeader) {
 
     const handleRefreshClick = async () => {
         setIsSpin(true);
-        await loadCameras(props.nodes, props.cameraMap, props.setCamerasMap);
-        setIsSpin(false);
+        setTimeout(async () => {
+            //TODO refactor other spinners to follow this pattern
+            await loadCameras(props.nodes, props.cameraMap, props.setCamerasMap);
+            setIsSpin(false); // This will only execute after loadCameras is done
+        },2000);
     };
 
     return (

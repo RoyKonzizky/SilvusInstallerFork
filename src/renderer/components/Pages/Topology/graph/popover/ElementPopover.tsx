@@ -8,7 +8,7 @@ import { updateNodes } from "../../../../../redux/TopologyGroups/topologyGroupsS
 import {ChangeEvent, useEffect, useState} from "react";
 import { sendNames } from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
 import {CamStreams, connectCamToDevice} from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
-import {BatteryRefreshSpinner} from "./BatteryRefreshSpinner.tsx";
+import {PopoverBatteryRefreshSpinner} from "./PopoverBatteryRefreshSpinner.tsx";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -102,8 +102,8 @@ export function ElementPopover(props: IElementPopoverProps) {
                                 </div>
                                 <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
                                     <Battery voltage={Math.round(Number(elementBattery))} />
-                                    <BatteryRefreshSpinner elementBattery={elementBattery} setElementBattery={setElementBattery}
-                                                           dispatch={dispatch} deviceId={props.selectedElement.id}/>
+                                    <PopoverBatteryRefreshSpinner elementBattery={elementBattery} setElementBattery={setElementBattery}
+                                                                  dispatch={dispatch} deviceId={props.selectedElement.id}/>
                                 </div>
                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
                                 <p>
