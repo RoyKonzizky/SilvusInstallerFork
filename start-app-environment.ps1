@@ -60,25 +60,20 @@ if ($process.ExitCode -ne 0) {
     exit 1
 }
 
-# Kill the gif_window.ps1 process after setup is done
-Write-Output "Closing the GIF window..."
-Stop-Process -Id $gifProcess.Id -Force
-Write-Output "GIF window closed."
+# Find the Electron process
+$electronProcess = Get-Process -Name "electron" -ErrorAction SilentlyContinue
+
+# Check if the Electron process was found and force close it
+if ($electronProcess) {
+    Stop-Process -Id $electronProcess.Id -Force
+    Write-Output "Electron process has been closed."
+} else {
+    Write-Output "Electron process not found."
+}
 
 # Start the app
 Write-Output "Starting the app..."
 $process = Start-Process $npmPath -ArgumentList "run dev" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
-
-# Wait for app to start
-Start-Sleep -Seconds 10
-
-# Check if the app is running
-if (Test-Process -Name "node") {
-    Write-Output "The app is running."
-} else {
-    Write-Output "Failed to start the app."
-    exit 1
-}
 
 # Keep the script running until the app is closed
 while ($process.HasExited -eq $false) {
