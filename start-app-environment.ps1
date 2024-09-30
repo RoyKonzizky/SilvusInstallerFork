@@ -1,21 +1,4 @@
-# Define paths for the external C# executable and the GIF
-$loadingApp = ".\LoadingWindowApp\LoadingWindowApp\bin\Debug\net7.0-windows\LoadingWindowApp.exe"
-$loadingGif = ".\loading.gif"
-
-# Check if the executable and GIF exist before proceeding
-if (-Not (Test-Path $loadingApp)) {
-    Write-Error "Loading window application not found at path: $loadingApp"
-    exit 1
-}
-if (-Not (Test-Path $loadingGif)) {
-    Write-Error "Loading GIF not found at path: $loadingGif"
-    exit 1
-}
-
-# Start the external C# loading window in the background
-$loadingProcess = Start-Process -FilePath $loadingApp -ArgumentList $loadingGif -PassThru
-
-# Add local Node.js and Python binaries to the PATH
+# Paths to local Node.js and Python binaries
 $localNodeDir = ".\local_node"
 $localPythonDir = ".\local_python"
 $npmPath = "$localNodeDir\npm.cmd"
@@ -24,7 +7,12 @@ $pythonServer = "..\svApp"
 $localPythonPackages = ".\local_python_packages"
 $npcapPackage = ".\npcap-1.79.exe"
 
+# Add local Node.js and Python binaries to the PATH
 $env:PATH = "$localNodeDir;$localPythonDir;$env:PATH"
+
+# Start the gif_window.ps1 as a separate PowerShell process
+$gifProcess = Start-Process -FilePath "npx" -ArgumentList "electron", ".\LoadingGif\index.cjs" -NoNewWindow -PassThru
+Write-Output "Started GIF window process with PID: $($gifProcess.Id)"
 
 # Stop any previous instances of the app
 Write-Output "Stopping any previous instances of the app..."
@@ -32,9 +20,6 @@ Stop-Process -Name "node" -ErrorAction SilentlyContinue
 
 # Set up npcap if it doesn't exist
 if (-Not (Test-Path "C:\Program Files\Npcap")) {
-    # Close the loading window
-    Stop-Process -Id $loadingProcess.Id
-
     Write-Output "Setting up npcap environment..."
     $process = Start-Process $npcapPackage -Wait -PassThru
     $process.WaitForExit()
@@ -42,9 +27,6 @@ if (-Not (Test-Path "C:\Program Files\Npcap")) {
         Write-Output "Failed to install Npcap."
         exit 1
     }
-
-    # Start the external C# loading window in the background
-    $loadingProcess = Start-Process -FilePath $loadingApp -ArgumentList $loadingGif -PassThru
 }
 
 # Set up Python virtual environment if it doesn't exist
@@ -78,8 +60,10 @@ if ($process.ExitCode -ne 0) {
     exit 1
 }
 
-# Close the loading window
-Stop-Process -Id $loadingProcess.Id
+# Kill the gif_window.ps1 process after setup is done
+Write-Output "Closing the GIF window..."
+Stop-Process -Id $gifProcess.Id -Force
+Write-Output "GIF window closed."
 
 # Start the app
 Write-Output "Starting the app..."
@@ -89,7 +73,7 @@ $process = Start-Process $npmPath -ArgumentList "run dev" -NoNewWindow -PassThru
 Start-Sleep -Seconds 10
 
 # Check if the app is running
-if (Get-Process -Name "node" -ErrorAction SilentlyContinue) {
+if (Test-Process -Name "node") {
     Write-Output "The app is running."
 } else {
     Write-Output "Failed to start the app."
@@ -102,5 +86,4 @@ while ($process.HasExited -eq $false) {
 }
 
 Write-Output "The app has exited."
-
 exit
