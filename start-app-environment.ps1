@@ -7,17 +7,12 @@ $pythonServer = "..\svApp"
 $localPythonPackages = ".\local_python_packages"
 $npcapPackage = ".\npcap-1.79.exe"
 
-# Function to check if a process is running
-function Test-Process {
-    param (
-        [string]$Name
-    )
-    $process = Get-Process -Name $Name -ErrorAction SilentlyContinue
-    return $null -ne $process
-}
-
 # Add local Node.js and Python binaries to the PATH
 $env:PATH = "$localNodeDir;$localPythonDir;$env:PATH"
+
+# Start the gif_window.ps1 as a separate PowerShell process
+$gifProcess = Start-Process -FilePath "npx" -ArgumentList "electron", ".\LoadingGif\index.cjs" -NoNewWindow -PassThru
+Write-Output "Started GIF window process with PID: $($gifProcess.Id)"
 
 # Stop any previous instances of the app
 Write-Output "Stopping any previous instances of the app..."
@@ -65,20 +60,20 @@ if ($process.ExitCode -ne 0) {
     exit 1
 }
 
+# Find the Electron process
+$electronProcess = Get-Process -Name "electron" -ErrorAction SilentlyContinue
+
+# Check if the Electron process was found and force close it
+if ($electronProcess) {
+    Stop-Process -Id $electronProcess.Id -Force
+    Write-Output "Electron process has been closed."
+} else {
+    Write-Output "Electron process not found."
+}
+
 # Start the app
 Write-Output "Starting the app..."
 $process = Start-Process $npmPath -ArgumentList "run dev" -NoNewWindow -PassThru -RedirectStandardOutput "app-output.log" -RedirectStandardError "app-error.log"
-
-# Wait for app to start
-Start-Sleep -Seconds 10
-
-# Check if the app is running
-if (Test-Process -Name "node") {
-    Write-Output "The app is running."
-} else {
-    Write-Output "Failed to start the app."
-    exit 1
-}
 
 # Keep the script running until the app is closed
 while ($process.HasExited -eq $false) {
