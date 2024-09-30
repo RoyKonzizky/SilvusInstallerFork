@@ -21,7 +21,7 @@ function NavigatorButton(props: INavigatorButtonProps) {
                 setPressed(!isPressed);
                 if (props.onClick) {
                     props.onClick();
-                    setMirroredImage(isSidebarCollapsed ? 'scale-x-[-1]' : '')
+                    setMirroredImage(isSidebarCollapsed ? 'scale-x-[-1]' : '');
                 }
                 if (props.href !== "") {
                     navigate(props.href);

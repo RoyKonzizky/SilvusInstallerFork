@@ -12,10 +12,11 @@ import { useTranslation } from 'react-i18next';
 import BottomCircle from "../../PresetsButton/BottomCircle/BottomCircle.tsx";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {ConfirmModal} from "../../ConfirmModal/ConfirmModal.tsx";
 
 export function Settings(props: ISettingsProps) {
     const isMounted = useRef(false);
-
+    const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const [frequency, setFrequency] = useState(useSelector((state: RootState) => state.settings.frequency));
     const [bandwidth, setBandwidth] = useState(useSelector((state: RootState) => state.settings.bandwidth));
     const [networkId, setNetworkId] = useState(useSelector((state: RootState) => state.settings.networkId));
@@ -33,13 +34,6 @@ export function Settings(props: ISettingsProps) {
     }, []);
 
     const saveSettings = async (isNetworkSave: boolean) => {
-        if (isNetworkSave) {
-            const confirmed = confirm(t("networkSaveConfirmation"));
-            if (!confirmed) {
-                return;
-            }
-        }
-
         try {
             const response = await setBasicSettingsData(
                 isNetworkSave,
@@ -74,7 +68,7 @@ export function Settings(props: ISettingsProps) {
             { type: "text", label: t('totalTransitPower'), value: totalTransitPower, setValue: setTotalTransitPower, values: totalTransitPowerValues }
         ], [
             { type: "button", label: t("save"), onClick: () => saveSettings(false) },
-            { type: "button", label: t("saveNetwork"), onClick: () => saveSettings(true) }
+            { type: "button", label: t("saveNetwork"), onClick: () => setConfirmModalIsOpen(true) }
         ]
     ];
 
@@ -118,6 +112,14 @@ export function Settings(props: ISettingsProps) {
                     radius={40}
                 />
             </div>
+            <ConfirmModal
+                modalIsOpen={confirmModalIsOpen}
+                setModalIsOpen={setConfirmModalIsOpen}
+                text={t('networkSaveConfirmation')}
+                onClickYes={() => {
+                    saveSettings(true);
+                }}
+            />
         </>
     );
 }

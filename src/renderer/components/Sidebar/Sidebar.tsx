@@ -1,6 +1,6 @@
 // import RecordingsLogo from "../../assets/recordings.svg";
 // import SubsectionsOfRecordingsNavigatorButton from "./SubsectionsOfRecordingsNavigatorButton.tsx";
-import { useEffect } from 'react';
+import {useEffect, useState} from 'react';
 import { useDispatch } from "react-redux";
 import { interactExpandingAndCollapsingButton } from "../../redux/Collapsing/collapsingSlice.ts";
 import NavigatorButton from "./NavigatorButton/NavigatorButton.tsx";
@@ -13,8 +13,10 @@ import { Paths } from "../../constants/Paths.ts";
 import '../../i18n.ts';
 import { useTranslation } from 'react-i18next';
 import { logout } from "../../utils/loginUtils.ts";
+import {ConfirmModal} from "../ConfirmModal/ConfirmModal.tsx";
 
 export function Sidebar() {
+    const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
     const dispatch = useDispatch();
     const { t, i18n } = useTranslation();
 
@@ -28,12 +30,16 @@ export function Sidebar() {
     if (window.location.pathname === Paths.Main) return null;
 
     const callLogOut = async () => {
-        const confirmed = confirm(t("logoutConfirmation"));
+        //TODO: find out why the confirm function breaks the code
 
-        if (confirmed) {
-            await logout();
-            window.location.href = "/";
-        }
+        // const confirmed = confirm(t("logoutConfirmation"));
+        //
+        // if (confirmed) {
+        //     await logout();
+        //     window.location.href = "/";
+        // }
+        await logout();
+        window.location.href = "/";
     }
 
     return (
@@ -76,14 +82,20 @@ export function Sidebar() {
                         onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'he' : 'en')}
                     />
                     <NavigatorButton
-                        href={""}
-                        onClick={callLogOut}
+                        href=""
+                        onClick={() => setConfirmModalIsOpen(true)}
                         isSubsection={false}
                         text={t('exit')}
                         file={LogoutLogo}
                     />
                 </div>
             </div>
+            <ConfirmModal
+                modalIsOpen={confirmModalIsOpen}
+                setModalIsOpen={setConfirmModalIsOpen}
+                text={t('logoutConfirmation')}
+                onClickYes={callLogOut}
+            />
         </>
     );
 }

@@ -6,6 +6,7 @@
   "camera": "מצלמה",
   "video": "הסרטה",
   "gallery": "גלריה",
+  "yes": "כן", "no":  "לא",
   "presetHigh": "גבוה", "presetMedium": "בינוני", "presetLow" : "נמוך",
   "presetHeader": "בחר אחת מההגדרות הבאות",
   "IP Address": "כתובת רשת",

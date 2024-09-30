@@ -6,6 +6,7 @@
   "camera": "Camera",
   "video": "Video",
   "gallery": "Gallery",
+  "yes": "Yes", "no":  "No",
   "presetHigh": "High", "presetMedium": "Medium", "presetLow" : "Low",
   "presetHeader": "Choose your Preset",
   "IP Address": "IP Address",
