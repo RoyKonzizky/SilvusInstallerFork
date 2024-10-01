@@ -55,7 +55,7 @@ export function LoginModal(props: ILoginModalProps) {
                 className={`text-white text-3xl text-center flex justify-center items-center h-screen bg-[#000000]/75`}
             >
                 <div
-                    className="bg-black p-4 rounded-xl w-[50%] h-[50%] flex flex-col justify-center items-center gap-y-8">
+                    className="bg-black p-4 rounded-xl w-[70%] h-[70%] flex flex-col justify-center items-center gap-y-8">
                     {t("loginModalHeader")} {ipAddress}
                     <AppInputs appInputs={loginInputs} className={'w-[160%]'} isSmaller={false} />
                 </div>
