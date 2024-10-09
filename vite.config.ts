@@ -6,13 +6,15 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                additionalData: `@import "./src/renderer/index.css";`,
+                additionalData: `@import "./src/index.css";`,
             },
         },
     },
-    define: {
-        "global": {},
-    },
+    //TODO FIND WHY IT CAUSES A BUILD ERROR
+
+    // define: {
+    //     "global": {},
+    // },
     build: {
         outDir: 'dist',
         rollupOptions: {
