@@ -6,17 +6,17 @@
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
-    "beforeDevCommand": "concurrently \"npm run dev\" \"python ./_up_/svApp/app/main.py\"",
-    "beforeBuildCommand": "npm run build"
+    "beforeDevCommand": "concurrently \"./install-npcap.bat\" \"npm run dev\"  \"python ./_up_/svApp/app/main.py\"",
+    "beforeBuildCommand": "install-npcap.bat && npm run build"
   },
-//  "plugins": {
-//    "http": {
-//      "enabled": true,
-//      "domains": [
-//        "http://0.0.0.0:8080"
-//      ]
-//    }
-//  },
+  "plugins": {
+    "http": {
+      "enabled": true,
+      "domains": [
+        "http://0.0.0.0:8080"
+      ]
+    }
+  },
   "app": {
     "windows": [
       {
