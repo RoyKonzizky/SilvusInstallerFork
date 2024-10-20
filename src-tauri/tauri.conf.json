@@ -42,7 +42,8 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "../svApp",
+      "../svApp.exe",
+      "../run-svApp.bat",
       "../npcap-1.79.exe",
       "../install-npcap.bat"
     ]

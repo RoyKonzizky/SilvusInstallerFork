@@ -6,18 +6,17 @@ fn main() {
         .setup(|_app| {
             // Start the Bat script
             let bat_result = Command::new("cmd")
-                .args(&["/C", "_up_\\install-npcap.bat"]) // This runs the modified batch file
+                .args(&["/C", "_up_\\install-npcap.bat"]) // Use backslashes
                 .spawn();
-
 
             match bat_result {
                 Ok(_) => println!("Started install-npcap.bat"),
                 Err(e) => eprintln!("Failed to run install-npcap.bat: {}", e),
             }
 
-            // Start the Python backend here
-            let python_result = Command::new("python")
-                .arg("_up_\\svApp\\app\\main.py") // Use backslashes for the Python script path
+            // Start the Python backend
+            let python_result = Command::new("cmd")
+                .args(&["/C", "_up_\\run-svApp.bat"]) // Use backslashes
                 .spawn();
 
             match python_result {
