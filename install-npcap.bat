@@ -4,9 +4,12 @@ cd /d "%~dp0"
 
 REM Check if Npcap is installed by looking for the Npcap directory
 if exist "C:\Program Files\Npcap\" (
-    echo Npcap is already installed.
+REM Remove REM to see this in the logger
+    REM echo Npcap is already installed.
 ) else (
+REM Remove REM to see this in the logger
     echo Installing Npcap...
-    start /wait npcap-1.79.exe
+    REM Removed the "/wait" keyword after the start
+    start npcap-1.79.exe
     echo done
 )
