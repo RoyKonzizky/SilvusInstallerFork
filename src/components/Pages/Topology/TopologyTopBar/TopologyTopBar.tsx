@@ -5,7 +5,7 @@ import { DisplaySettingsPanel } from "./DisplaySettingsPanel.tsx";
 
 export function TopologyTopBar() {
     return (
-        <div className={'flex flex-col absolute top-0 left-6 z-50'}>
+        <div className={'flex flex-col absolute top-10 left-6 z-50'}>
             <TableModal />
             {/* <TopologyLayoutModal /> */}
             <DisplaySettingsPanel />

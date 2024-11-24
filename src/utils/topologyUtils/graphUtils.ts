@@ -2,7 +2,7 @@ import {IUserEdge, IUserNode} from "@antv/graphin";
 import {devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
 
 export const graphStyle = {
-    background: "black",
+    background: "transparent",
     color: "white"
 };
 
