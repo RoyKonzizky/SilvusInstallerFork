@@ -28,7 +28,8 @@ export const deviceTalkStatus = [
 ];
 
 export function createDataSource(nodes: IUserNode[], groups: string[]) {
-    return nodes.map((node: IUserNode) => {
+    const filteredNodes = nodes.filter((node) => node.data.isOnline);
+    return filteredNodes.map((node: IUserNode) => {
         const groupStatuses = groups.reduce((acc, group, groupIndex) => {
             acc[group] = node.data.statuses[groupIndex];
             return acc;
@@ -53,6 +54,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
     updateHulls: ActionCreatorWithPayload<HullCfg[], "topologyGroups/updateHulls">,
     handleStatusChange: (nodeId: string, groupIndex: number, status: number) => void,
     setCamerasMap: Dispatch<SetStateAction<{[p: string]: Camera}>>) {
+    const filteredNodes = nodes.filter((node) => node.data.isOnline);
     const columns = [
         { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
         {
@@ -67,7 +69,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             )
         },
         {
-            title: (<CameraTableColumnHeader cameraMap={camerasMap} nodes={nodes} setCamerasMap={setCamerasMap}/>),
+            title: (<CameraTableColumnHeader cameraMap={camerasMap} nodes={filteredNodes} setCamerasMap={setCamerasMap}/>),
             dataIndex: 'camera',
             key: 'camera',
             render: (_: number, record: any) => (
@@ -95,7 +97,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {group}
                     <Button type="link" onClick={() =>
-                        handleDeleteGroup(group, groups, nodes, hulls, dispatch, updateNodes, updateHulls)}>
+                        handleDeleteGroup(group, groups, filteredNodes, hulls, dispatch, updateNodes, updateHulls)}>
                         <img className={"w-6 h-6"} src={binIcon} alt={"Delete"} />
                     </Button>
                 </div>
