@@ -26,7 +26,7 @@ export const deviceTalkStatus = [
     { value: 2, label: "מקשיב" },
     { value: 1, label: "מדבר ומקשיב" },
 ];
-
+//TODO Make less demanding, this code is constantly logging
 export function createDataSource(nodes: IUserNode[], groups: string[]) {
     return nodes.map((node: IUserNode) => {
         const groupStatuses = groups.reduce((acc, group, groupIndex) => {
@@ -34,7 +34,9 @@ export function createDataSource(nodes: IUserNode[], groups: string[]) {
             return acc;
         }, {} as Record<string, number>);
         return {
+            //TODO swap key for id for more readability, go over this code again and understand better
             key: node.id,
+            ip: node.data.ip,
             label: node.style?.label?.value,
             battery: node.data?.battery,
             ...groupStatuses,
@@ -55,6 +57,27 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
     setCamerasMap: Dispatch<SetStateAction<{[p: string]: Camera}>>) {
     const columns = [
         { title: t('deviceLabelHeader'), dataIndex: 'label', key: 'label' },
+        // {
+        //     title: 'ip',
+        //     dataIndex: 'ip',
+        //     key: 'ip',
+        //     //TODO Figure out why work cuz it is not consistent with the rest of the code, in the others it works with key but not here
+        //     render: (_: string, record: any) => (
+        //         <div style={{ display: 'flex', gap: '1rem' }}>
+        //             <div style={{ width: '8rem' }}>{record.ip}</div>
+        //         </div>
+        //     )
+        // },
+        {
+            title: 'ip',
+            dataIndex: 'ip',
+            key: 'ip',
+            render: (status: string) => (
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    {status}
+                </div>
+            )
+        },
         {
             title: t('batteryHeader'),
             dataIndex: 'battery',

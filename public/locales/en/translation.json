@@ -66,5 +66,11 @@
   "logoutConfirmation": "Are you sure you want to exit?",
   "NodeLabelSizeSuccess": "Node label size change succeeded!",
   "NodeLabelSizeFailure": "Node label size change failed",
-  "nodeLabelSizeSlider": "Node label size modifier"
+  "nodeLabelSizeSlider": "Node label size modifier",
+  "import": "import",
+  "export": "export",
+  "importGood": "Import successful",
+  "exportGood": "export successful",
+  "importBad": "Import failed",
+  "exportBad": "export failed"
 }

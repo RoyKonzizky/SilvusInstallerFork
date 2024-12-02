@@ -131,12 +131,15 @@ export function TopologyGraph(props: ITopologyGraph) {
 
     const handleElementClick = (event: { item: any; }) => {
         const model = event.item.getModel();
-        setSelectedElement(model);
+        //Only nodes can be selected now.
+        if (model.type === 'graphin-circle'){
+            setSelectedElement(model);
 
-        const graph = graphRef.current?.graph;
-        if (graph) {
-            const point = graph.getCanvasByPoint(model.x, model.y);
-            setPopoverPosition({ x: point.x, y: point.y });
+            const graph = graphRef.current?.graph;
+            if (graph) {
+                const point = graph.getCanvasByPoint(model.x, model.y);
+                setPopoverPosition({ x: point.x, y: point.y });
+            }
         }
     };
 
