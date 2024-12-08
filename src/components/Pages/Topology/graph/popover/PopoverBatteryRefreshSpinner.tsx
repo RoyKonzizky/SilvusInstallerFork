@@ -27,7 +27,7 @@ export function PopoverBatteryRefreshSpinner(props: IBatteryRefreshSpinner) {
         let batteryStatus = '-1'; // Default to loading status
         dispatch(updateSingleDeviceBattery({ id: deviceId, battery: batteryStatus }));
         setElementBattery(batteryStatus); // Set element battery to loading status
-
+        //TODO Turn to an exported function
         try {
             const updatedBatteryInfo = await axios.get(`http://localhost:8080/device-battery?device_id=${deviceId}`);
 
@@ -45,6 +45,7 @@ export function PopoverBatteryRefreshSpinner(props: IBatteryRefreshSpinner) {
             batteryStatus = '-2'; // Set to error state
         } finally {
             // Always update the battery status in Redux and the element, regardless of success or failure
+            //TODO Think if the finally in this and other parts of the code is good
             dispatch(updateSingleDeviceBattery({ id: deviceId, battery: batteryStatus }) ?? elementBattery);
             setElementBattery(batteryStatus ?? elementBattery);
             setIsSpin(false);

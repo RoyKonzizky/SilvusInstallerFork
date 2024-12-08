@@ -66,5 +66,11 @@
   "logoutConfirmation": "?האם אתה בטוח שברצונך להתנתק",
   "NodeLabelSizeSuccess": "שינוי גודל שם הצומת הצליח!",
   "NodeLabelSizeFailure": "שינוי גודל שם הצומת כשל",
-  "nodeLabelSizeSlider": "משנה גודל שם הצומת"
+  "nodeLabelSizeSlider": "משנה גודל שם הצומת",
+  "export": "יצוא גרף",
+  "import": "יבוא גרף",
+  "importGood": "יבוא הצליח",
+  "exportGood": "יצוא הצליח",
+  "importBad": "יבוא נכשל",
+  "exportBad": "יצוא נכשל"
 }
