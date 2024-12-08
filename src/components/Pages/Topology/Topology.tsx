@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ITopologyProps } from "./ITopologyProps.ts";
 import { TopologyGraph } from "./graph/TopologyGraph.tsx";
-import { createEdgesFromData, createNodesFromData } from "../../../utils/topologyUtils/graphUtils.ts";
+import {
+    colorOffline,
+    colorOnline,
+    createEdgesFromData,
+    createNodesFromData
+} from "../../../utils/topologyUtils/graphUtils.ts";
 import { devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
 import { useTranslation } from 'react-i18next';
@@ -68,6 +73,19 @@ export function Topology(props: ITopologyProps) {
                             //     ...existingNode.data,
                             //     battery: existingNode.data.battery
                             // }
+
+                            style: {
+                                ...existingNode.style,
+                                keyshape: {
+                                    ...existingNode.style?.keyshape,
+                                    fill: newNode.data.isOnline ? colorOnline : colorOffline,
+                                    stroke: newNode.data.isOnline ? colorOnline : colorOffline,
+                                }
+                            },
+                            data: {
+                                ...existingNode.data,
+                                isOnline: newNode.data.isOnline
+                            }
                         };
                     }
                     return newNode;

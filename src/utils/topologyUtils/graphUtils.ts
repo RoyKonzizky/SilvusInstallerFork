@@ -1,5 +1,7 @@
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
+export const colorOnline = '#1fb639';
+export const colorOffline = '#b61f1f';
 
 export const graphStyle = {
     background: "black",
@@ -9,7 +11,6 @@ export const graphStyle = {
 export function createNodesFromData(devices: devicesType, sizeInterval: number) {
     const nodes: IUserNode[] = [];
     for (let i = 0; i < devices.length; i++) {
-        const color = '#1fb639';
 
         nodes[i] = {
             id: devices[i].id.toString(),
@@ -20,8 +21,8 @@ export function createNodesFromData(devices: devicesType, sizeInterval: number) 
                     fontSize: 15 * sizeInterval,
                 },
                 keyshape: {
-                    fill: color,
-                    stroke: color,
+                    fill: devices[i].is_online ? colorOnline : colorOffline,
+                    stroke: devices[i].is_online ? colorOnline : colorOffline,
                     fillOpacity: 1,
                     size: 50 * sizeInterval,
                 },
@@ -30,6 +31,7 @@ export function createNodesFromData(devices: devicesType, sizeInterval: number) 
                 battery: devices[i].percent.toString(),
                 statuses: devices[i].status,
                 ip: devices[i].ip,
+                isOnline: devices[i].is_online
             },
         };
     }
