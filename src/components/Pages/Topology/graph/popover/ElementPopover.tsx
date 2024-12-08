@@ -24,6 +24,7 @@ export function ElementPopover(props: IElementPopoverProps) {
     const [label, setLabel] = useState(props.selectedElement?.style?.label?.value);
     const [camLinks, setCamLinks] = useState<CamStreams>();
     const [elementBattery, setElementBattery] = useState<string>(props.selectedElement?.data.battery);
+    const [nodes, setNodes] = useState(selector.nodes);
 
     const handleLabelChange = (e: ChangeEvent<HTMLInputElement>) => {
         setLabel(e.target.value);
@@ -34,15 +35,22 @@ export function ElementPopover(props: IElementPopoverProps) {
             }
             return node;
         });
-        dispatch(updateNodes(newNodes));
+        setNodes(newNodes);
     };
 
     const handleLabelEditButtonClick = () => {
-        sendNames(
-            props.selectedElement?.id as string,
-            props.selectedElement?.style?.label?.value as string
-        );
-        setIsEditMode(false);
+        //Moved to this format to make sure nothing updates if the server isn't updated
+        try {
+            sendNames(
+                props.selectedElement?.id as string,
+                label as string //Changed to the label to make sure it updates correctly
+            );
+            dispatch(updateNodes(nodes));
+        } catch (e) {
+            console.error(e, 'Name change failed');
+        } finally {
+            setIsEditMode(false);
+        }
     };
 
     useEffect(() => {
@@ -68,43 +76,24 @@ export function ElementPopover(props: IElementPopoverProps) {
                         {props.selectedElement?.type === 'graphin-circle' ?
                             <div>
                                 <div className={'flex flex-row items-center focus:outline-none mb-2 mt-3'}>
-                                    <input
-                                        onChange={handleLabelChange}
-                                        value={label || ''}
-                                        style={{
-                                            padding: '0.3rem',
-                                            border: '2px solid #ccc',
-                                            borderRadius: '5px',
-                                            fontSize: '1.2rem',
-                                            width: '55%',
-                                            height: '2.5rem',
-                                            backgroundColor: 'white',
-                                        }}
-                                        className={'bg-white'}
-                                        onFocus={() => setIsEditMode(true)}
-                                        onBlur={() => setIsEditMode(false)}
+                                    <input className={"p-1.5 border-2 border-gray-300 rounded-md text-lg " +
+                                        "w-11/20 h-10 bg-white focus:ring focus:ring-blue-300"} value={label || ''}
+                                           onChange={handleLabelChange} onFocus={() => setIsEditMode(true)}
+                                           onBlur={() => setIsEditMode(false)}
                                     />
-                                    <Button
-                                        onClick={handleLabelEditButtonClick}
-                                        style={{
-                                            marginLeft: '0.5rem',
-                                            padding: '0.5rem 1rem',
-                                            border: '2px solid #007bff',
-                                            backgroundColor: '#007bff',
-                                            color: 'white',
-                                            borderRadius: '4px',
-                                            fontSize: '1rem',
-                                            height: '2.4rem',
-                                            visibility: isEditMode ? 'visible' : 'hidden'
-                                        }}>
+                                    <Button onClick={handleLabelEditButtonClick}
+                                        className={`ml-2 py-2 px-4 border-2 text-white rounded-md text-base h-10 transition-all 
+                                        ${isEditMode ? 'border-blue-500 bg-blue-500' : 'invisible'}`}
+                                    >
                                         {t('updateDeviceLabelButton')}
                                     </Button>
                                 </div>
-                                <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                                <div className="flex gap-1 items-center">
                                     <Battery voltage={Math.round(Number(elementBattery))} />
-                                    <PopoverBatteryRefreshSpinner elementBattery={elementBattery} setElementBattery={setElementBattery}
-                                                                  dispatch={dispatch} deviceId={props.selectedElement.id}/>
+                                    <PopoverBatteryRefreshSpinner elementBattery={elementBattery} dispatch={dispatch}
+                                        setElementBattery={setElementBattery} deviceId={props.selectedElement.id}/>
                                 </div>
+
                                 <p>{`IP: ${props.selectedElement?.data.ip}`}</p>
                                 <p>
                                     {camLinks?.mainStreamLink}
