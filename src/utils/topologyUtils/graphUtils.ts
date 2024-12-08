@@ -4,7 +4,7 @@ export const colorOnline = '#1fb639';
 export const colorOffline = '#b61f1f';
 
 export const graphStyle = {
-    background: "black",
+    background: "transparent",
     color: "white"
 };
 

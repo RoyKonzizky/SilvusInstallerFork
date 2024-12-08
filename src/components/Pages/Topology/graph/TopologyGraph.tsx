@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import {ChangeEvent, useEffect, useRef, useState} from "react";
 import { useDispatch } from "react-redux";
 import Graphin, { IUserEdge, IUserNode } from "@antv/graphin";
 import { ElementPopover } from "./popover/ElementPopover.tsx";
@@ -21,6 +21,49 @@ export function TopologyGraph(props: ITopologyGraph) {
     const [timerId, setTimerId] = useState<NodeJS.Timeout | null>(null);
     const [isTouchStarted, setIsTouchStarted] = useState(false);
     const { setDraggingState } = props;
+    const backgroundRef = useRef<HTMLDivElement | null>(null);
+    const [backgroundImage, setBackgroundImage] = useState<string | null>(null); // Store uploaded image URL
+
+    useEffect(() => {
+        const graph = graphRef.current?.graph;
+        if (!graph) return;
+
+        graph.fitView();
+
+        const updateBackground = () => {
+            if (!backgroundRef.current) return;
+
+            const matrix = graph.get("group").getMatrix();
+            const scale = matrix[0];
+            const translateX = matrix[6];
+            const translateY = matrix[7];
+
+            backgroundRef.current.style.transform = `
+                translate(${translateX}px, ${translateY}px) 
+                scale(${scale})
+            `;
+            backgroundRef.current.style.transformOrigin = "top left";
+        };
+
+        graph.on("viewportchange", updateBackground);
+
+        return () => {
+            graph.off("viewportchange", updateBackground);
+        };
+    }, []);
+
+    const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                if (typeof reader.result === "string") {
+                    setBackgroundImage(reader.result); // Set base64 image as background
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     useEffect(() => {
         const graph = graphRef.current?.graph;
@@ -188,11 +231,26 @@ export function TopologyGraph(props: ITopologyGraph) {
     };
 
     return (
-        <Graphin ref={graphRef} modes={modes} data={{ nodes: props.nodes, edges: props.edges }} style={graphStyle}
-                 layout={{ name: 'force2', options: {} }} width={2000} height={1000}>
-            {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
-                                                onClose={() => setSelectedElement(null)}/>}
-            <TopologyTopBar />
-        </Graphin>
+        <div style={{width: "100%", height: "100%", overflow: "hidden",}}>
+            <div ref={backgroundRef}
+                style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
+                    backgroundImage: backgroundImage ? `url(${backgroundImage})` : "none",
+                    backgroundSize: "cover", backgroundPosition: "center",
+                    pointerEvents: "none", // Ensure the background doesn't block interactions
+                }}
+            />
+
+            <input type="file" accept="image/*" onChange={handleImageUpload}
+                style={{position: "absolute", top: 10, left: 10, zIndex: 10,}}/>
+
+            <Graphin ref={graphRef} modes={modes} data={{ nodes: props.nodes, edges: props.edges }}
+                     style={graphStyle} width={2000} height={1000}
+                     layout={{ name: 'force2', options: {} }}
+            >
+                {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
+                                                    onClose={() => setSelectedElement(null)}/>}
+                <TopologyTopBar />
+            </Graphin>
+        </div>
     );
 }
