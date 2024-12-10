@@ -37,7 +37,7 @@ export function DisplaySettingsPanel() {
     }
 
     const increaseElementsSize = (nodes:IUserNode[], edges: IUserEdge[], sizeIntervalValue: number) => {
-        const DEFAULT_NODE_FONT_SIZE = 15;
+        const DEFAULT_NODE_FONT_SIZE = 30;
         const DEFAULT_NODE_SHAPE_SIZE = 50;
         const DEFAULT_EDGE_FONT_SIZE = 30;
         const DEFAULT_EDGE_SHAPE_SIZE = 6;

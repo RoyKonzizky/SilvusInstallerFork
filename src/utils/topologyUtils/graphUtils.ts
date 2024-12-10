@@ -18,7 +18,7 @@ export function createNodesFromData(devices: devicesType, sizeInterval: number) 
                 label: {
                     value: devices[i].name.toString() || devices[i].ip.toString(),
                     fill: '#FFFFFF',
-                    fontSize: 15 * sizeInterval,
+                    fontSize: 30 * sizeInterval,
                 },
                 keyshape: {
                     fill: devices[i].is_online ? colorOnline : colorOffline,
