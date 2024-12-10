@@ -61,7 +61,9 @@ export function Topology(props: ITopologyProps) {
         if (devices && !isCurrentlyDragged) {
             try {
                 const newNodes = createNodesFromData(devices, selector.sizeInterval);
+                console.log(selector.edges);
                 const newEdges = createEdgesFromData(snrsData!, selector.sizeInterval);
+                console.log(newEdges);
                 //TODO refactor to remove this part cause the change made this part pretty obsolete
                 const updatedNodes = newNodes.map(newNode => {
                     const existingNode = selector.nodes
@@ -91,10 +93,44 @@ export function Topology(props: ITopologyProps) {
                     return newNode;
                 });
 
-                dispatch(updateEdges(edges));
+                const updatedEdges = newEdges.map(newEdge => {
+                    // Find all nodes that are offline
+                    const offlineNodes = updatedNodes.filter(node => !node.data.isOnline);
+
+                    // Check if the edge connects to any offline node
+                    const isOfflineEdge = offlineNodes.some(node =>
+                        newEdge.source === node.id || newEdge.target === node.id
+                    );
+
+                    if (isOfflineEdge) {
+                        return {
+                            ...newEdge,
+                            style: {
+                                ...newEdge.style,
+                                label: {
+                                    ...newEdge.style?.label,
+                                    value: '', // Update label to show offline status
+                                },
+                                keyshape: {
+                                    ...newEdge.style?.keyshape,
+                                    fill: colorOffline, // Apply offline color to fill
+                                    stroke: colorOffline, // Apply offline color to stroke
+                                }
+                            },
+                            data: '', // Additional data field indicating offline
+                        };
+                    }
+
+                    // If edge is not offline, return it as is
+                    return newEdge;
+                });
+
+
+
                 dispatch(updateNodes(updatedNodes));
                 setNodes(updatedNodes);
-                setEdges(newEdges);
+                dispatch(updateEdges(updatedEdges));
+                setEdges(updatedEdges);
 
             } catch (error) {
                 console.error('Error in loading data:', error);
@@ -106,8 +142,8 @@ export function Topology(props: ITopologyProps) {
         <div className={`${props.isSmaller ? 'w-[35%] h-[80%]' : 'w-full h-full border border-black bg-black'} block absolute overflow-hidden`}>
             {
                 selector.nodes?.length > 0 ? <TopologyGraph nodes={nodes} edges={edges}
-                        setDraggingState={(isDragged: boolean) => setIsCurrentlyDragged(isDragged)}/>
-                     : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
+                                                            setDraggingState={(isDragged: boolean) => setIsCurrentlyDragged(isDragged)}/>
+                    : <h1 className={"h-24 w-36"}>{t('loading')}</h1>
             }
         </div>
     );
