@@ -72,5 +72,7 @@
   "importGood": "יבוא הצליח",
   "exportGood": "יצוא הצליח",
   "importBad": "יבוא נכשל",
-  "exportBad": "יצוא נכשל"
+  "exportBad": "יצוא נכשל",
+  "ipRefreshGood": "רענון הצליח",
+  "ipRefreshBad": "רענון נכשל"
 }

@@ -10,7 +10,8 @@ import { setIp } from "../../../redux/IP/IPSlice.ts";
 import { useTranslation } from 'react-i18next';
 import "../../../i18n.ts";
 import { fetchProtectedLogin, startUp } from "../../../utils/loginUtils.ts";
-import { serverResponseIpDataType } from "../../../constants/types/serverResponseDataType.ts";
+import {serverResponseErrorType, serverResponseIpDataType} from "../../../constants/types/serverResponseDataType.ts";
+import {toast} from "react-toastify";
 
 export function Login() {
     const navigate = useNavigate();
@@ -22,15 +23,28 @@ export function Login() {
     const { t } = useTranslation();
 
     const callStartup = async () => {
-        const startUpData = await startUp();
-        if (startUpData?.detail?.type === "Fail") {
-            setErrorMessage(startUpData.msg as string);
-            setErrorModalIsOpen(true);
+        try {
+            const startUpData = await startUp();
+
+            // Check if the data contains the IP address
+            if (startUpData.msg && (startUpData.msg as serverResponseIpDataType).ip) {
+                setIpAddress((startUpData.msg as serverResponseIpDataType).ip);
+                toast.success(t("ipRefreshGood"));
+            } else if (startUpData.detail) {
+                // Handle known error structure
+                const { msg } = startUpData.detail as serverResponseErrorType;
+                setErrorMessage(msg);
+                setErrorModalIsOpen(true);
+            } else {
+                // Handle unexpected structure
+                throw new Error("Unexpected data format");
+            }
+        } catch (e) {
+            // Fallback for unexpected errors
+            console.error(e); // Log the error for debugging
+            toast.error(t("ipRefreshBad"));
         }
-        if (startUpData?.type === "Success") {
-            setIpAddress((startUpData.msg as serverResponseIpDataType).ip);
-        }
-    }
+    };
 
     const loginInputs: Input[][] = [
         [{ type: "text", label: t("IP Address"), value: ipAddress, setValue: setIpAddress }],
