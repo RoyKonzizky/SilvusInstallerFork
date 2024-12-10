@@ -72,5 +72,7 @@
   "importGood": "Import successful",
   "exportGood": "export successful",
   "importBad": "Import failed",
-  "exportBad": "export failed"
+  "exportBad": "Export failed",
+  "ipRefreshGood": "Refresh succeeded",
+  "ipRefreshBad": "Refresh failed"
 }
