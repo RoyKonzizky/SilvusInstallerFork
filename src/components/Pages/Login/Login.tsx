@@ -12,6 +12,7 @@ import "../../../i18n.ts";
 import { fetchProtectedLogin, startUp } from "../../../utils/loginUtils.ts";
 import {serverResponseErrorType, serverResponseIpDataType} from "../../../constants/types/serverResponseDataType.ts";
 import {toast} from "react-toastify";
+import lizi from '../../../../public/Lizi.png'
 
 export function Login() {
     const navigate = useNavigate();
@@ -73,9 +74,22 @@ export function Login() {
 
     return (
         <>
-            <div className={"h-screen flex flex-col justify-center items-center gap-y-8"}>
-                <AppInputs appInputs={loginInputs} className={'w-[200%]'} isSmaller={false} />
+            <div className="relative h-screen flex flex-col justify-center items-center gap-y-8">
+                <img
+                    src={lizi}
+                    alt="liziLogo"
+                    className="w-40 h-40 absolute top-10 rounded-full"
+                />
+                <div style={{ fontFamily: 'sans-serif', direction: 'rtl', textAlign: 'right', fontSize: '24px' }}>
+                    וְהוֹדַעְתָּ לָהֶם, אֶת-הַדֶּרֶךְ יֵלְכוּ בָהּ, וְאֶת-הַמַּעֲשֶׂה, אֲשֶׁר יַעֲשׂוּן
+                </div>
+                <AppInputs
+                    appInputs={loginInputs}
+                    className="w-[200%]"
+                    isSmaller={false}
+                />
             </div>
+
             <ErrorMessage
                 errorMessage={errorMessage}
                 modalIsOpen={errorModalIsOpen}
