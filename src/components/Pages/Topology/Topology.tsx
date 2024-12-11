@@ -61,9 +61,7 @@ export function Topology(props: ITopologyProps) {
         if (devices && !isCurrentlyDragged) {
             try {
                 const newNodes = createNodesFromData(devices, selector.sizeInterval);
-                console.log(selector.edges);
                 const newEdges = createEdgesFromData(snrsData!, selector.sizeInterval);
-                console.log(newEdges);
                 //TODO refactor to remove this part cause the change made this part pretty obsolete
                 const updatedNodes = newNodes.map(newNode => {
                     const existingNode = selector.nodes
