@@ -75,5 +75,6 @@
   "exportBad": "יצוא נכשל",
   "ipRefreshGood": "רענון הצליח",
   "ipRefreshBad": "רענון נכשל",
-  "saveGraph": "שמירת גרף"
+  "saveGraph": "שמירת גרף",
+  "importImage": "יבוא תמונה"
 }

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {Button, Modal, Slider} from "antd";
 import {snrColors} from "../../../../utils/topologyUtils/LegendSnrUtils.ts";
 import {useTranslation} from 'react-i18next';
@@ -11,8 +11,13 @@ import {setSizeInterval, updateEdges, updateNodes} from "../../../../redux/Topol
 import {IUserEdge, IUserNode} from "@antv/graphin";
 import {ExportGraph} from "./GraphPositionsSave/ExportGraph.tsx";
 import {ImportGraph} from "./GraphPositionsSave/ImportGraph.tsx";
+import {ImageImport} from "./ImageImport.tsx";
 
-export function DisplaySettingsPanel() {
+interface IDisplaySettingsPanel {
+    setBackgroundImage: Dispatch<SetStateAction<string | null>>
+}
+
+export function DisplaySettingsPanel(props: IDisplaySettingsPanel) {
     const DEFAULT_DATA_INTERVAL_VALUE = 2;
     const dispatch = useDispatch();
     const selector = useSelector((state: RootState) => state.topologyGroups);
@@ -143,6 +148,8 @@ export function DisplaySettingsPanel() {
                     ))}
                 </div>
 
+                <hr style={{ paddingBottom: '1rem' }} />
+
                 <div style={{ padding: '3rem 0' }}>
                     <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
                         {t("nodeLabelSizeSlider")}
@@ -168,14 +175,28 @@ export function DisplaySettingsPanel() {
                     </div>
                 </div>
 
+                <hr style={{ paddingBottom: '1rem' }} />
+
                 <div style={{ padding: '3rem 0' }}>
                     <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
-                        {t('connectivityLevelHeader')}
+                        {t('saveGraph')}
                     </div>
 
                     <div className={'flex justify-center h-24'}>
                         <ExportGraph />
                         <ImportGraph />
+                    </div>
+                </div>
+
+                <hr style={{ paddingBottom: '1rem' }} />
+
+                <div style={{ padding: '3rem 0' }}>
+                    <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
+                        {t('importImage')}
+                    </div>
+
+                    <div className={'flex relative left-40 h-24'}>
+                        <ImageImport setBackgroundImage={props.setBackgroundImage}/>
                     </div>
                 </div>
             </Modal>
