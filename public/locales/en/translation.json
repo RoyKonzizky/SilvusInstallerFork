@@ -74,5 +74,6 @@
   "importBad": "Import failed",
   "exportBad": "Export failed",
   "ipRefreshGood": "Refresh succeeded",
-  "ipRefreshBad": "Refresh failed"
+  "ipRefreshBad": "Refresh failed",
+  "saveGraph": "Save graph"
 }

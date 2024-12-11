@@ -9,6 +9,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../../../redux/store.ts";
 import {setSizeInterval, updateEdges, updateNodes} from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {IUserEdge, IUserNode} from "@antv/graphin";
+import {ExportGraph} from "./GraphPositionsSave/ExportGraph.tsx";
+import {ImportGraph} from "./GraphPositionsSave/ImportGraph.tsx";
 
 export function DisplaySettingsPanel() {
     const DEFAULT_DATA_INTERVAL_VALUE = 2;
@@ -163,6 +165,17 @@ export function DisplaySettingsPanel() {
                         >
                             {t("ApplySettings")}
                         </Button>
+                    </div>
+                </div>
+
+                <div style={{ padding: '3rem 0' }}>
+                    <div className={"text-2xl font-semibold text-gray-700 mb-4 border-b border-gray-300 pb-2"} style={i18n.language === 'he' ? { textAlign: "right", paddingRight: "2rem" } : {}}>
+                        {t('connectivityLevelHeader')}
+                    </div>
+
+                    <div className={'flex justify-center h-24'}>
+                        <ExportGraph />
+                        <ImportGraph />
                     </div>
                 </div>
             </Modal>

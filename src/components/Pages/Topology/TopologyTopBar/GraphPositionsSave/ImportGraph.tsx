@@ -57,8 +57,11 @@ export function ImportGraph() {
     };
 
     return (
-        <button className={'h-14 w-14 mt-5 rounded-full border border-white'} onClick={importNodes}>
-            <img className={'bg-white h-9 w-9 block mx-auto border-0'} src={importGraphIcon} alt={t('import')}/>
-        </button>
+        <div className={'h-24 flex-col flex mx-4'}>
+            <label className={'h-5 w-14 justify-center text-center'}>{t('import')}</label>
+            <button className={'h-14 w-14 mt-5 rounded-full border border-white'} onClick={importNodes}>
+                <img className={'bg-white h-9 w-9 block mx-auto border-0 rounded-md'} src={importGraphIcon} alt={t('import')}/>
+            </button>
+        </div>
     );
 }
