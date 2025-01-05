@@ -61,9 +61,7 @@ export function Topology(props: ITopologyProps) {
         if (devices && !isCurrentlyDragged) {
             try {
                 const newNodes = createNodesFromData(devices, selector.sizeInterval);
-                console.log(selector.edges);
                 const newEdges = createEdgesFromData(snrsData!, selector.sizeInterval);
-                console.log(newEdges);
                 //TODO refactor to remove this part cause the change made this part pretty obsolete
                 const updatedNodes = newNodes.map(newNode => {
                     const existingNode = selector.nodes
@@ -94,10 +92,8 @@ export function Topology(props: ITopologyProps) {
                 });
 
                 const updatedEdges = newEdges.map(newEdge => {
-                    // Find all nodes that are offline
                     const offlineNodes = updatedNodes.filter(node => !node.data.isOnline);
 
-                    // Check if the edge connects to any offline node
                     const isOfflineEdge = offlineNodes.some(node =>
                         newEdge.source === node.id || newEdge.target === node.id
                     );
@@ -109,15 +105,15 @@ export function Topology(props: ITopologyProps) {
                                 ...newEdge.style,
                                 label: {
                                     ...newEdge.style?.label,
-                                    value: '', // Update label to show offline status
+                                    value: '',
                                 },
                                 keyshape: {
                                     ...newEdge.style?.keyshape,
-                                    fill: colorOffline, // Apply offline color to fill
-                                    stroke: colorOffline, // Apply offline color to stroke
+                                    fill: colorOffline,
+                                    stroke: colorOffline,
                                 }
                             },
-                            data: '', // Additional data field indicating offline
+                            data: '',
                         };
                     }
 
