@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ITopologyProps } from "./ITopologyProps.ts";
 import { TopologyGraph } from "./graph/TopologyGraph.tsx";
-import {
-    colorOffline,
-    colorOnline,
-    createEdgesFromData,
-    createNodesFromData
+import {colorOffline, colorOnline, createEdgesFromData, createNodesFromData
 } from "../../../utils/topologyUtils/graphUtils.ts";
 import { devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
@@ -41,12 +37,13 @@ export function Topology(props: ITopologyProps) {
             try {
                 if (type === 'net_data') {
                     const { device_list, snr_list } = data;
+                    // console.log(snr_list);
+                    // console.log(device_list);
+                    setSnrsData(snr_list);
 
                     if (!devices || has_changed) {
                         setDevices(device_list);
                     }
-
-                    setSnrsData(snr_list);
                 }
                 else {
                     console.log('Unknown message type:', type);
