@@ -89,10 +89,8 @@ export function Topology(props: ITopologyProps) {
                 });
 
                 const updatedEdges = newEdges.map(newEdge => {
-                    // Find all nodes that are offline
                     const offlineNodes = updatedNodes.filter(node => !node.data.isOnline);
 
-                    // Check if the edge connects to any offline node
                     const isOfflineEdge = offlineNodes.some(node =>
                         newEdge.source === node.id || newEdge.target === node.id
                     );
@@ -104,15 +102,15 @@ export function Topology(props: ITopologyProps) {
                                 ...newEdge.style,
                                 label: {
                                     ...newEdge.style?.label,
-                                    value: '', // Update label to show offline status
+                                    value: '',
                                 },
                                 keyshape: {
                                     ...newEdge.style?.keyshape,
-                                    fill: colorOffline, // Apply offline color to fill
-                                    stroke: colorOffline, // Apply offline color to stroke
+                                    fill: colorOffline,
+                                    stroke: colorOffline,
                                 }
                             },
-                            data: '', // Additional data field indicating offline
+                            data: '',
                         };
                     }
 
