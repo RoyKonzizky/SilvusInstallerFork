@@ -76,5 +76,9 @@
   "ipRefreshGood": "Refresh succeeded",
   "ipRefreshBad": "Refresh failed",
   "saveGraph": "Save graph",
-  "importImage": "Import image"
+  "importImage": "Import image",
+  "hideNodes": "Hide nodes",
+  "nodesVisibilityChange": "Nodes visibility change",
+  "nodesVisibilityChangeSuccess": "Node visibility change succeeded",
+  "nodesVisibilityChangeFailure": "Node visibility change failed"
 }

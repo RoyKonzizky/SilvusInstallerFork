@@ -76,5 +76,9 @@
   "ipRefreshGood": "רענון הצליח",
   "ipRefreshBad": "רענון נכשל",
   "saveGraph": "שמירת גרף",
-  "importImage": "יבוא תמונה"
+  "importImage": "יבוא תמונה",
+  "hideNodes": "החבא צמתים",
+  "nodesVisibilityChange": "שינוי נראות צמתים",
+  "nodesVisibilityChangeSuccess": "שינוי נראות הצליחה",
+  "nodesVisibilityChangeFailure": "שינוי נראות נכשלה"
 }
