@@ -1,6 +1,7 @@
 import {TableModal} from "./topologyTable/TableModal.tsx";
-import {DisplaySettingsPanel} from "./DisplaySettingsPanel.tsx";
+import {DisplaySettingsPanel} from "./displaySettings/DisplaySettingsPanel.tsx";
 import {Dispatch, SetStateAction} from "react";
+import {HideNodesModal} from "./NodeVisibilityChange/HideNodesModal.tsx";
 // import {GetCamerasButton} from "./GetCamerasButton.tsx";
 // import TopologyLayoutModal from "./TopologyLayoutModal.tsx";
 
@@ -15,6 +16,7 @@ export function TopologyTopBar(props: ITopologyTopBar) {
             {/* <TopologyLayoutModal /> */}
             <DisplaySettingsPanel setBackgroundImage={props.setBackgroundImage} />
             {/*<GetCamerasButton />*/}
+            <HideNodesModal />
         </div>
     );
 }

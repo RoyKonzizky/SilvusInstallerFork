@@ -55,8 +55,10 @@ export function Login() {
                     dispatch(setIp(ipAddress));
                     setLoginModalIsOpen(true);
                 } else if (response?.msg?.is_protected === 0) {
+                    dispatch(setIp(ipAddress));
                     navigate(Paths.Settings);
                 } else {
+                    dispatch(setIp(ipAddress));
                     setErrorModalIsOpen(true);
                     setErrorMessage(t('loginErrorMessage'));
                 }
