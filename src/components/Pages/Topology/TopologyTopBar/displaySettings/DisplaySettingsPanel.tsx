@@ -1,17 +1,17 @@
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {Button, Modal, Slider} from "antd";
-import {snrColors} from "../../../../utils/topologyUtils/LegendSnrUtils.ts";
 import {useTranslation} from 'react-i18next';
-import connectivityIcon from "../../../../assets/connectivity.svg";
-import {getDataInterval, updateDataInterval} from "../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import connectivityIcon from "../../../../../assets/connectivity.svg";
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../../../redux/store.ts";
-import {setSizeInterval, updateEdges, updateNodes} from "../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
 import {IUserEdge, IUserNode} from "@antv/graphin";
-import {ExportGraph} from "./GraphPositionsSave/ExportGraph.tsx";
-import {ImportGraph} from "./GraphPositionsSave/ImportGraph.tsx";
 import {ImageImport} from "./ImageImport.tsx";
+import {RootState} from "../../../../../redux/store.ts";
+import {getDataInterval, updateDataInterval} from "../../../../../utils/topologyUtils/settingsTableUtils.tsx";
+import {setSizeInterval, updateEdges, updateNodes} from "../../../../../redux/TopologyGroups/topologyGroupsSlice.ts";
+import {snrColors} from "../../../../../utils/topologyUtils/LegendSnrUtils.ts";
+import {ExportGraph} from "../GraphPositionsSave/ExportGraph.tsx";
+import {ImportGraph} from "../GraphPositionsSave/ImportGraph.tsx";
 
 interface IDisplaySettingsPanel {
     setBackgroundImage: Dispatch<SetStateAction<string | null>>
