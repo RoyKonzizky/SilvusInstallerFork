@@ -119,7 +119,7 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             title: (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {group}
-                    <Button type="link" onClick={() =>
+                    <Button disabled={groups.length === 1} type="link" onClick={() =>
                         handleDeleteGroup(group, groups, filteredNodes, hulls, dispatch, updateNodes, updateHulls)}>
                         <img className={"w-6 h-6"} src={binIcon} alt={"Delete"} />
                     </Button>
@@ -127,11 +127,8 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
             ),
             dataIndex: group, key: group,
             render: (status: number, record: any) => (
-                <Select
-                    value={status}
-                    onChange={(value: number) => handleStatusChange(record.key, groupIndex, value)}
-                    style={{ width: '100%' }}
-                >
+                <Select disabled={groups.length === 1} value={status} style={{ width: '100%' }}
+                    onChange={(value: number) => handleStatusChange(record.key, groupIndex, value)}>
                     {deviceTalkStatus.map(statusOption => (
                         <Option key={statusOption.value} value={statusOption.value}>
                             {statusOption.label}
@@ -146,12 +143,12 @@ export function createColumns(groups: string[], nodes: IUserNode[], hulls: HullC
 }
 
 export function handleStatusChange(nodes: IUserNode[], nodeId: string, groupIndex: number, status: number,
-    dispatch: any,
-    updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">) {
+    dispatch: any, updateNodes: ActionCreatorWithPayload<IUserNode[], "topologyGroups/updateNodes">) {
     const updatedNodes = nodes.map(node => {
         if (node.id === nodeId) {
             const updatedStatuses = [...node.data.statuses];
             updatedStatuses[groupIndex] = status;
+            if (!updatedStatuses.includes(1)) return node;
             return { ...node, data: { ...node.data, statuses: updatedStatuses } };
         }
         return node;
@@ -383,3 +380,13 @@ export const loadCameras = async (nodes: IUserNode[], camerasMap: { [p: string]:
         setCamerasMap(camerasByDeviceId || camerasMap);
     }
 };
+
+export const masterSettingsChange = async (node: IUserNode) => {
+    try {
+        await axios.post(`http://localhost:8080/set-ptt-master`, {status: node.data.statuses});
+        toast.success(t('masterUpdateSuccess'));
+    } catch (e) {
+        console.error("error in sending data", e);
+        toast.error(t('masterUpdateFailure'));
+    }
+}

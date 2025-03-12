@@ -104,7 +104,8 @@ export function ElementPopover(props: IElementPopoverProps) {
                                 <p>
                                     {camLinks?.subStreamLink}
                                 </p>
-                                <Button disabled={selectorIP.ip_address === props.selectedElement!.data.ip} className={'h-14 w-14 mt-5 rounded-full border border-white bg-black'} onClick={()=>hideNode(props.selectedElement as IUserNode)}>
+                                <Button disabled={selectorIP.ip_address === props.selectedElement!.data.ip} className={'h-14 w-14 mt-5 rounded-full border border-white bg-black'}
+                                        onClick={()=>hideNode(props.selectedElement as IUserNode)}>
                                     <img className={'rounded-full h-14 w-14'} src={hideNodesIcon} alt={t("hideNodes")} />
                                 </Button>
                             </div>
