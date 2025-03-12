@@ -80,5 +80,8 @@
   "hideNodes": "החבא צמתים",
   "nodesVisibilityChange": "שינוי נראות צמתים",
   "nodesVisibilityChangeSuccess": "שינוי נראות הצליחה",
-  "nodesVisibilityChangeFailure": "שינוי נראות נכשלה"
+  "nodesVisibilityChangeFailure": "שינוי נראות נכשלה",
+  "masterUpdateSuccess": "עדכון מאסטר הצליח",
+  "masterUpdateFailure": "עדכון מאסטר נכשל",
+  "ApplyMasterSettings": "החל הגדרות מאסטר"
 }

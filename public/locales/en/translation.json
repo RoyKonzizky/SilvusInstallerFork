@@ -80,5 +80,8 @@
   "hideNodes": "Hide nodes",
   "nodesVisibilityChange": "Nodes visibility change",
   "nodesVisibilityChangeSuccess": "Node visibility change succeeded",
-  "nodesVisibilityChangeFailure": "Node visibility change failed"
+  "nodesVisibilityChangeFailure": "Node visibility change failed",
+  "masterUpdateSuccess": "Master update succeeded",
+  "masterUpdateFailure": "Master update failed",
+  "ApplyMasterSettings": "Apply master settings"
 }
