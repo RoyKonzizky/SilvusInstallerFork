@@ -12,6 +12,9 @@ import {setSizeInterval, updateEdges, updateNodes} from "../../../../../redux/To
 import {snrColors} from "../../../../../utils/topologyUtils/LegendSnrUtils.ts";
 import {ExportGraph} from "../GraphPositionsSave/ExportGraph.tsx";
 import {ImportGraph} from "../GraphPositionsSave/ImportGraph.tsx";
+import {DEFAULT_EDGE_FONT_SIZE, DEFAULT_EDGE_SHAPE_SIZE, DEFAULT_HALO_LINE_SIZE,
+    DEFAULT_HALO_SHAPE_SIZE, DEFAULT_NODE_FONT_SIZE, DEFAULT_NODE_SHAPE_SIZE
+} from "../../../../../utils/topologyUtils/graphUtils.ts";
 
 interface IDisplaySettingsPanel {
     setBackgroundImage: Dispatch<SetStateAction<string | null>>
@@ -44,10 +47,6 @@ export function DisplaySettingsPanel(props: IDisplaySettingsPanel) {
     }
 
     const increaseElementsSize = (nodes:IUserNode[], edges: IUserEdge[], sizeIntervalValue: number) => {
-        const DEFAULT_NODE_FONT_SIZE = 30;
-        const DEFAULT_NODE_SHAPE_SIZE = 50;
-        const DEFAULT_EDGE_FONT_SIZE = 30;
-        const DEFAULT_EDGE_SHAPE_SIZE = 6;
         const updatedNodes:IUserNode[] = nodes.map(node => {
             return {
                 ...node,
@@ -60,6 +59,11 @@ export function DisplaySettingsPanel(props: IDisplaySettingsPanel) {
                     keyshape: {
                         ...node.style?.keyshape,
                         size: DEFAULT_NODE_SHAPE_SIZE * sizeIntervalValue,
+                    },
+                    halo: {
+                        ...node.style?.halo,
+                        size: DEFAULT_HALO_SHAPE_SIZE * sizeIntervalValue,
+                        lineWidth: DEFAULT_HALO_LINE_SIZE * sizeIntervalValue,
                     },
                 }
             };

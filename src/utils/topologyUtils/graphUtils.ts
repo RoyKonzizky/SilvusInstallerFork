@@ -2,13 +2,20 @@ import {IUserEdge, IUserNode} from "@antv/graphin";
 import {devicesType, snrsType} from "../../constants/types/devicesDataTypes.ts";
 export const colorOnline = '#1fb639';
 export const colorOffline = '#b61f1f';
-
+export const colorMaster = '#ff8600';
+export const DEFAULT_NODE_FONT_SIZE = 30;
+export const DEFAULT_NODE_SHAPE_SIZE = 50;
+export const DEFAULT_NODE_KEYSHAPE_SIZE = 50;
+export const DEFAULT_EDGE_FONT_SIZE = 30;
+export const DEFAULT_EDGE_SHAPE_SIZE = 6;
+export const DEFAULT_HALO_SHAPE_SIZE = 30;
+export const DEFAULT_HALO_LINE_SIZE = 30;
 export const graphStyle = {
     background: "transparent",
     color: "white"
 };
 
-export function createNodesFromData(devices: devicesType, sizeInterval: number) {
+export function createNodesFromData(devices: devicesType, sizeInterval: number, masterIp: string) {
     const nodes: IUserNode[] = [];
     for (let i = 0; i < devices.length; i++) {
 
@@ -18,13 +25,21 @@ export function createNodesFromData(devices: devicesType, sizeInterval: number) 
                 label: {
                     value: devices[i].name.toString() || devices[i].ip.toString(),
                     fill: '#FFFFFF',
-                    fontSize: 30 * sizeInterval,
+                    fontSize: DEFAULT_NODE_FONT_SIZE * sizeInterval,
                 },
                 keyshape: {
                     fill: devices[i].is_online ? colorOnline : colorOffline,
                     stroke: devices[i].is_online ? colorOnline : colorOffline,
                     fillOpacity: 1,
-                    size: 50 * sizeInterval,
+                    size: DEFAULT_NODE_KEYSHAPE_SIZE * sizeInterval,
+                },
+                halo: {
+                    size: DEFAULT_HALO_SHAPE_SIZE * sizeInterval,
+                    fill: colorMaster,
+                    stroke: colorMaster,
+                    lineWidth: DEFAULT_HALO_LINE_SIZE * sizeInterval,
+                    opacity: 1,
+                    visible: devices[i].ip === masterIp,
                 },
             },
             data: {
@@ -62,7 +77,7 @@ export function createEdgesFromData(snrs: snrsType, sizeInterval: number): IUser
                 label: {
                     value: `${labelValue}`,
                     fill: '#FFFFFF',
-                    fontSize: 30 * sizeInterval,
+                    fontSize: DEFAULT_EDGE_FONT_SIZE * sizeInterval,
                     offset: [0,15]
                 },
                 keyshape: {
@@ -70,7 +85,7 @@ export function createEdgesFromData(snrs: snrsType, sizeInterval: number): IUser
                         path: '',
                     },
                     stroke: edgeColor,
-                    lineWidth: 6 * sizeInterval
+                    lineWidth: DEFAULT_EDGE_SHAPE_SIZE * sizeInterval
                 },
             },
             data: `${labelValue.toString()}`,

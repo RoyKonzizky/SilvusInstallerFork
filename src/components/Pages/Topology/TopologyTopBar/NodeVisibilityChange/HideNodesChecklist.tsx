@@ -50,7 +50,7 @@ export function HideNodesChecklist() {
             const response = await axios.get('http://localhost:8080/hidden');
             const hiddenNodes = response.data.device_list || [];
 
-            const nodesFromHidden = createNodesFromData(hiddenNodes, selector.sizeInterval);
+            const nodesFromHidden = createNodesFromData(hiddenNodes, selector.sizeInterval, selectorIP.ip_address);
 
             const updatedNodes = [...selector.nodes, ...nodesFromHidden].filter(
                 (node, index, self) =>

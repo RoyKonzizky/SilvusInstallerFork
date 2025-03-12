@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ITopologyProps } from "./ITopologyProps.ts";
 import { TopologyGraph } from "./graph/TopologyGraph.tsx";
-import {colorOffline, colorOnline, createEdgesFromData, createNodesFromData
+import {colorMaster, colorOffline, colorOnline, createEdgesFromData, createNodesFromData,
 } from "../../../utils/topologyUtils/graphUtils.ts";
 import { devicesType, snrsType } from "../../../constants/types/devicesDataTypes.ts";
 import useWebSocket from "react-use-websocket";
@@ -26,6 +26,7 @@ export function Topology(props: ITopologyProps) {
     const dispatch = useDispatch();
     const selector = useSelector((state: RootState) => state.topologyGroups);
     const sizeIntervalSelector = useSelector((state: RootState) => state.topologyGroups.sizeInterval);
+    const selectorIP = useSelector((state: RootState) => state.ip);
     const [edges, setEdges] = useState<IUserEdge[]>([]);
     const [nodes, setNodes] = useState<IUserNode[]>([]);
     const [isCurrentlyDragged, setIsCurrentlyDragged] = useState<boolean>(false);
@@ -57,8 +58,8 @@ export function Topology(props: ITopologyProps) {
     useEffect(() => {
         if (devices && !isCurrentlyDragged) {
             try {
-                const newNodes = createNodesFromData(devices, selector.sizeInterval);
-                const newEdges = createEdgesFromData(snrsData!, selector.sizeInterval);
+                const newNodes = createNodesFromData(devices, sizeIntervalSelector, selectorIP.ip_address);
+                const newEdges = createEdgesFromData(snrsData!, sizeIntervalSelector);
                 //TODO refactor to remove this part cause the change made this part pretty obsolete
                 const updatedNodes = newNodes.map(newNode => {
                     const existingNode = selector.nodes
@@ -77,7 +78,14 @@ export function Topology(props: ITopologyProps) {
                                     ...existingNode.style?.keyshape,
                                     fill: newNode.data.isOnline ? colorOnline : colorOffline,
                                     stroke: newNode.data.isOnline ? colorOnline : colorOffline,
-                                }
+                                },
+                                halo: {
+                                    ...existingNode.style?.halo,
+                                    fill: colorMaster,
+                                    stroke: colorMaster,
+                                    opacity: 1,
+                                    visible: newNode.data.ip === selectorIP.ip_address,
+                                },
                             },
                             data: {
                                 ...existingNode.data,
