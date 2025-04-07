@@ -28,8 +28,11 @@ export function ExportGraph() {
     };
 
     return(
-        <button className={'h-14 w-14 mt-5 rounded-full border border-white'} onClick={() => exportNodes(selectorNodes)}>
-            <img className={'bg-white h-9 w-9 block mx-auto border-0'} src={exportGraphIcon} alt={t('export')} />
-        </button>
+        <div className={'h-24 flex-col flex mx-4'}>
+            <label className={'h-5 w-14 justify-center text-center'}>{t('export')}</label>
+            <button className={'h-14 w-14 mt-5 rounded-full border border-white'} onClick={() => exportNodes(selectorNodes)}>
+                <img className={'bg-white h-9 w-9 block mx-auto border-0 rounded-md'} src={exportGraphIcon} alt={t('export')} />
+            </button>
+        </div>
     );
 }

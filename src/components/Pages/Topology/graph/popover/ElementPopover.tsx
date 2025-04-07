@@ -9,6 +9,8 @@ import {ChangeEvent, useEffect, useState} from "react";
 import { sendNames } from "../../../../../utils/topologyUtils/elementPopoverUtils.ts";
 import {CamStreams, connectCamToDevice} from "../../../../../utils/topologyUtils/getCamerasButtonUtils.ts";
 import {PopoverBatteryRefreshSpinner} from "./PopoverBatteryRefreshSpinner.tsx";
+import hideNodesIcon from "../../../../../assets/hideNodesIcon.svg";
+import {hideNode} from "../../../../../utils/topologyUtils/hideNodesModalUtils.ts";
 
 interface IElementPopoverProps {
     selectedElement: IUserNode | IUserEdge | null,
@@ -19,17 +21,18 @@ interface IElementPopoverProps {
 export function ElementPopover(props: IElementPopoverProps) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const selector = useSelector((state: RootState) => state.topologyGroups);
+    const selectorTopology = useSelector((state: RootState) => state.topologyGroups);
+    const selectorIP = useSelector((state: RootState) => state.ip);
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
     const [label, setLabel] = useState(props.selectedElement?.style?.label?.value);
     const [camLinks, setCamLinks] = useState<CamStreams>();
     const [elementBattery, setElementBattery] = useState<string>(props.selectedElement?.data.battery);
-    const [nodes, setNodes] = useState(selector.nodes);
+    const [nodes, setNodes] = useState(selectorTopology.nodes);
 
     const handleLabelChange = (e: ChangeEvent<HTMLInputElement>) => {
         setLabel(e.target.value);
         const newLabel = e.target.value;
-        const newNodes = selector.nodes.map(node => {
+        const newNodes = selectorTopology.nodes.map(node => {
             if (node.id === props.selectedElement?.id) {
                 return { ...node, style: { ...node.style, label: { ...node.style?.label, value: newLabel, }, }, };
             }
@@ -56,9 +59,9 @@ export function ElementPopover(props: IElementPopoverProps) {
     useEffect(() => {
         setCamLinks({
             mainStreamLink: `${t('cameraMainStreamLink')}: 
-                                         ${connectCamToDevice(props.selectedElement!.data.ip, selector.cameras).mainStreamLink}`,
+                                         ${connectCamToDevice(props.selectedElement!.data.ip, selectorTopology.cameras).mainStreamLink}`,
             subStreamLink: `${t('cameraSubStreamLink')}: 
-                                         ${connectCamToDevice(props.selectedElement!.data.ip, selector.cameras).subStreamLink}`
+                                         ${connectCamToDevice(props.selectedElement!.data.ip, selectorTopology.cameras).subStreamLink}`
         });
     }, []);
 
@@ -101,6 +104,10 @@ export function ElementPopover(props: IElementPopoverProps) {
                                 <p>
                                     {camLinks?.subStreamLink}
                                 </p>
+                                <Button disabled={selectorIP.ip_address === props.selectedElement!.data.ip} className={'h-14 w-14 mt-5 rounded-full border border-white bg-black'}
+                                        onClick={()=>hideNode(props.selectedElement as IUserNode)}>
+                                    <img className={'rounded-full h-14 w-14'} src={hideNodesIcon} alt={t("hideNodes")} />
+                                </Button>
                             </div>
                             :
                             <p>{`SNR = ${props.selectedElement?.data}`}</p>

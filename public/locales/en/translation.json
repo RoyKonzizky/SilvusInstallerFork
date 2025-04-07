@@ -74,5 +74,14 @@
   "importBad": "Import failed",
   "exportBad": "Export failed",
   "ipRefreshGood": "Refresh succeeded",
-  "ipRefreshBad": "Refresh failed"
+  "ipRefreshBad": "Refresh failed",
+  "saveGraph": "Save graph",
+  "importImage": "Import image",
+  "hideNodes": "Hide nodes",
+  "nodesVisibilityChange": "Nodes visibility change",
+  "nodesVisibilityChangeSuccess": "Node visibility change succeeded",
+  "nodesVisibilityChangeFailure": "Node visibility change failed",
+  "masterUpdateSuccess": "Master update succeeded",
+  "masterUpdateFailure": "Master update failed",
+  "ApplyMasterSettings": "Apply master settings"
 }

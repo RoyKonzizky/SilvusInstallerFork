@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    './src/**/*.tsx', // Adjust the path based on your project structure
-    './src/**/*.ts',  // Adjust the path based on your project structure
+    './src/**/*.tsx',
+    './src/**/*.ts',
     './public/index.html',
   ],
   theme: {

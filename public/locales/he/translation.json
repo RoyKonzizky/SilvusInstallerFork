@@ -17,7 +17,7 @@
   "volume": "ווליום",
   "loading": "בטעינה",
   "frequency": "(MHz)\u200E תדר",
-  "bandwidth": "(MHz)\u200E רוחב פס",
+  "bandwidth": "(MHz)\u200E רוחב סרט",
   "networkId": "שם רשת",
   "totalTransitPower": "(dBm)\u200E הספק שידור",
   "username": "משתמש",
@@ -74,5 +74,14 @@
   "importBad": "יבוא נכשל",
   "exportBad": "יצוא נכשל",
   "ipRefreshGood": "רענון הצליח",
-  "ipRefreshBad": "רענון נכשל"
+  "ipRefreshBad": "רענון נכשל",
+  "saveGraph": "שמירת גרף",
+  "importImage": "יבוא תמונה",
+  "hideNodes": "החבא צמתים",
+  "nodesVisibilityChange": "שינוי נראות צמתים",
+  "nodesVisibilityChangeSuccess": "שינוי נראות הצליחה",
+  "nodesVisibilityChangeFailure": "שינוי נראות נכשלה",
+  "masterUpdateSuccess": "עדכון מאסטר הצליח",
+  "masterUpdateFailure": "עדכון מאסטר נכשל",
+  "ApplyMasterSettings": "החל הגדרות מאסטר"
 }

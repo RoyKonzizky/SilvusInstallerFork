@@ -1,4 +1,4 @@
-import {ChangeEvent, useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import { useDispatch } from "react-redux";
 import Graphin, { IUserEdge, IUserNode } from "@antv/graphin";
 import { ElementPopover } from "./popover/ElementPopover.tsx";
@@ -51,19 +51,6 @@ export function TopologyGraph(props: ITopologyGraph) {
             graph.off("viewportchange", updateBackground);
         };
     }, []);
-
-    const handleImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (typeof reader.result === "string") {
-                    setBackgroundImage(reader.result); // Set base64 image as background
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-    };
 
     useEffect(() => {
         const graph = graphRef.current?.graph;
@@ -240,16 +227,13 @@ export function TopologyGraph(props: ITopologyGraph) {
                 }}
             />
 
-            <input type="file" accept="image/*" onChange={handleImageUpload}
-                style={{position: "absolute", top: 10, left: 10, zIndex: 10,}}/>
-
             <Graphin ref={graphRef} modes={modes} data={{ nodes: props.nodes, edges: props.edges }}
                      style={graphStyle} width={2000} height={1000}
                      layout={{ name: 'force2', options: {} }}
             >
                 {selectedElement && <ElementPopover position={popoverPosition} selectedElement={selectedElement}
                                                     onClose={() => setSelectedElement(null)}/>}
-                <TopologyTopBar />
+                <TopologyTopBar setBackgroundImage={setBackgroundImage}/>
             </Graphin>
         </div>
     );

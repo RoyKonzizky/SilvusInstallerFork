@@ -27,22 +27,18 @@ export function Login() {
         try {
             const startUpData = await startUp();
 
-            // Check if the data contains the IP address
             if (startUpData.msg && (startUpData.msg as serverResponseIpDataType).ip) {
                 setIpAddress((startUpData.msg as serverResponseIpDataType).ip);
                 toast.success(t("ipRefreshGood"));
             } else if (startUpData.detail) {
-                // Handle known error structure
                 const { msg } = startUpData.detail as serverResponseErrorType;
                 setErrorMessage(msg);
                 setErrorModalIsOpen(true);
             } else {
-                // Handle unexpected structure
-                throw new Error("Unexpected data format");
+                console.error('Unknown exception');
             }
         } catch (e) {
-            // Fallback for unexpected errors
-            console.error(e); // Log the error for debugging
+            console.error(e);
             toast.error(t("ipRefreshBad"));
         }
     };
@@ -59,8 +55,10 @@ export function Login() {
                     dispatch(setIp(ipAddress));
                     setLoginModalIsOpen(true);
                 } else if (response?.msg?.is_protected === 0) {
+                    dispatch(setIp(ipAddress));
                     navigate(Paths.Settings);
                 } else {
+                    dispatch(setIp(ipAddress));
                     setErrorModalIsOpen(true);
                     setErrorMessage(t('loginErrorMessage'));
                 }
