@@ -65,6 +65,8 @@ export function Topology(props: ITopologyProps) {
                     const existingNode = selector.nodes
                         .find((node: IUserNode) => node.id === newNode.id);
                     if (existingNode) {
+                        const isMaster = existingNode.data.ip === selectorIP.ip_address;
+
                         return {
                             ...existingNode,
                             // data: {
@@ -81,10 +83,10 @@ export function Topology(props: ITopologyProps) {
                                 },
                                 halo: {
                                     ...existingNode.style?.halo,
-                                    fill: colorMaster,
-                                    stroke: colorMaster,
-                                    opacity: 1,
-                                    visible: newNode.data.ip === selectorIP.ip_address,
+                                    fill: isMaster ? colorMaster : existingNode.style?.halo?.fill,
+                                    stroke: isMaster ? colorMaster : existingNode.style?.halo?.stroke,
+                                    opacity: isMaster ? 1 : 0,
+                                    visible: isMaster,
                                 },
                             },
                             data: {

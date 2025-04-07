@@ -18,6 +18,7 @@ export const graphStyle = {
 export function createNodesFromData(devices: devicesType, sizeInterval: number, masterIp: string) {
     const nodes: IUserNode[] = [];
     for (let i = 0; i < devices.length; i++) {
+        const isMaster = devices[i].ip === masterIp;
 
         nodes[i] = {
             id: devices[i].id.toString(),
@@ -35,11 +36,11 @@ export function createNodesFromData(devices: devicesType, sizeInterval: number, 
                 },
                 halo: {
                     size: DEFAULT_HALO_SHAPE_SIZE * sizeInterval,
-                    fill: colorMaster,
-                    stroke: colorMaster,
+                    fill: isMaster ? colorMaster : '',
+                    stroke: isMaster ? colorMaster : '',
                     lineWidth: DEFAULT_HALO_LINE_SIZE * sizeInterval,
-                    opacity: 1,
-                    visible: devices[i].ip === masterIp,
+                    opacity: isMaster ? 1 : 0,
+                    visible: isMaster,
                 },
             },
             data: {
